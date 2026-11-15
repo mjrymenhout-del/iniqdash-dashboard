@@ -1,0 +1,25 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   IniqSlider — the shared linear slider's OWN look (components/slider/slider.js). An owner may give the slider its own skin instead
+   (Light: its brightness bar and colour-temperature strip). Variables: --iqsl-h (track thickness), --iqsl-thumb (handle), --iqsl-fill
+   (the filled part's colour), --iqsl-rest (the unfilled track), --iqsl-thumb-c (the handle's colour), --iqsl-r (the track's corner
+   radius), --iqsl-thumb-r (the handle's), --v (0…1, set by the slider).
+   ========================================================================== */
+.iqsl { position: absolute; inset: 0; display: flex; align-items: center; }
+.iqsl__range { --v: .5; -webkit-appearance: none; appearance: none; display: block; width: 100%; margin: 0; cursor: pointer; touch-action: pan-y;
+  height: max(var(--iqsl-h, 8px), var(--iqsl-thumb, calc(var(--iqsl-h, 8px) + 10px)), 18px); background: transparent; }
+.iqsl__range::-webkit-slider-runnable-track { height: var(--iqsl-h, 8px); border-radius: var(--iqsl-r, calc(var(--iqsl-h, 8px) / 2));
+  background: linear-gradient(90deg, var(--iqsl-fill, var(--slider-fill, var(--accent))), var(--iqsl-fill2, var(--iqsl-fill, var(--slider-fill, var(--accent))))) 0 0 / calc(var(--v) * 100%) 100% no-repeat,
+    var(--iqsl-rest, var(--slider-track, rgba(255, 255, 255, .14))); }
+.iqsl__range::-moz-range-track { height: var(--iqsl-h, 8px); border-radius: calc(var(--iqsl-h, 8px) / 2); background: var(--iqsl-rest, var(--slider-track, rgba(255, 255, 255, .14))); }
+.iqsl__range::-moz-range-progress { height: var(--iqsl-h, 8px); border-radius: calc(var(--iqsl-h, 8px) / 2); background: var(--iqsl-fill, var(--slider-fill, var(--accent))); }
+.iqsl__range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; box-sizing: border-box; width: var(--iqsl-thumb, max(18px, calc(var(--iqsl-h, 8px) + 10px)));
+  height: var(--iqsl-thumb, max(18px, calc(var(--iqsl-h, 8px) + 10px))); margin-top: calc((var(--iqsl-h, 8px) - var(--iqsl-thumb, max(18px, calc(var(--iqsl-h, 8px) + 10px)))) / 2);
+  border: var(--iqsl-tb, 0px) solid var(--iqsl-tbc, #fff); border-radius: var(--iqsl-thumb-r, 50%); background: var(--iqsl-thumb-c, #fff); box-shadow: var(--iqsl-glow, 0 1px 4px rgba(0, 0, 0, .55)); }
+.iqsl__range::-moz-range-thumb { box-sizing: border-box; width: var(--iqsl-thumb, max(18px, calc(var(--iqsl-h, 8px) + 10px))); height: var(--iqsl-thumb, max(18px, calc(var(--iqsl-h, 8px) + 10px)));
+  border: 0; border-radius: var(--iqsl-thumb-r, 50%); background: var(--iqsl-thumb-c, #fff); box-shadow: 0 1px 4px rgba(0, 0, 0, .55); }
+.iqsl__range:focus-visible { outline: var(--focus-ring); outline-offset: 3px; }
+.iqsl__range:disabled { cursor: not-allowed; opacity: .5; }

@@ -1,0 +1,92 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Notifications (current development theme; shared tokens). The layer is the application's screen.
+   Every STACK covers the VISIBLE part of the screen layer (--scr-vis-* — MaisonApp.createScreen; 0 elsewhere) in the layer's own
+   logical px, so a scaled preview, a screen taller than the window or a scrolled page never puts a notification out of view.
+   A notification's own look (config.design → --mnote-* custom properties, components/notify/notify.js) only overrides the
+   Standard look below; without it every value is the Standard one.
+   ========================================================================== */
+.mnote-stack {
+  position: absolute; z-index: 60; display: flex; flex-direction: column; gap: 10px; pointer-events: none; min-width: 0;
+  top: var(--scr-vis-top, 0px); right: var(--scr-vis-right, 0px); bottom: var(--scr-vis-bottom, 0px); left: var(--scr-vis-left, 0px);
+}
+.mnote-stack:is(.mnote-stack--top-left, .mnote-stack--top-center, .mnote-stack--top-right) { justify-content: flex-start; }
+.mnote-stack:is(.mnote-stack--bottom-left, .mnote-stack--bottom-center, .mnote-stack--bottom-right) { justify-content: flex-end; }
+.mnote-stack--center { justify-content: center; }
+
+.mnote {
+  --tone: var(--accent);
+  --mnote-m-: var(--mnote-m, 12px);
+  pointer-events: auto; position: relative; flex: none; display: flex; flex-direction: column; min-width: 0; overflow: hidden;
+  width: var(--mnote-w, 360px); max-width: min(calc(100% - 2 * var(--mnote-m-)), var(--mnote-maxw, 100%));
+  max-height: calc(100% - 2 * var(--mnote-m-)); margin-inline: var(--mnote-m-);
+  border-radius: var(--mnote-r, var(--radius-lg)); font-family: var(--font); color: var(--text-primary);
+  background: var(--mnote-bg, var(--mnote-bg-d, linear-gradient(165deg, var(--surface-primary-top), var(--surface-primary))));
+  box-shadow: var(--mnote-shadow, 0 18px 40px -16px rgba(0, 0, 0, .85));
+}
+/* the border and the tone bar: drawn OVER a background / side / hero picture (an inset shadow of the box itself would be under it) */
+.mnote::after {
+  content: ""; position: absolute; inset: 0; z-index: 2; border-radius: inherit; pointer-events: none;
+  box-shadow: inset 0 0 0 var(--mnote-bw, 1px) var(--mnote-bc, var(--mnote-bc-d, var(--border-primary))), inset var(--mnote-bar-d, 3px) 0 0 var(--tone);
+}
+.mnote[data-blur] { -webkit-backdrop-filter: blur(var(--mnote-blur)); backdrop-filter: blur(var(--mnote-blur)); }
+/* where it sits in its stack: its own position (a narrow screen shares one stack per edge) — the screen margin on the edge sides */
+.mnote:is([data-position$="left"]) { align-self: flex-start; }
+.mnote:is([data-position$="right"]) { align-self: flex-end; }
+.mnote:is([data-position$="center"]) { align-self: center; }
+.mnote-stack:is(.mnote-stack--top-left, .mnote-stack--top-center, .mnote-stack--top-right) > .mnote:first-child { margin-top: var(--mnote-m-); }
+.mnote-stack:is(.mnote-stack--bottom-left, .mnote-stack--bottom-center, .mnote-stack--bottom-right) > .mnote:last-child { margin-bottom: var(--mnote-m-); }
+.mnote-stack--center > .mnote { width: var(--mnote-w, 420px); margin-block: var(--mnote-m-); }
+.mnote-narrow > .mnote-stack:not(.mnote-stack--center) > .mnote { width: var(--mnote-w, 100%); }
+.mnote[data-fixed-height] { height: var(--mnote-h); }
+
+.mnote[data-tone="neutral"] { --tone: var(--text-muted); }
+.mnote[data-tone="success"] { --tone: var(--success); }
+.mnote[data-tone="warning"] { --tone: var(--warning); }
+.mnote[data-tone="danger"] { --tone: var(--danger); }
+.mnote[data-tone="info"] { --tone: var(--info); }
+.mnote[data-style="solid"] { --mnote-bg-d: color-mix(in srgb, var(--tone) 22%, var(--surface-primary)); --mnote-bc-d: color-mix(in srgb, var(--tone) 55%, transparent); --mnote-bar-d: 0px; }
+.mnote[data-style="compact"] { border-radius: var(--mnote-r, 14px); }
+
+/* the content: icon · thumbnail · text · close — scrolls inside when the notification is constrained */
+.mnote__main {
+  position: relative; z-index: 1; flex: 1 1 auto; min-width: 0; min-height: 0; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin;
+  display: flex; align-items: flex-start; gap: 12px; padding: var(--mnote-pad, 12px 10px 12px 14px);
+}
+.mnote[data-style="compact"] .mnote__main { padding: var(--mnote-pad, 8px 8px 8px 12px); align-items: center; }
+.mnote[data-style="compact"] .mnote__msg { display: none; }
+.mnote[data-align="center"] .mnote__main { justify-content: center; }
+.mnote[data-align="right"] .mnote__main { justify-content: flex-end; }
+.mnote:is([data-align="center"], [data-align="right"]) .mnote__txt { flex: 0 1 auto; }
+/* the close button keeps the right edge (its auto margin): with it, the content's own auto margin takes the free space instead of
+   justify-content — centred in the room left of the button, or pushed against it */
+.mnote[data-align="center"] .mnote__main:has(> .mnote__close) > :first-child { margin-left: auto; }
+.mnote[data-align="right"] .mnote__main:has(> .mnote__close) > :first-child { margin-left: auto; }
+.mnote[data-align="right"] .mnote__main:has(> .mnote__close) > .mnote__close { margin-left: 0; }
+.mnote__icon { --is: var(--mnote-is, 20px); flex: none; width: calc(var(--is) + 16px); height: calc(var(--is) + 16px); border-radius: 12px; display: grid; place-items: center; color: var(--mnote-ic, var(--tone)); background: var(--control-well); }
+.mnote__icon svg { width: var(--is); height: var(--is); }
+.mnote__img { flex: none; width: 44px; height: 44px; border-radius: 12px; object-fit: cover; background: var(--control-well); }
+.mnote__txt { flex: 1; min-width: 0; padding-top: 2px; text-align: var(--mnote-ta, left); }
+.mnote__title { margin: 0; font-size: var(--mnote-ts, 14px); font-weight: var(--mnote-tw, var(--iq-fw-title)); line-height: 1.3; color: var(--mnote-tc, inherit); overflow-wrap: anywhere; }
+.mnote__msg { margin: 3px 0 0; font-size: var(--mnote-ms, 12.5px); font-weight: var(--mnote-mw, 400); line-height: 1.4; color: var(--mnote-mc, var(--text-secondary)); overflow-wrap: anywhere; }
+.mnote__close { flex: none; width: 40px; height: 40px; margin: -4px 0 -4px auto; border: 0; border-radius: 12px; display: grid; place-items: center; color: var(--text-secondary); background: transparent; cursor: pointer; }
+.mnote__close svg { width: 16px; height: 16px; }
+.mnote__close:hover { color: var(--text-primary); background: var(--surface-tertiary); }
+.mnote__close:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
+.mnote.is-leaving { pointer-events: none; }
+
+/* IMAGE LAYOUTS — the picture never sets the notification's height by itself (Auto height follows the text) */
+.mnote__bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+.mnote__bgimg, .mnote__mimg { display: block; width: 100%; height: 100%; object-fit: var(--mnote-fit, cover); object-position: var(--mnote-ipos, center); opacity: var(--mnote-iop, 1); }
+.mnote__ov { position: absolute; inset: 0; background: var(--mnote-ov, color-mix(in srgb, var(--surface-primary) 45%, transparent)); }
+.mnote__media { position: relative; z-index: 1; flex: none; overflow: hidden; background: var(--control-well); }
+/* hero: its own height; when the notification is constrained (a fixed height, a small screen) it gives way first — the text keeps 48 px */
+.mnote[data-layout="hero"] .mnote__media { flex: 0 1 var(--mnote-hh, 120px); height: var(--mnote-hh, 120px); min-height: 32px; }
+.mnote[data-layout="hero"] .mnote__main { min-height: 48px; }
+.mnote[data-fixed-height][data-layout="hero"] .mnote__media { max-height: 50%; }
+.mnote:is([data-layout="left"], [data-layout="right"]) { flex-direction: row; }
+.mnote[data-layout="right"] { flex-direction: row-reverse; }
+.mnote:is([data-layout="left"], [data-layout="right"]) .mnote__media { width: var(--mnote-sw, 96px); max-width: 38%; align-self: stretch; min-height: 56px; }

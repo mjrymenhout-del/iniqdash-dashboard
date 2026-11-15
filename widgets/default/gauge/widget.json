@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "gauge",
+  "name": "Gauge",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "gauge.js",
+  "style": "gauge.css",
+  "assets": "assets/",
+  "api": "MaisonGauge"
+}

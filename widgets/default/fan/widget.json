@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "fan",
+  "name": "Fan",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "fan.js",
+  "style": "fan.css",
+  "assets": "assets/",
+  "api": "MaisonFan"
+}

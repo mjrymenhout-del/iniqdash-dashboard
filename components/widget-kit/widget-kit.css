@@ -1,0 +1,82 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* IniqWidgetKit — common widget capabilities (see widget-kit.js). Only attribute hooks the kit sets; no widget styling. */
+
+/* visibility condition: hidden keeps the grid footprint (visibility, not display) — nothing around it moves */
+[data-iq-vis="hidden"] { visibility: hidden; }
+/* while editing, and in the configuration preview, a hidden widget stays visible (faded) so it can be found and edited */
+.ed--editing [data-iq-vis="hidden"], dialog [data-iq-vis="hidden"] { visibility: visible; opacity: .4; }
+
+/* interactions: the card itself is a control */
+[data-iq-interactive="true"] { cursor: pointer; touch-action: manipulation; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+[data-iq-interactive="true"]:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* ---- history layer (IniqWidgetKit.historyLayer): real HA history inside a widget, behind its content */
+.iq-hist-host { position: relative; isolation: isolate; }
+.iq-hist { position: absolute; z-index: -1; left: 0; right: 0; bottom: 0; pointer-events: none; overflow: hidden; border-radius: inherit; color: var(--accent, #f0a64b); }
+.iq-hist[data-pos="background"] { top: 0; }
+.iq-hist[data-pos="bottom"] { height: clamp(14px, 28%, 58px); border-top-left-radius: 0; border-top-right-radius: 0; }
+.iq-hist svg { display: block; width: 100%; height: 100%; overflow: hidden; }
+.iq-hist__line { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; opacity: .6; }
+.iq-hist__area { fill: currentColor; opacity: .16; }
+.iq-hist[data-pos="background"] .iq-hist__line { opacity: .32; }
+.iq-hist[data-pos="background"] .iq-hist__area { opacity: .1; }
+.iq-hist__seg { fill: currentColor; opacity: .55; }
+.iq-hist__seg--off { fill: var(--text-muted, #8b8f99); opacity: .28; }
+.iq-hist__seg--warning { fill: var(--danger, #ff6464); opacity: .7; }
+.iq-hist__seg--state { fill: var(--text-secondary, #b7bbc5); opacity: .4; }
+.iq-hist[data-pos="background"] .iq-hist__seg { opacity: .13; }
+.iq-hist[data-pos="background"] .iq-hist__seg--off { opacity: .05; }
+.iq-hist__none { position: absolute; right: 10px; bottom: 4px; font: 500 10px/1.2 var(--font, system-ui); color: var(--text-muted, #8b8f99); opacity: .8; }
+.iq-hist__seg--alt1 { fill: var(--info); opacity: .55; }
+.iq-hist__seg--alt2 { fill: #5fd3a5; opacity: .55; }
+.iq-hist__seg--alt3 { fill: #c690ff; opacity: .55; }
+
+/* ---- the optional ⋮ Entity Details button (common capability, off by default) — one of the widget's own controls */
+.iq-more-host { position: relative; }
+.iq-more {
+  position: absolute; z-index: 4; top: 8px; right: 8px; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 999px; cursor: pointer;
+  display: grid; place-items: center; color: var(--text-secondary, #b7bbc5); background: rgba(20, 21, 26, .55); box-shadow: inset 0 0 0 1px var(--border-primary, rgba(255, 255, 255, .1));
+}
+.iq-more svg { width: 16px; height: 16px; fill: currentColor; }
+.iq-more:hover { color: var(--text-primary, #fff); }
+.iq-more:focus-visible { outline: 2px solid var(--accent, #f0a64b); outline-offset: 2px; }
+/* a tile too small for an extra button: none */
+@container (max-width: 90px) { .iq-more { display: none; } }
+
+/* ================================================================ WIDGET SURFACE (common capability — widget-kit.js surface())
+   Only the OUTER surface: the root's own background / shadow / border / backdrop. Content (controls, dials, tiles, images) is untouched.
+   A layered root's surface is redrawn by .iq-wsurf__layer (behind its content) at --iq-bg-a; its own paint is removed. */
+.iq-wsurf { transition: translate var(--iq-hover-ms, 180ms) var(--ease, ease); }
+.iq-wsurf[data-iq-bg-read], .iq-wsurf[data-iq-bg-read] > .iq-wsurf__layer { transition: none !important; }     /* (the theme surface is read as it is) */
+.iq-wsurf.iq-wsurf--layered:not([data-iq-bg-read]) { background: transparent !important; box-shadow: none !important; border-color: transparent !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important; isolation: isolate; }
+.iq-wsurf.iq-wsurf--layered.iq-wsurf--shadow:not([data-iq-bg-read]) { box-shadow: var(--iq-theme-shadow) !important; }
+.iq-wsurf.iq-wsurf--own-shadow:not([data-iq-bg-read]) { box-shadow: var(--iq-own-shadow) !important; }   /* the card's own shadow / glow (Appearance) */
+.iq-wsurf__layer { box-sizing: border-box; }
+/* Text colour (Appearance): the content's text tokens on a light or a dark card surface */
+.iq-wsurf[data-iq-text="light"] { --text-primary: #ffffff; --text-heading: #ffffff; --text-secondary: rgba(255, 255, 255, .84); --text-muted: rgba(255, 255, 255, .7); color: #ffffff; }
+.iq-wsurf[data-iq-text="dark"] { --text-primary: #1a1206; --text-heading: #1a1206; --text-secondary: rgba(26, 18, 6, .78); --text-muted: rgba(26, 18, 6, .62); color: #1a1206; }
+.iq-wsurf__layer { position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit; opacity: var(--iq-bg-a, 1);
+  transition: opacity var(--iq-hover-ms, 180ms) var(--ease, ease); }
+.iq-wsurf__layer::after { content: ""; position: absolute; inset: 0; border-radius: inherit; opacity: 0; transition: opacity var(--iq-hover-ms, 180ms) var(--ease, ease);
+  background: rgba(255, 255, 255, .045); }
+.iq-wsurf--tint .iq-wsurf__layer::after { background: color-mix(in srgb, var(--iq-hover-c) 20%, transparent); }
+/* HOVER — decorative feedback only, on a real hover-capable pointer (never a sticky touch hover) */
+@media (hover: hover) and (pointer: fine) {
+  .iq-wsurf:is([data-iq-hover="surface"], [data-iq-hover="surface-lift"]):hover > .iq-wsurf__layer { opacity: max(var(--iq-bg-a, 1), var(--iq-hover-a, .3)); }
+  .iq-wsurf:is([data-iq-hover="surface"], [data-iq-hover="surface-lift"]):hover > .iq-wsurf__layer::after { opacity: 1; }
+  .iq-wsurf[data-iq-hover="glow"]:not([data-iq-bg-read]):hover { box-shadow: var(--iq-theme-shadow, 0 0 0 0 transparent),
+      0 0 calc(6px + 20px * var(--iq-glow, .4)) calc(1px + 3px * var(--iq-glow, .4)) color-mix(in srgb, var(--iq-hover-c, var(--accent, #ff7a1a)) calc(var(--iq-glow, .4) * 45%), transparent) !important; }
+  .iq-wsurf:is([data-iq-hover="lift"], [data-iq-hover="surface-lift"]):hover { translate: 0 calc(-1 * var(--iq-lift, 4px)); }
+  .iq-wsurf[data-iq-hover="surface-lift"]:not([data-iq-bg-read]):hover { box-shadow: 0 calc(var(--iq-lift, 4px) * 2.5) calc(var(--iq-lift, 4px) * 5 + 6px) calc(var(--iq-lift, 4px) * -1.5) rgba(0, 0, 0, .55) !important; }
+  .iq-wsurf[data-iq-hover="lift"]:not(.iq-wsurf--layered):hover { box-shadow: var(--iq-theme-shadow, 0 0 0 0 transparent), 0 calc(var(--iq-lift, 4px) * 2.5) calc(var(--iq-lift, 4px) * 5 + 6px) calc(var(--iq-lift, 4px) * -1.5) rgba(0, 0, 0, .55); }
+  /* while editing the dashboard, a widget never lifts under the pointer (dragging / resizing stay exact) */
+  .ed--editing .ed-canvas .iq-wsurf:hover { translate: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .iq-wsurf, .iq-wsurf__layer, .iq-wsurf__layer::after { transition: none; }
+  .iq-wsurf:hover { translate: none !important; }
+}

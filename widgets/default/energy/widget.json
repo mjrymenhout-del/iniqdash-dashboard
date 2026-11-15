@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "energy",
+  "name": "Energy Flow",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "energy.js",
+  "style": "energy.css",
+  "assets": "assets/",
+  "api": "MaisonEnergy"
+}

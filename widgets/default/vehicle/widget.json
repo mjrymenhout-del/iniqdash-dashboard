@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "vehicle",
+  "name": "Vehicle",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "vehicle.js",
+  "style": "vehicle.css",
+  "assets": "assets/",
+  "api": "MaisonVehicle"
+}

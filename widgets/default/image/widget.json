@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "image",
+  "name": "Image",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "image.js",
+  "style": "image.css",
+  "assets": "assets/",
+  "api": "MaisonImage"
+}

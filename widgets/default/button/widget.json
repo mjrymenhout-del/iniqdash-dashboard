@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "button",
+  "name": "Button",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "button.js",
+  "style": "button.css",
+  "assets": "assets/",
+  "api": "MaisonButton"
+}

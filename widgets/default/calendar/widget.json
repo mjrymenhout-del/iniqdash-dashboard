@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "calendar",
+  "name": "Calendar",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "calendar.js",
+  "style": "calendar.css",
+  "assets": "assets/",
+  "api": "MaisonCalendar"
+}

@@ -1,0 +1,53 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* Date & Time Widget V1 — widget-specific CSS only (tokens from assets/css/tokens.css). Namespace: iq-clock. */
+.iq-clock {
+  position: relative;
+  container: iq-clock / size;
+  min-width: 0;
+  min-height: 40px;
+  overflow: hidden;
+  border-radius: var(--radius-device);
+  color: var(--text-primary);
+  font-family: var(--font);
+  background: linear-gradient(165deg, var(--surface-primary-top), var(--surface-primary) 55%, var(--surface-secondary));
+  box-shadow: var(--shadow-primary), inset 0 0 0 1px var(--border-subtle);
+}
+.iq-clock [hidden] { display: none !important; }
+.iq-clock__in { height: 100%; box-sizing: border-box; padding: 8px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-width: 0; }
+.iq-clock__label { margin: 0; max-width: 100%; font-size: clamp(10px, min(4.2cqh, 4cqw), 15px); font-weight: var(--iq-fw-subtitle); letter-spacing: .04em; text-transform: uppercase; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* digital: the size comes from BOTH sides of the box — the height, and the width divided by the number of characters */
+.iq-clock__digital { display: flex; align-items: baseline; justify-content: center; gap: .18em; max-width: 100%; line-height: 1;
+  font-size: clamp(14px, min(calc(100cqh * .5), calc(100cqw * 1.5 / var(--iq-clock-chars, 5))), 220px); }
+.iq-clock__time { font-weight: var(--iq-fw-display); letter-spacing: -.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.iq-clock__ampm { font-size: .34em; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; }
+.iq-clock__ampm:empty { display: none; }
+.iq-clock__date { max-width: 100%; display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.iq-clock__line { font-size: clamp(11px, min(8cqh, 5cqw), 22px); color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.iq-clock__face, .iq-clock__wd, .iq-clock__day, .iq-clock__my { display: none; }
+/* analogue: a square face as large as the box allows, the date under it only when there is room */
+.iq-clock[data-variant="analogue"] .iq-clock__digital { display: none; }
+.iq-clock[data-variant="analogue"] .iq-clock__face { display: block; width: min(100%, calc(100cqh - var(--iq-clock-reserve, 0px))); aspect-ratio: 1; min-height: 0; flex: 0 1 auto; }
+.iq-clock[data-variant="analogue"][data-has-date="true"] { --iq-clock-reserve: clamp(24px, 14cqh, 40px); }
+.iq-clock[data-variant="analogue"][data-has-label="true"] .iq-clock__face { width: min(100%, calc(100cqh - var(--iq-clock-reserve, 0px) - 18px)); }
+.iq-clock__svg { display: block; width: 100%; height: 100%; }
+.iq-clock__dial { fill: var(--control-well); stroke: var(--border-subtle); stroke-width: .6; }
+.iq-clock__tick { stroke: var(--text-muted); stroke-width: .7; stroke-linecap: round; }
+.iq-clock__tick--major { stroke: var(--text-secondary); stroke-width: 1.4; }
+.iq-clock__num { fill: var(--text-secondary); font: var(--iq-fw-display) 7px var(--font); }
+.iq-clock__hand { stroke-linecap: round; stroke: var(--text-primary); }
+.iq-clock__hand--h { stroke-width: 3.4; }
+.iq-clock__hand--m { stroke-width: 2.2; }
+.iq-clock__hand--s { stroke: var(--accent); stroke-width: 1; }
+.iq-clock__pin { fill: var(--accent); }
+/* date: a big day number */
+.iq-clock[data-variant="date"] .iq-clock__digital, .iq-clock[data-variant="date"] .iq-clock__line { display: none; }
+.iq-clock[data-variant="date"] .iq-clock__wd { display: block; font-size: clamp(11px, min(9cqh, 7cqw), 26px); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.iq-clock[data-variant="date"] .iq-clock__day { display: block; font-size: clamp(24px, min(52cqh, 40cqw), 240px); line-height: 1; font-weight: 600; font-variant-numeric: tabular-nums; }
+.iq-clock[data-variant="date"] .iq-clock__my { display: block; font-size: clamp(11px, min(9cqh, 7cqw), 26px); color: var(--text-secondary); white-space: nowrap; }
+/* small boxes: the label and the date give way before the time does */
+@container iq-clock (max-height: 90px) { .iq-clock__line { display: none; } .iq-clock__label { display: none; } .iq-clock[data-variant="analogue"] { --iq-clock-reserve: 0px; } .iq-clock[data-variant="date"] .iq-clock__my, .iq-clock[data-variant="date"] .iq-clock__wd { display: none; } }
+@container iq-clock (max-height: 130px) { .iq-clock[data-variant="digital"] .iq-clock__line { display: none; } .iq-clock[data-variant="analogue"] .iq-clock__line { display: none; } }
+@container iq-clock (max-width: 120px) { .iq-clock__line, .iq-clock__label { display: none; } }

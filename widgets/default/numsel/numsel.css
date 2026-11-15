@@ -1,0 +1,279 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Number & Select Widget V1 — widget-specific CSS only. Surfaces, colours, radii, shadows and type come from the
+   shared tokens (assets/css/tokens.css); the slider, chips, flyout trigger and Flyout are the shared visual
+   primitives (components/widget-visuals), dressed here.
+
+   Grid areas inside .ns__in: id (name / subtitle) · val (value + unit) · ctl (slider | − + | chips | ▾) · range
+   (min / max) · msg (status: waiting / refused / a truthful note) · info (Information lines).
+   The arrangement (data-fit-arr) comes from the widget's OWN box (numsel.js → arrange()), per variant:
+     slider   row · small · std · large          stepper  small · std · large
+     compact  row · std                          options  chips · chips-l · menu · row
+   ========================================================================== */
+
+.ns {
+  position: relative;
+  container: ns / size;
+  min-width: 0;
+  min-height: 72px;
+  overflow: hidden;
+  border-radius: var(--radius-device);
+  color: var(--text-primary);
+  font-family: var(--font);
+  background: linear-gradient(165deg, var(--surface-primary-top), var(--surface-primary) 55%, var(--surface-secondary));
+  box-shadow: var(--shadow-primary), inset 0 0 0 1px var(--border-subtle);
+}
+.ns__in {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto auto auto;
+  grid-template-areas: "id id" "val val" ". ." "ctl ctl" "range range" "msg msg" "info info";
+  row-gap: 4px;
+  align-items: center;
+}
+
+/* ---- identity ---- */
+.ns__id { grid-area: id; min-width: 0; align-self: start; }
+.ns__name { margin: 0; font-size: 14px; font-weight: var(--iq-fw-title); line-height: 1.22; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
+.ns[data-has-sub="true"] .ns__name { -webkit-line-clamp: 1; }
+.ns__sub { margin: 1px 0 0; font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ns__sub[hidden] { display: none; }
+
+/* ---- value ---- */
+.ns__val {
+  grid-area: val;
+  margin: 0;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  font-variant-numeric: tabular-nums;
+  border-radius: 8px;
+}
+.ns__num { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-weight: var(--iq-fw-display); letter-spacing: -.02em; line-height: 1.05; font-size: clamp(22px, 17cqh, 40px); }
+.ns__unit { flex: none; font-size: .5em; font-size: clamp(12px, 7cqh, 18px); font-weight: var(--iq-fw-subtitle); color: var(--text-secondary); }
+.ns__unit[hidden] { display: none; }
+.ns[data-value="none"] .ns__num { font-size: clamp(15px, 9cqh, 20px); font-weight: var(--iq-fw-display); color: var(--text-muted); letter-spacing: 0; }
+/* waiting for Home Assistant: the value shown is the one asked for — marked, never presented as confirmed */
+.ns[data-pending-state] .ns__num { color: var(--accent); }
+.ns__val:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+
+/* ---- controls (shared primitives) ---- */
+.ns__ctl { grid-area: ctl; min-width: 0; display: flex; align-items: center; gap: 8px; }
+.ns__slider.iqv-ctl--slider { flex: 1 1 auto; min-width: 0; height: 44px; padding: 0 12px; align-items: center; border-radius: 14px; }
+.ns__slider .ns__fill { height: 10px; border-radius: 5px; }
+.ns__slider .ns__sv { display: none; }                         /* the value is shown large above: not twice */
+/* a thumb on the shared fill, at the value */
+.ns__slider::after {
+  content: ""; position: absolute; top: 50%; left: calc(12px + (100% - 24px) * var(--ns-f, 0)); width: 22px; height: 22px; margin: -11px 0 0 -11px;
+  border-radius: 50%; background: var(--text-primary); box-shadow: 0 2px 6px rgba(0, 0, 0, .5), 0 0 0 3px var(--accent); pointer-events: none;
+}
+.ns__slider[aria-disabled="true"]::after { background: var(--text-muted); box-shadow: none; }
+.ns__slider:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+
+.ns__step {
+  flex: none;
+  width: 48px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--text-primary);
+  background: var(--control-well);
+  box-shadow: var(--control-well-shadow);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.ns__step svg { width: 18px; height: 18px; }
+.ns__step:active:not(:disabled) { background: var(--surface-tertiary); }
+.ns__step:disabled { cursor: not-allowed; opacity: var(--disabled-opacity); }
+.ns__step:focus-visible, .ns__pick:focus-visible, .ns__chip:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+
+/* select: chips (the shared select control) — the selected one is marked by a tick and weight, not only by colour */
+.ns__strip { display: contents; }
+.ns__chips.iqv-ctl--select { flex: 1 1 auto; min-width: 0; flex-wrap: wrap; gap: 6px; }
+.ns__chip { min-height: 44px; max-width: 220px; padding: 0 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; line-height: 44px; }
+.ns__chip[aria-checked="true"] { font-weight: var(--iq-fw-control); color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent-line); }
+.ns__chip[aria-checked="true"]::before { content: "✓ "; }
+.ns__strip[data-mode="chips"] .ns__pick, .ns__strip[data-mode="flyout"] .ns__chip { display: none; }
+/* the flyout trigger (options variant when the chips do not fit · the compact variant) */
+.ns__pick {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 12px 0 14px;
+  border: 0;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  text-align: left;
+  font: var(--iq-fw-control) 14px var(--font);
+  color: var(--text-primary);
+  background: var(--control-well);
+  box-shadow: var(--control-well-shadow);
+}
+.ns__pick-k { display: none; }                                  /* the name is the widget's own heading */
+.ns__pick-v { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ns__pick .iqv-select__i, .ns__pick-i { flex: none; display: grid; width: 18px; height: 18px; color: var(--text-secondary); }
+.ns__pick .iqv-select__i svg, .ns__pick-i svg { width: 100%; height: 100%; }
+.ns__pick[aria-expanded="true"] { box-shadow: var(--control-well-shadow), inset 0 0 0 1px var(--accent-line); }
+.ns__pick:disabled { cursor: not-allowed; opacity: var(--disabled-opacity); }
+
+/* ---- range, status, information ---- */
+.ns__range { grid-area: range; margin: 0; display: none; justify-content: space-between; gap: 8px; font-size: 11.5px; color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ns__range span { overflow: hidden; text-overflow: ellipsis; }
+.ns__msg { grid-area: msg; margin: 0; font-size: 11.5px; line-height: 1.3; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ns[data-msg="pending"] .ns__msg { color: var(--accent); }
+.ns[data-msg="alert"] .ns__msg { color: var(--warning); }
+.ns__msg[hidden], .ns__info[hidden] { display: none; }
+.ns__info { grid-area: info; margin: 0; font-size: 11.5px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.ns[data-state="unavailable"] .ns__name, .ns[data-state="unknown"] .ns__name { color: var(--text-muted); }
+
+/* ================================================================ SLIDER */
+.ns[data-fit-arr="large"] .ns__range { display: flex; }
+.ns[data-variant="slider"][data-fit-arr="large"] .ns__num { font-size: clamp(30px, 19cqh, 60px); }
+.ns[data-variant="slider"][data-fit-arr="large"] .ns__in { padding: 18px; row-gap: 6px; }
+.ns[data-variant="slider"][data-fit-arr="small"] .ns__in {
+  padding: 10px 12px;
+  grid-template-areas: "id val" ". ." "ctl ctl" "range range" "msg msg" "info info";
+  grid-template-rows: auto minmax(0, 1fr) auto auto auto auto;
+  column-gap: 8px;
+}
+.ns[data-variant="slider"][data-fit-arr="small"] .ns__num { font-size: clamp(18px, 20cqh, 26px); }
+.ns[data-variant="slider"][data-fit-arr="small"] .ns__name { -webkit-line-clamp: 1; font-size: 12.5px; color: var(--text-secondary); }
+.ns[data-variant="slider"][data-fit-arr="small"] .ns__sub { display: none; }
+@container ns (max-width: 149px) { .ns[data-variant="slider"][data-fit-arr="small"] .ns__id { display: none; } .ns[data-variant="slider"][data-fit-arr="small"] .ns__in { grid-template-areas: "val val" ". ." "ctl ctl" "range range" "msg msg" "info info"; } }
+@container ns (max-height: 84px) { .ns[data-variant="slider"] :is(.ns__msg, .ns__info) { display: none; } }
+/* mini (short and narrow): the value over the slider */
+.ns[data-variant="slider"][data-fit-arr="mini"] .ns__in { padding: 10px 12px; grid-template-areas: "val val" ". ." "ctl ctl" "msg msg"; grid-template-rows: auto minmax(0, 1fr) auto auto; }
+.ns[data-variant="slider"][data-fit-arr="mini"] :is(.ns__id, .ns__info) { display: none; }
+.ns[data-variant="slider"][data-fit-arr="mini"] .ns__num { font-size: max(15px, min(26px, calc((100cqw - 60px) / (var(--ns-len) * .6)))); }
+@container ns (max-height: 99px) { .ns[data-variant="slider"][data-fit-arr="mini"] .ns__msg { display: none; } }
+.ns[data-variant="slider"][data-fit-arr="row"] .ns__in {
+  padding: 10px 14px;
+  grid-template-columns: minmax(0, .9fr) auto minmax(120px, 1.6fr);
+  grid-template-areas: "id val ctl" "msg msg msg";
+  grid-template-rows: minmax(0, 1fr) auto;
+  column-gap: 12px;
+}
+.ns[data-variant="slider"][data-fit-arr="row"] .ns__id { align-self: center; }
+.ns[data-variant="slider"][data-fit-arr="row"] .ns__num { font-size: clamp(18px, 30cqh, 28px); }
+.ns[data-variant="slider"][data-fit-arr="row"] .ns__info { display: none; }
+
+/* ================================================================ STEPPER */
+.ns[data-variant="stepper"] .ns__val { justify-content: center; }
+.ns[data-variant="stepper"] .ns__num { font-size: clamp(28px, 24cqh, 64px); }
+.ns[data-variant="stepper"] .ns__ctl { justify-content: space-between; }
+.ns[data-variant="stepper"][data-fit-arr="std"] .ns__step, .ns[data-variant="stepper"][data-fit-arr="large"] .ns__step { width: 56px; height: 48px; }
+.ns[data-variant="stepper"][data-fit-arr="large"] .ns__in { padding: 18px; grid-template-areas: "id id" ". ." "val val" ". ." "ctl ctl" "range range" "msg msg" "info info"; grid-template-rows: auto minmax(0, 1fr) auto minmax(0, 1fr) auto auto auto auto; }
+.ns[data-variant="stepper"][data-fit-arr="std"] .ns__in { grid-template-areas: "id id" ". ." "val val" ". ." "ctl ctl" "range range" "msg msg" "info info"; grid-template-rows: auto minmax(0, 1fr) auto minmax(0, 1fr) auto auto auto auto; }
+/* small: − value + on one line (the − and + leave the control row and sit on either side of the value) */
+.ns[data-variant="stepper"][data-fit-arr="small"] .ns__in {
+  padding: 10px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "id id id" "minus val plus" "msg msg msg" "info info info";
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  column-gap: 6px;
+}
+.ns[data-variant="stepper"][data-fit-arr="small"] .ns__ctl { display: contents; }
+.ns[data-variant="stepper"][data-fit-arr="small"] .ns__step--minus { grid-area: minus; }
+.ns[data-variant="stepper"][data-fit-arr="small"] .ns__step--plus { grid-area: plus; }
+.ns[data-variant="stepper"][data-fit-arr="small"] .ns__step { width: 44px; }
+/* the value takes the room between − and + (its length decides the size: "80 %" stays large, "21,900 W" shrinks) */
+.ns[data-variant="stepper"][data-fit-arr="small"] .ns__num { font-size: max(14px, min(clamp(18px, 26cqh, 34px), calc((100cqw - 124px) / (var(--ns-len) * .6)))); }
+.ns[data-variant="stepper"][data-fit-arr="small"] .ns__unit { font-size: max(11px, min(14px, calc((100cqw - 124px) / (var(--ns-len) * 1.1)))); }
+.ns[data-variant="stepper"][data-fit-arr="small"] .ns__name { -webkit-line-clamp: 1; font-size: 12.5px; color: var(--text-secondary); text-align: center; }
+.ns[data-variant="stepper"][data-fit-arr="small"] .ns__sub { display: none; }
+@container ns (max-height: 99px) { .ns[data-variant="stepper"][data-fit-arr="small"] :is(.ns__id, .ns__msg, .ns__info) { display: none; } }
+@container ns (max-width: 169px) { .ns[data-variant="stepper"][data-fit-arr="small"] .ns__step { width: 40px; } .ns[data-variant="stepper"][data-fit-arr="small"] .ns__in { padding: 8px; column-gap: 4px; } }
+.ns[data-variant="stepper"] .ns__msg, .ns[data-variant="stepper"] .ns__info { text-align: center; }
+/* nothing to step (unavailable / unknown): the words take the whole line, the disabled − + give way */
+.ns[data-variant="stepper"][data-fit-arr="small"]:is([data-state="unavailable"], [data-state="unknown"]) .ns__step { display: none; }
+.ns[data-variant="stepper"][data-fit-arr="small"]:is([data-state="unavailable"], [data-state="unknown"]) .ns__val { grid-column: 1 / -1; }
+.ns[data-variant="stepper"]:is([data-state="unavailable"], [data-state="unknown"]) .ns__num { font-size: clamp(15px, 12cqh, 22px); }
+
+/* ================================================================ COMPACT (number: name value / − +; select: name / option ▾) */
+.ns[data-variant="compact"] .ns__in {
+  padding: 12px 14px;
+  grid-template-areas: "id val" ". ." "ctl ctl" "msg msg" "info info";
+  grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+  column-gap: 10px;
+  row-gap: 4px;
+}
+.ns[data-variant="compact"] .ns__id { align-self: center; }
+.ns[data-variant="compact"] .ns__name { font-size: 13px; }
+.ns[data-variant="compact"] .ns__num { font-size: max(13px, min(clamp(17px, 15cqh, 24px), calc(45cqw / (var(--ns-len) * .6)))); }
+.ns[data-kind="number"][data-variant="compact"] .ns__ctl { justify-content: flex-end; }
+.ns[data-kind="number"][data-variant="compact"] .ns__step { width: 52px; height: 44px; }
+.ns[data-kind="select"][data-variant="compact"] .ns__val { display: none; }
+.ns[data-kind="select"][data-variant="compact"] .ns__in { grid-template-areas: "id id" ". ." "ctl ctl" "msg msg" "info info"; }
+.ns[data-variant="compact"][data-fit-arr="row"] .ns__in { padding: 8px 12px; grid-template-columns: minmax(0, 1fr) auto auto; grid-template-areas: "id val ctl" "msg msg msg"; grid-template-rows: minmax(0, 1fr) auto; }
+.ns[data-kind="select"][data-variant="compact"][data-fit-arr="row"] .ns__in { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); grid-template-areas: "id ctl" "msg msg"; }
+.ns[data-variant="compact"][data-fit-arr="row"] .ns__name { -webkit-line-clamp: 1; }
+.ns[data-variant="compact"][data-fit-arr="row"] :is(.ns__sub, .ns__info) { display: none; }
+.ns[data-variant="compact"][data-fit-arr="row"] .ns__step { width: 44px; }
+/* stack (narrow): the name on its own line, the value beside − + */
+.ns[data-kind="number"][data-variant="compact"][data-fit-arr="stack"] .ns__in { padding: 10px; column-gap: 6px; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "id id" ". ." "val ctl" "msg msg" "info info"; grid-template-rows: auto minmax(0, 1fr) auto auto auto; }
+.ns[data-kind="number"][data-variant="compact"][data-fit-arr="stack"] .ns__ctl { gap: 4px; }
+.ns[data-kind="number"][data-variant="compact"][data-fit-arr="stack"] .ns__step { width: 42px; }
+.ns[data-kind="number"][data-variant="compact"][data-fit-arr="stack"] .ns__num { font-size: max(13px, min(22px, calc((100cqw - 116px) / (var(--ns-len) * .6)))); }
+.ns[data-kind="number"][data-variant="compact"][data-fit-arr="stack"] .ns__name { -webkit-line-clamp: 1; }
+/* stack2: name / value / − + (the value never shares its line with the buttons, so it is never cut) */
+.ns[data-kind="number"][data-variant="compact"][data-fit-arr="stack2"] .ns__in { padding: 10px; grid-template-areas: "id id" "val val" ". ." "ctl ctl" "msg msg" "info info"; grid-template-rows: auto auto minmax(0, 1fr) auto auto auto; }
+.ns[data-kind="number"][data-variant="compact"][data-fit-arr="stack2"] .ns__ctl { justify-content: space-between; }
+.ns[data-kind="number"][data-variant="compact"][data-fit-arr="stack2"] .ns__num { font-size: max(14px, min(24px, calc((100cqw - 40px) / (var(--ns-len) * .6)))); }
+.ns[data-kind="number"][data-variant="compact"][data-fit-arr="stack2"] .ns__name { -webkit-line-clamp: 1; }
+@container ns (max-height: 119px) { .ns[data-kind="number"][data-variant="compact"][data-fit-arr="stack2"] :is(.ns__sub, .ns__msg, .ns__info) { display: none; } .ns[data-kind="number"][data-variant="compact"][data-fit-arr="stack2"] .ns__in { row-gap: 2px; } }
+.ns[data-kind="select"][data-variant="compact"][data-fit-arr="stack"] .ns__in { grid-template-areas: "id id" ". ." "ctl ctl" "msg msg" "info info"; }
+@container ns (max-width: 159px) { .ns[data-variant="compact"] .ns__in { padding: 10px; } .ns[data-kind="number"][data-variant="compact"] .ns__ctl { justify-content: space-between; } }
+@container ns (max-height: 99px) { .ns[data-variant="compact"] :is(.ns__sub, .ns__info) { display: none; } }
+
+/* ================================================================ OPTIONS (select) */
+/* the chips or the trigger show the current option: the separate value only when there is no usable option to mark */
+.ns[data-kind="select"][data-variant="options"] .ns__val { display: none; }
+.ns[data-kind="select"][data-variant="options"][data-value="none"] .ns__val,
+.ns[data-kind="select"][data-variant="options"][data-msg="note"] .ns__val { display: flex; }
+.ns[data-kind="select"][data-variant="options"] .ns__num { font-size: clamp(16px, 11cqh, 22px); }
+.ns[data-variant="options"] .ns__in { grid-template-areas: "id id" "val val" ". ." "ctl ctl" "msg msg" "info info"; grid-template-rows: auto auto minmax(0, 1fr) auto auto auto; }
+.ns[data-variant="options"][data-fit-arr="chips-l"] .ns__in { padding: 18px; }
+.ns[data-variant="options"][data-fit-arr="row"] .ns__in { padding: 8px 12px; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); grid-template-areas: "id ctl" "msg msg"; grid-template-rows: minmax(0, 1fr) auto; column-gap: 10px; }
+.ns[data-variant="options"][data-fit-arr="row"] :is(.ns__sub, .ns__info, .ns__val) { display: none; }
+/* short and narrow (select): the heading on one line over the trigger, nothing else */
+.ns[data-kind="select"][data-fit-arr="tight"] .ns__in { padding: 10px; row-gap: 4px; grid-template-areas: "id id" ". ." "ctl ctl" "msg msg"; grid-template-rows: auto minmax(0, 1fr) auto auto; }
+.ns[data-kind="select"]:is([data-fit-arr="tight"], [data-fit-arr="row"]) :is(.ns__sub, .ns__info) { display: none; }
+.ns[data-kind="select"][data-fit-arr]:is([data-fit-arr="tight"], [data-fit-arr="row"]) .ns__val { display: none; }   /* the trigger says it */
+.ns[data-kind="select"][data-fit-arr="tight"] .ns__name { -webkit-line-clamp: 1; font-size: 13px; }
+@container ns (max-height: 99px) { .ns[data-kind="select"][data-fit-arr="tight"] .ns__msg { display: none; } }
+.ns[data-kind="select"][data-fit-arr="row"] .ns__name { -webkit-line-clamp: 2; }
+
+/* the live server's "Demo" tag (top right of an unlinked widget): the top-right content leaves it room */
+.iqdemo > .ns[data-variant="slider"]:is([data-fit-arr="small"], [data-fit-arr="mini"]) .ns__val, .iqdemo > .ns[data-variant="compact"]:not([data-fit-arr="stack"]) .ns__val { margin-right: 40px; }
+.iqdemo > .ns:not([data-fit-arr="row"]) .ns__name { padding-right: 40px; }
+.iqdemo > .ns[data-variant="stepper"][data-fit-arr="small"] .ns__name { text-align: left; }
+@container ns (max-height: 120px) { .ns[data-variant="options"] .ns__info { display: none; } }
+
+/* ================================================================ pass 2 */
+/* a standard slider that is short: name and value share the top line (as the small arrangement does) instead of stacking into the control */
+@container ns (max-height: 159px) {
+  .ns[data-variant="slider"][data-fit-arr="std"] .ns__in { padding: 10px 14px; grid-template-areas: "id val" ". ." "ctl ctl" "msg msg" "info info"; grid-template-rows: auto minmax(0, 1fr) auto auto auto; column-gap: 8px; }
+  .ns[data-variant="slider"][data-fit-arr="std"] .ns__num { font-size: clamp(20px, 18cqh, 28px); }
+  .ns[data-variant="slider"][data-fit-arr="std"] :is(.ns__sub, .ns__range) { display: none; }
+}
+/* the compact row keeps both stepper keys inside the card: the keys shrink before the name does */
+@container ns (max-width: 299px) { .ns[data-kind="number"][data-variant="compact"][data-fit-arr="row"] .ns__step { width: 40px; height: 40px; } .ns[data-kind="number"][data-variant="compact"][data-fit-arr="row"] .ns__in { column-gap: 8px; padding: 8px 10px; } }
+@container ns (max-width: 249px) { .ns[data-kind="number"][data-variant="compact"][data-fit-arr="row"] .ns__in { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "val ctl" "msg msg"; } .ns[data-kind="number"][data-variant="compact"][data-fit-arr="row"] .ns__id { display: none; } }

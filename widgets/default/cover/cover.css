@@ -1,0 +1,313 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Cover Widget V1 — widget-specific CSS only (surfaces/colours/radii/type from the shared tokens).
+
+   Identity: a stylised opening (a recessed frame with daylight behind it) and a dark cover surface
+   that comes down from the top — the visible daylight is how far it is open (--vw-open, 0…1). The
+   surface is plain with faint ribs, so it reads as blind, shutter, curtain or door alike.
+   Opening / closing show a direction mark (animated unless reduced motion is requested).
+
+   Arrangements (container "vw" = the widget's own box):
+     compact   < 260px   window + name/state on top, Open · Stop · Close underneath (icons)
+     standard  260–479   tall window on the left, name/state, labelled buttons at the bottom
+     wide     >= 480px   window | name/state | big percentage | labelled buttons; fits h2 —
+                         only while the box is a strip (< 240px tall, or ≥ 2 : 1)
+     tall     ≥ 300px tall (≥ 240 when narrow), not a strip: name/state on top, the window centred and growing with
+                         the box (a longer drag path for the position), the buttons underneath
+   ========================================================================== */
+
+.vw {
+  --vw-open: 0;
+  position: relative;
+  container: vw / size;
+  min-width: 0;
+  min-height: 92px;
+  overflow: hidden;
+  border-radius: var(--radius-device);
+  color: var(--text-primary);
+  font-family: var(--font);
+  background: linear-gradient(165deg, var(--surface-primary-top), var(--surface-primary) 55%, var(--surface-secondary));
+  box-shadow: var(--shadow-primary), inset 0 0 0 1px var(--border-subtle);
+}
+.vw__in {
+  height: 100%;
+  padding: 11px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: "win id" ". ." "ctrls ctrls";
+  column-gap: 10px;
+  row-gap: 6px;
+}
+
+/* ---- the opening ---- */
+.vw__win {
+  grid-area: win;
+  position: relative;
+  width: 50px;
+  height: 62px;
+  border-radius: 9px;
+  overflow: hidden;
+  background: var(--page-bg);
+  box-shadow: var(--shadow-icon), inset 0 0 0 1px var(--border-subtle), 0 1px 0 var(--edge-highlight);
+}
+.vw[data-positionable] .vw__win { cursor: ns-resize; }
+.vw__win:focus-visible { outline: var(--focus-ring); outline-offset: 3px; }
+.vw__glass {                                   /* daylight behind the opening */
+  position: absolute;
+  inset: 3px;
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, transparent calc(50% - .5px), var(--border-primary) calc(50% - .5px) calc(50% + .5px), transparent calc(50% + .5px)),
+    linear-gradient(180deg, color-mix(in srgb, var(--text-secondary) 78%, var(--accent)), color-mix(in srgb, var(--text-secondary) 45%, var(--surface-tertiary)));
+}
+.vw__panel {                                   /* the cover surface, coming down from the top */
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 3px;
+  height: calc((100% - 6px) * (1 - var(--vw-open)));
+  border-radius: 6px 6px 3px 3px;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 5px, rgba(0, 0, 0, .28) 5px 6px, var(--edge-highlight) 6px 7px),
+    linear-gradient(180deg, var(--surface-tertiary), color-mix(in srgb, var(--surface-tertiary) 60%, var(--page-bg)));
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .45);
+  transition: height .35s ease;
+}
+.vw__handle {                                  /* bottom rail: the touch handle */
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  width: 42%;
+  height: 4px;
+  transform: translateX(-50%);
+  border-radius: 3px;
+  background: var(--surface-primary);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .35);
+  touch-action: none;
+}
+.vw__handle::before { content: ""; position: absolute; inset: -16px -10px; }   /* larger touch area */
+.vw[data-positionable] .vw__panel { min-height: 6px; }
+.vw__motion {
+  position: absolute;
+  right: 5px;
+  bottom: 4px;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--accent);
+  text-shadow: 0 0 6px var(--accent-soft);
+}
+.vw[data-state="opening"] .vw__motion { animation: vw-up 1.1s ease-in-out infinite; }
+.vw[data-state="closing"] .vw__motion { animation: vw-down 1.1s ease-in-out infinite; }
+@keyframes vw-up { 0%, 100% { transform: translateY(2px); opacity: .5; } 50% { transform: translateY(-2px); opacity: 1; } }
+@keyframes vw-down { 0%, 100% { transform: translateY(-2px); opacity: .5; } 50% { transform: translateY(2px); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .vw[data-state] .vw__motion { animation: none; }
+  .vw__panel { transition: none; }
+}
+.vw[data-state="unavailable"] .vw__win, .vw[data-state="unknown"] .vw__win { opacity: var(--unavailable-opacity); filter: grayscale(1); cursor: default; }
+
+/* ---- identity / state ---- */
+.vw__id { grid-area: id; min-width: 0; align-self: center; }
+.vw__name { margin: 0; font-size: 14px; font-weight: var(--iq-fw-title); line-height: 1.22; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: break-word; }
+.vw__sub { display: none; margin: 1px 0 0; font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vw__state { margin: 3px 0 0; font-size: 12px; font-weight: var(--iq-fw-status); color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
+.vw[data-state="opening"] .vw__state, .vw[data-state="closing"] .vw__state { color: var(--accent); }
+.vw[data-state="unavailable"] .vw__state, .vw[data-state="unknown"] .vw__state, .vw[data-state="unavailable"] .vw__name, .vw[data-state="unknown"] .vw__name { color: var(--text-muted); }
+
+/* ---- Open · Stop · Close ---- */
+.vw__ctrls { grid-area: ctrls; display: flex; gap: 4px; }
+.vw__btn {
+  flex: 1 1 0;
+  min-width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  font: var(--iq-fw-control) 12px var(--font);
+  color: var(--text-secondary);
+  background: linear-gradient(180deg, var(--surface-tertiary), var(--surface-primary));
+  box-shadow: 0 2px 5px rgba(0, 0, 0, .4), inset 0 1px 0 var(--edge-highlight), inset 0 0 0 1px var(--border-subtle);
+}
+.vw__btn svg { width: 18px; height: 18px; flex: none; }
+.vw__btn span { display: none; }
+.vw__btn:hover:not(:disabled) { color: var(--text-primary); }
+.vw__btn:active:not(:disabled) { transform: translateY(1px); box-shadow: inset 0 2px 4px rgba(0, 0, 0, .45); }
+.vw__btn:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.vw__btn:disabled { cursor: not-allowed; opacity: var(--disabled-opacity); }
+.vw[data-state="opening"] .vw__btn--open, .vw[data-state="closing"] .vw__btn--close { color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent-line); }
+
+/* ---------------------------------------------------------------- standard: 260–479px */
+@container vw (min-width: 260px) {
+  .vw__in {
+    padding: 14px 16px;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-areas: "win id" "win ." "win ctrls";
+    column-gap: 16px;
+  }
+  .vw__win { width: auto; height: calc(100cqh - 28px); max-height: 150px; aspect-ratio: .8; align-self: center; }
+  .vw__id { align-self: start; }
+  .vw__name { font-size: 15px; }
+  .vw__sub { display: block; }
+  .vw__state { font-size: 13px; }
+  .vw__motion { font-size: 12px; }
+  .vw__btn span { display: inline; }
+}
+@container vw (min-width: 260px) and (max-width: 339px) {
+  .vw__btn span { display: none; }
+  /* the three buttons need the whole width: they get their own row under the window and the name */
+  .vw__in { grid-template-areas: "win id" "win ." "ctrls ctrls"; }
+  .vw__win { height: calc(100cqh - 28px - 40px - 14px); }
+}
+
+/* ---------------------------------------------------------------- wide: ≥ 480px */
+@container vw (min-width: 480px) and ((max-height: 239px) or (min-aspect-ratio: 2 / 1)) {
+  .vw__in {
+    padding: 12px 18px;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-areas: "win id ctrls";
+    align-items: center;
+    column-gap: 18px;
+  }
+  .vw__win { height: calc(100cqh - 24px); max-height: 140px; }
+  .vw__id { align-self: center; }
+  .vw__state { font-size: 18px; font-weight: var(--iq-fw-status); color: var(--text-primary); margin-top: 4px; }
+  .vw__ctrls { gap: 6px; }
+  .vw__btn { flex: 0 0 auto; padding: 0 14px; }
+}
+
+/* ---------------------------------------------------------------- tall: ≥ 300px tall, not a strip
+   The opening is the control (drag the panel): it takes the free middle and grows with both axes. */
+@container vw ((min-height: 300px) or ((max-width: 259px) and (min-height: 240px))) and (max-aspect-ratio: 2 / 1) {
+  .vw__in {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-areas: "id" "win" "ctrls";
+    row-gap: 12px;
+  }
+  .vw__id { align-self: start; }
+  .vw__win {
+    width: auto; max-height: none;
+    height: clamp(62px, min(calc(100cqh - 180px), calc((100cqw - 32px) * 1.25)), 380px);
+    aspect-ratio: .8; align-self: center; justify-self: center;
+  }
+  .vw__motion { font-size: 14px; right: 8px; bottom: 7px; }
+}
+@container vw (min-width: 260px) and (min-height: 300px) and (max-aspect-ratio: 2 / 1) {
+  .vw__state { font-size: clamp(13px, 4.4cqmin, 20px); color: var(--text-primary); }
+  .vw__name { font-size: clamp(15px, 4cqmin, 19px); }
+}
+@container vw (max-width: 259px) and (min-height: 240px) and (max-aspect-ratio: 2 / 1) {
+  .vw__win { height: clamp(62px, min(calc(100cqh - 150px), calc((100cqw - 22px) * 1.25)), 380px); }
+}
+/* a narrow, very tall box: the opening keeps the full width and gets taller (a door / tall window) */
+@container vw (max-width: 259px) and (min-height: 400px) {
+  .vw__win { aspect-ratio: auto; width: 100%; height: clamp(62px, min(calc(100cqh - 150px), calc(100cqw * 2.2)), 420px); }
+}
+
+/* ================================================================ variants: Garage / Gate · Compact · Slider
+   New elements use the iq-cover-* names. The window picture (.vw__in) is the Window variant; the others are their own block,
+   arranged from the widget's OWN box (container "vw"). */
+.vw[data-cover-variant]:not([data-cover-variant="window"]) { min-height: 56px; }
+.iq-cover-alt { position: absolute; inset: 0; display: grid; gap: 8px; padding: 12px 14px; box-sizing: border-box; min-width: 0; }
+.iq-cover-alt__id { min-width: 0; align-self: center; position: relative; z-index: 1; }
+.iq-cover-alt__name { margin: 0; font-size: 14px; font-weight: var(--iq-fw-title); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-cover-alt__state { margin: 2px 0 0; font-size: 12px; font-weight: var(--iq-fw-status); color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-cover-alt[data-state="opening"] .iq-cover-alt__state, .iq-cover-alt[data-state="closing"] .iq-cover-alt__state { color: var(--accent); }
+.iq-cover-alt__ctl { display: flex; gap: 6px; min-width: 0; position: relative; z-index: 3; }
+.iq-cover-btn { flex: 1 1 0; min-width: 34px; height: 36px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0 10px; border: 0; border-radius: 18px; cursor: pointer; font: 600 12.5px var(--font); color: var(--text-primary); background: var(--control-well); box-shadow: var(--control-well-shadow); }
+.iq-cover-btn svg { width: 18px; height: 18px; flex: none; }
+.iq-cover-btn:disabled { cursor: not-allowed; opacity: var(--disabled-opacity, .45); }
+.iq-cover-btn[hidden] { display: none; }
+.iq-cover-btn:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.iq-cover-alt[data-state="opening"] .iq-cover-btn--open, .iq-cover-alt[data-state="closing"] .iq-cover-btn--close { color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent-line, var(--accent)); }
+.iq-cover-alt[data-state="unavailable"], .iq-cover-alt[data-state="unknown"] { opacity: .7; }
+/* garage / gate: the picture, the state, the buttons — stacked, or side by side in a wide box */
+.iq-cover-alt--garage { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto auto; }
+.iq-cover-pic { min-height: 0; display: grid; place-items: center; }
+.iq-cover-pic__frame { position: relative; display: block; height: 100%; max-height: 100%; aspect-ratio: 1.45; max-width: 100%; border-radius: 7px; overflow: hidden;
+  /* the opening: a warm, dim interior seen when the door rolls up, in a frame */
+  background: radial-gradient(120% 90% at 50% 100%, color-mix(in srgb, var(--light-warm) 38%, #15110d), #0e0c0a 70%); box-shadow: inset 0 0 0 3px var(--surface-interactive), inset 0 0 0 4px rgba(0, 0, 0, .45); }
+.iq-cover-pic__leaf { position: absolute; transition: transform .5s ease;
+  background: repeating-linear-gradient(180deg, rgba(255, 255, 255, .09) 0 1.5%, transparent 1.5% 12%, rgba(0, 0, 0, .5) 12% 14%), linear-gradient(180deg, #44454c, #34353b); border-bottom: 3px solid rgba(0, 0, 0, .45); box-shadow: 0 6px 10px -4px rgba(0, 0, 0, .6); }
+@media (prefers-reduced-motion: reduce) { .iq-cover-pic__leaf { transition: none; } }
+/* garage: one panel rolls up (--vw-open = how far open) */
+.iq-cover-pic[data-kind="garage"] .iq-cover-pic__leaf--a, .iq-cover-pic[data-kind="other"] .iq-cover-pic__leaf--a { inset: 0; transform: translateY(calc(-100% * var(--vw-open))); }
+.iq-cover-pic[data-kind="garage"] .iq-cover-pic__leaf--b, .iq-cover-pic[data-kind="other"] .iq-cover-pic__leaf--b, .iq-cover-pic[data-kind="door"] .iq-cover-pic__leaf--b { display: none; }
+/* gate: two leaves swing away from the middle */
+.iq-cover-pic[data-kind="gate"] .iq-cover-pic__leaf { top: 0; bottom: 0; width: 50%; background: repeating-linear-gradient(90deg, var(--surface-tertiary, #34373f) 0 9%, transparent 9% 18%); }
+.iq-cover-pic[data-kind="gate"] .iq-cover-pic__leaf--a { left: 0; transform-origin: left center; transform: scaleX(calc(1 - .85 * var(--vw-open))); }
+.iq-cover-pic[data-kind="gate"] .iq-cover-pic__leaf--b { right: 0; transform-origin: right center; transform: scaleX(calc(1 - .85 * var(--vw-open))); }
+/* door: one leaf */
+.iq-cover-pic[data-kind="door"] .iq-cover-pic__leaf--a { inset: 0; background: var(--surface-tertiary, #34373f); transform-origin: left center; transform: scaleX(calc(1 - .85 * var(--vw-open))); }
+@container vw (min-width: 420px) and (max-aspect-ratio: 3 / 1) { .iq-cover-alt--garage { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); grid-template-rows: 1fr auto; } .iq-cover-pic { grid-row: 1 / 3; } }
+@container vw (max-height: 150px) { .iq-cover-alt--garage { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; } .iq-cover-pic { display: none; } .iq-cover-alt--garage .iq-cover-alt__ctl { grid-column: 1 / -1; } }
+@container vw (max-height: 110px) { .iq-cover-alt--garage { padding: 8px 12px; gap: 4px; } .iq-cover-alt--garage .iq-cover-btn { height: 30px; } .iq-cover-alt--garage .iq-cover-alt__state { display: none; } }
+/* compact: one row */
+.iq-cover-alt--compact { grid-template-columns: minmax(0, 1fr) auto; align-items: center; padding: 8px 12px; }
+.iq-cover-alt--compact .iq-cover-btn { flex: none; width: 34px; height: 34px; padding: 0; }
+.iq-cover-alt--compact .iq-cover-btn span { display: none; }
+.iq-cover-bar { grid-column: 1 / -1; grid-row: 2; height: 4px; border-radius: 2px; background: var(--control-well); overflow: hidden; }
+.iq-cover-bar i { display: block; height: 100%; background: var(--accent); }
+@container vw (max-height: 70px) { .iq-cover-bar { display: none; } }
+@container vw (max-width: 190px) { .iq-cover-alt--compact .iq-cover-btn--stop { display: none; } }
+/* slider: the card is the bar (horizontal: how far OPEN) */
+.iq-cover-alt--slider { grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr auto; overflow: hidden; }
+.iq-cover-fill { position: absolute; inset: 0; background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 22%, transparent), color-mix(in srgb, var(--accent) 42%, transparent)); transition: width .25s ease; pointer-events: none; }
+.iq-cover-range { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; touch-action: pan-y; }
+.iq-cover-range:focus-visible + *, .iq-cover-alt--slider:focus-within { outline: var(--focus-ring); outline-offset: -3px; }
+.iq-cover-alt--slider .iq-cover-alt__ctl { margin-top: auto; }
+@container vw (max-height: 110px) { .iq-cover-alt--slider .iq-cover-alt__ctl { display: none; } .iq-cover-alt--slider { grid-template-rows: 1fr; } }
+.vw__in[hidden] { display: none !important; }
+/* fine-tune 1 — a garage door is wider than tall: the picture fills the card's width instead of floating small */
+.iq-cover-pic[data-kind="garage"] .iq-cover-pic__frame, .iq-cover-pic[data-kind="other"] .iq-cover-pic__frame { aspect-ratio: 1.85; width: min(100%, calc(100cqh * .62 * 1.85)); height: auto; max-height: 100%; }
+
+/* ---------------------------------------------------------------- micro (pass 2): the picture and the position — the three keys step aside, the name stays on one line */
+@container vw (max-width: 159px) and (max-height: 139px) {
+  .vw__ctrls { display: none; }
+  .vw__name { -webkit-line-clamp: 1; font-size: 13px; }
+  .vw__state { font-size: 12px; }
+}
+
+/* ================================================================ pass 2 — the Garage / Gate / Door picture as a small piece of architecture
+   Sectional panels with grooves, a window strip and a handle; a gate on pillars with rails; a panelled door. The opening shows a lit interior with a floor. */
+.iq-cover-pic__frame {
+  border-radius: 9px;
+  background:
+    linear-gradient(180deg, transparent 74%, color-mix(in srgb, var(--light-warm) 16%, transparent) 100%),
+    radial-gradient(120% 95% at 50% 105%, color-mix(in srgb, var(--light-warm) 42%, #17120d), #0d0b09 72%);
+  box-shadow: inset 0 0 0 3px var(--surface-interactive), inset 0 0 0 4px rgba(0, 0, 0, .5), inset 0 6px 14px rgba(0, 0, 0, .55), 0 6px 14px -8px rgba(0, 0, 0, .8);
+}
+.iq-cover-pic[data-kind="garage"] .iq-cover-pic__leaf--a, .iq-cover-pic[data-kind="other"] .iq-cover-pic__leaf--a {
+  background:
+    linear-gradient(180deg, transparent 0 25%, rgba(0, 0, 0, .5) 25% 26.4%, rgba(255, 255, 255, .09) 26.4% 28%, transparent 28% 50%, rgba(0, 0, 0, .5) 50% 51.4%, rgba(255, 255, 255, .09) 51.4% 53%, transparent 53% 75%, rgba(0, 0, 0, .5) 75% 76.4%, rgba(255, 255, 255, .09) 76.4% 78%, transparent 78%),
+    linear-gradient(90deg, rgba(255, 255, 255, .05), transparent 30%, transparent 70%, rgba(0, 0, 0, .18)),
+    linear-gradient(180deg, #4a4c54, #373940);
+  border-bottom: 3px solid rgba(0, 0, 0, .55);
+}
+.iq-cover-pic[data-kind="garage"] .iq-cover-pic__leaf--a::before, .iq-cover-pic[data-kind="other"] .iq-cover-pic__leaf--a::before { content: ""; position: absolute; left: 14%; right: 14%; top: 7%; height: 11%; border-radius: 2px; background: linear-gradient(180deg, color-mix(in srgb, var(--info) 26%, #1a2430), #0f151c); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1); }
+.iq-cover-pic[data-kind="garage"] .iq-cover-pic__leaf--a::after, .iq-cover-pic[data-kind="other"] .iq-cover-pic__leaf--a::after { content: ""; position: absolute; left: 44%; right: 44%; bottom: 8%; height: 3%; min-height: 2px; border-radius: 2px; background: #9aa0aa; }
+.iq-cover-pic[data-kind="gate"] .iq-cover-pic__frame { border-radius: 4px; box-shadow: inset 12px 0 0 var(--surface-interactive), inset -12px 0 0 var(--surface-interactive), inset 0 0 0 1px rgba(0, 0, 0, .5), 0 6px 14px -8px rgba(0, 0, 0, .8); }
+.iq-cover-pic[data-kind="gate"] .iq-cover-pic__leaf {
+  background:
+    linear-gradient(180deg, #5a5d66 0 5%, transparent 5% 90%, #5a5d66 90% 95%, transparent 95%),
+    repeating-linear-gradient(90deg, #4b4d55 0 7%, transparent 7% 16%);
+  box-shadow: none; border-bottom: 0;
+}
+.iq-cover-pic[data-kind="door"] .iq-cover-pic__leaf--a {
+  background:
+    linear-gradient(180deg, transparent 12%, rgba(0, 0, 0, .28) 12% 14%, transparent 14% 44%, rgba(0, 0, 0, .28) 44% 46%, transparent 46% 54%, rgba(0, 0, 0, .28) 54% 56%, transparent 56% 88%, rgba(0, 0, 0, .28) 88% 90%, transparent 90%),
+    linear-gradient(180deg, #4a4c54, #393b42);
+  border-bottom: 0;
+}
+.iq-cover-pic[data-kind="door"] .iq-cover-pic__leaf--a::after { content: ""; position: absolute; right: 9%; top: 52%; width: 7%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #d4d8df, #7b808a); box-shadow: 0 1px 2px rgba(0, 0, 0, .6); }

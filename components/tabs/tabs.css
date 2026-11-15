@@ -1,0 +1,88 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Tabbed Container (components/tabs/tabs.js) — its APPEARANCE comes from the configuration as custom properties (px) and data
+   attributes (tabs.js applyLook): text size, icon size, tab height, horizontal padding, gap · distribution (content · equal · fill) ·
+   style (pill · rounded · minimal) · selected tab (data-sel: outline · soft · filled) · other tabs (data-other: surface · outline · minimal) · badges
+   (accent · subtle) · tab bar top / bottom. Every colour is a theme token (it follows the dashboard theme). Each tab's region is an
+   ordinary nested grid. Nothing here depends on where the container is (page, floating container, popup). Namespace: mtabs.
+   ========================================================================== */
+.mtabs {
+  --mtabs-textSize: 14px; --mtabs-iconSize: 18px; --mtabs-tabHeight: 40px; --mtabs-padX: 18px; --mtabs-tabGap: 8px;
+  position: relative; display: flex; flex-direction: column; gap: var(--mtabs-gap, 14px); height: 100%; min-width: 0; min-height: 0; box-sizing: border-box; color: var(--text-primary); font-family: var(--font);
+}
+.mtabs[data-bar-pos="bottom"] { flex-direction: column-reverse; }
+.mtabs[data-style="panel"] { padding: 14px; border-radius: var(--radius-device, 22px); background: linear-gradient(165deg, var(--surface-primary-top), var(--surface-primary) 60%, var(--surface-secondary)); box-shadow: var(--device-shadow), inset 0 0 0 1px var(--border-subtle); }
+/* the tab bar: one row; when it does not fit it scrolls sideways (touch, trackpad, mouse wheel) — never wraps */
+.mtabs__bar { flex: none; min-width: 0; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; padding: 3px 2px; }
+.mtabs__bar::-webkit-scrollbar { display: none; }
+.mtabs__list { display: flex; gap: var(--mtabs-tabGap); width: max-content; min-width: 100%; box-sizing: border-box; }
+.mtabs[data-align="center"] .mtabs__list { justify-content: center; }
+.mtabs[data-align="end"] .mtabs__list { justify-content: flex-end; }
+/* distribution: content (each tab its own width) · equal (all as wide as the widest) · fill (the tabs share the whole bar) */
+.mtabs[data-distribute="equal"] .mtabs__list { display: inline-grid; grid-auto-flow: column; grid-auto-columns: 1fr; min-width: 0; }
+.mtabs[data-distribute="equal"] .mtabs__bar { display: flex; }
+.mtabs[data-distribute="equal"][data-align="center"] .mtabs__bar { justify-content: safe center; }
+.mtabs[data-distribute="equal"][data-align="end"] .mtabs__bar { justify-content: safe flex-end; }
+.mtabs[data-distribute="fill"] .mtabs__list { width: 100%; min-width: max-content; }
+.mtabs[data-distribute="fill"] .mtabs__tab { flex: 1 1 0; }
+.mtabs[data-distribute="equal"] .mtabs__tab, .mtabs[data-distribute="fill"] .mtabs__tab { justify-content: center; }
+.mtabs__tab {
+  all: unset; box-sizing: border-box; flex: none; display: inline-flex; align-items: center; gap: calc(var(--mtabs-textSize) * .5); height: var(--mtabs-tabHeight); padding: 0 var(--mtabs-padX); cursor: pointer;
+  border-radius: 999px; font-size: var(--mtabs-textSize); font-weight: var(--iq-fw-control, 600); line-height: 1; color: var(--text-secondary); white-space: nowrap;
+  background: var(--surface-tertiary); box-shadow: inset 0 0 0 1px var(--border-subtle);
+  transition: color var(--dur-fast, .15s) ease, background var(--dur-fast, .15s) ease, box-shadow var(--dur-fast, .15s) ease;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+/* style: pill (capsule) · rounded · minimal (no surface — the selection is an underline) */
+.mtabs[data-shape="rounded"] .mtabs__tab { border-radius: calc(var(--mtabs-tabHeight) * .28); }
+.mtabs[data-shape="minimal"] .mtabs__tab { border-radius: 6px; }
+/* other (not selected) tabs: surface · outline · minimal */
+.mtabs[data-other="outline"] .mtabs__tab { background: transparent; box-shadow: inset 0 0 0 1px var(--border-primary); }
+.mtabs[data-other="minimal"] .mtabs__tab, .mtabs[data-shape="minimal"] .mtabs__tab { background: transparent; box-shadow: none; }
+.mtabs__tab:hover { color: var(--text-primary); }
+.mtabs[data-other="surface"]:not([data-shape="minimal"]) .mtabs__tab:hover { box-shadow: inset 0 0 0 1px var(--border-primary); }
+.mtabs__tab:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+/* the selected tab: outline (a tint and an accent ring — the classic look) · soft (a tint) · filled (the accent) */
+.mtabs__tab[aria-selected="true"] { color: var(--accent); }
+.mtabs[data-sel="outline"] .mtabs__tab[aria-selected="true"] { background: color-mix(in srgb, var(--accent) 12%, var(--surface-tertiary)); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 70%, transparent), 0 0 16px -4px color-mix(in srgb, var(--accent) 45%, transparent); }
+.mtabs[data-sel="soft"] .mtabs__tab[aria-selected="true"] { background: color-mix(in srgb, var(--accent) 18%, var(--surface-tertiary)); box-shadow: none; }
+.mtabs[data-sel="filled"] .mtabs__tab[aria-selected="true"] { color: var(--accent-on, #1a1006); background: var(--accent); box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--accent) 70%, transparent); }
+/* minimal style: an accent underline marks the selected tab (whatever the selected treatment) */
+.mtabs[data-shape="minimal"] .mtabs__tab[aria-selected="true"] { background: transparent; box-shadow: inset 0 -2.5px 0 var(--accent); color: var(--accent); }
+.mtabs__ic { display: grid; flex: none; width: var(--mtabs-iconSize); height: var(--mtabs-iconSize); }
+.mtabs__ic svg { width: 100%; height: 100%; }
+/* badges: accent · subtle — sized from the tab text */
+.mtabs__badge { display: inline-grid; place-items: center; min-width: calc(var(--mtabs-textSize) * 1.55); height: calc(var(--mtabs-textSize) * 1.55); padding: 0 calc(var(--mtabs-textSize) * .42); box-sizing: border-box; border-radius: 999px; font-size: calc(var(--mtabs-textSize) * .84); font-weight: 700; font-variant-numeric: tabular-nums; color: var(--accent-on, #1a1006); background: var(--accent); }
+.mtabs[data-badge-style="subtle"] .mtabs__badge { color: var(--text-primary); background: var(--surface-interactive, var(--surface-secondary)); box-shadow: inset 0 0 0 1px var(--border-subtle); }
+.mtabs[data-sel="filled"] .mtabs__tab[aria-selected="true"] .mtabs__badge { color: var(--accent); background: var(--accent-on, #1a1006); }
+.mtabs__panes { position: relative; flex: 1 1 auto; min-height: 0; min-width: 0; }
+.mtabs__pane { height: 100%; min-height: 0; overflow-y: auto; overflow-x: hidden; }
+.mtabs__pane[hidden] { display: none; }
+.mtabs__empty { display: grid; place-items: center; min-height: 96px; border-radius: 16px; font-size: 13px; color: var(--text-muted); outline: 1px dashed var(--border-primary); }
+@media (prefers-reduced-motion: reduce) { .mtabs__tab { transition: none; } }
+
+/* ---- NAVIGATION (tabs.js nav): swipe · arrows · dots · transitions — all optional; absent, the tabs are exactly as above ---- */
+.mtabs[data-nav="swipe"] .mtabs__panes, .mtabs[data-nav="both"] .mtabs__panes { overflow: hidden; }
+/* during a transition the leaving tab is laid over the entering one (same box) */
+.mtabs__pane.is-leaving { position: absolute; inset: 0; pointer-events: none; }
+/* the tab row hidden (gesture / dots / arrows only): still there for screen readers, and shown again while it has keyboard focus */
+.mtabs[data-tabs-hidden] > .mtabs__bar:not(:focus-within) { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.mtabs__arrow {
+  all: unset; box-sizing: border-box; position: absolute; z-index: 3; top: 50%; translate: 0 -50%; width: 36px; height: 36px; display: grid; place-items: center; cursor: pointer;
+  border-radius: 999px; color: var(--text-primary); background: color-mix(in srgb, var(--surface-primary) 82%, transparent); box-shadow: inset 0 0 0 1px var(--border-primary), 0 6px 16px -8px rgba(0, 0, 0, .7);
+  -webkit-tap-highlight-color: transparent;
+}
+.mtabs__arrow svg { width: 18px; height: 18px; }
+.mtabs__arrow--prev { left: 6px; } .mtabs__arrow--next { right: 6px; }
+.mtabs[data-axis="y"] .mtabs__arrow { top: auto; left: 50%; translate: -50% 0; rotate: 90deg; }
+.mtabs[data-axis="y"] .mtabs__arrow--prev { top: 6px; } .mtabs[data-axis="y"] .mtabs__arrow--next { bottom: 6px; }
+.mtabs__arrow:disabled { opacity: .35; cursor: default; }
+.mtabs__arrow:focus-visible, .mtabs__dot:focus-visible, .mtabs__panes:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.mtabs__dots { flex: none; align-self: center; display: flex; justify-content: center; gap: 2px; }
+.mtabs__dot { all: unset; box-sizing: border-box; width: 24px; height: 24px; display: grid; place-items: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.mtabs__dot::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: var(--text-muted); opacity: .55; transition: width var(--dur-fast, .15s) ease, opacity var(--dur-fast, .15s) ease; }
+.mtabs__dot[aria-current="true"]::before { width: 18px; opacity: 1; background: var(--accent); }
+@media (prefers-reduced-motion: reduce) { .mtabs__dot::before { transition: none; } }

@@ -1,0 +1,9 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* IniqArtwork — the shared image component (components/artwork/artwork.js): the picture fills its box */
+.iqa { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: var(--iqa-r, 12px); opacity: var(--iqa-o, 1); }
+.iqa__img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.iqa[data-fit="contain"] .iqa__img { object-fit: contain; }
+.iqa[data-empty] { background: color-mix(in srgb, var(--surface-tertiary, #26272c) 70%, transparent); box-shadow: inset 0 0 0 1px var(--border-subtle, rgba(255, 255, 255, .08)); }

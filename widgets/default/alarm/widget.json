@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "alarm",
+  "name": "Alarm",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "alarm.js",
+  "style": "alarm.css",
+  "assets": "assets/",
+  "api": "MaisonAlarm"
+}

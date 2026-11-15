@@ -1,0 +1,37 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+.iq-hum { container: hum / size; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: var(--radius-device); color: var(--text-primary);
+  font-family: var(--font); background: var(--device-surface); box-shadow: var(--device-shadow); overflow: hidden; --iq-hum-c: var(--info, #4aa8ff); }
+.iq-hum[data-action="drying"] { --iq-hum-c: var(--warning); }
+.iq-hum[data-available="false"] { opacity: .6; }
+.iq-hum__head { display: flex; align-items: center; gap: 10px; }
+.iq-hum__ic { width: 30px; height: 30px; flex: none; display: grid; place-items: center; border-radius: 10px; background: var(--surface-tertiary); color: var(--text-muted); }
+.iq-hum__ic svg { width: 20px; height: 20px; }
+.iq-hum[data-on="true"] .iq-hum__ic { background: color-mix(in srgb, var(--iq-hum-c) 22%, transparent); color: var(--iq-hum-c); }
+.iq-hum__t { flex: 1; min-width: 0; display: grid; }
+.iq-hum__name { margin: 0; font-size: 14px; font-weight: var(--iq-fw-title); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-hum__st { font-size: 12px; color: var(--text-muted); text-transform: none; }
+.iq-hum__pw { flex: none; width: 42px; height: 24px; border-radius: 999px; border: 0; background: var(--border-primary); position: relative; cursor: pointer; padding: 0; }
+.iq-hum__pw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform .2s; }
+.iq-hum__pw[aria-checked="true"] { background: var(--iq-hum-c); }
+.iq-hum__pw[aria-checked="true"]::after { transform: translateX(18px); }
+.iq-hum__dial { position: relative; flex: 1 1 auto; min-height: 60px; display: grid; place-items: center; }
+.iq-hum__dial svg { width: min(100%, 220px); max-height: 100%; overflow: visible; }
+.iq-hum__track, .iq-hum__arc { fill: none; stroke-width: 9; stroke-linecap: round; }
+.iq-hum__track { stroke: var(--surface-tertiary); }
+.iq-hum__arc { stroke: var(--iq-hum-c); transition: stroke-dasharray .4s ease; }
+.iq-hum[data-on="false"] .iq-hum__arc { stroke: var(--text-muted); opacity: .5; }
+.iq-hum__cur { fill: var(--text-primary); stroke: var(--device-surface); stroke-width: 2; }
+.iq-hum__val { position: absolute; bottom: 4%; left: 0; right: 0; display: grid; justify-items: center; }
+.iq-hum__val b { font-size: clamp(20px, 10cqmin, 34px); font-weight: 700; font-variant-numeric: tabular-nums; }
+.iq-hum__val small { font-size: 11px; color: var(--text-muted); }
+.iq-hum__ctl { display: flex; align-items: center; justify-content: center; gap: 14px; }
+.iq-hum__s { width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--surface-tertiary); color: var(--text-primary); font-size: 18px; cursor: pointer; }
+.iq-hum__s:disabled { opacity: .4; cursor: default; }
+.iq-hum__tgt { font-size: 13px; font-weight: 600; min-width: 90px; text-align: center; font-variant-numeric: tabular-nums; }
+.iq-hum__modes { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.iq-hum__modes[hidden] { display: none; }
+.iq-hum__chip { border: 0; border-radius: 999px; padding: 4px 10px; font: inherit; font-size: 11.5px; font-weight: 600; text-transform: capitalize; background: var(--surface-tertiary); color: var(--text-secondary); cursor: pointer; }
+.iq-hum__chip[aria-pressed="true"] { background: var(--iq-hum-c); color: #fff; }

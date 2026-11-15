@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "lock",
+  "name": "Lock",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "lock.js",
+  "style": "lock.css",
+  "assets": "assets/",
+  "api": "MaisonLock"
+}

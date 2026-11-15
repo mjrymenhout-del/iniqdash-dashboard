@@ -1,0 +1,7952 @@
+{
+ "version": 3,
+ "app": {
+  "id": "iniqdash-demo",
+  "startPage": "home",
+  "simulated": true,
+  "grid": {
+   "desktop": {
+    "cols": 24,
+    "row": 10,
+    "gap": 18,
+    "pad": 24
+   },
+   "tablet": {
+    "cols": 16,
+    "row": 10,
+    "gap": 16,
+    "pad": 20
+   },
+   "mobile": {
+    "cols": 4,
+    "row": 10,
+    "gap": 12,
+    "pad": 14
+   },
+   "nested": "page",
+   "popups": "page"
+  },
+  "navigation": {
+   "desktop": "left",
+   "tablet": "bottom",
+   "mobile": "bottom"
+  },
+  "theme": {
+   "id": "iniqdash-charcoal",
+   "name": "INIQDASH Charcoal",
+   "dark": true,
+   "tokens": {
+    "page-bg": "#20232c",
+    "page-bg-darker": "#171a21",
+    "page-bg-lighter": "#262933",
+    "nav-bg": "#1c1f27",
+    "nav-inactive": "#8a8f9c",
+    "nav-active": "#57c8ff",
+    "nav-active-bg": "rgba(87, 200, 255, 0.10)",
+    "nav-indicator": "#57c8ff",
+    "surface-primary": "#1c1d24",
+    "surface-primary-top": "#202128",
+    "surface-secondary": "#1a1b22",
+    "surface-tertiary": "#272a34",
+    "surface-interactive": "#2e313b",
+    "control-well": "#15161c",
+    "card-border": "rgba(255, 255, 255, 0.04)",
+    "border-primary": "rgba(255, 255, 255, 0.06)",
+    "edge-highlight": "rgba(255, 255, 255, 0.03)",
+    "text-heading": "#ffffff",
+    "text-primary": "#f2f3f5",
+    "text-secondary": "#a3a6b0",
+    "text-muted": "#7d808b",
+    "accent": "#57c8ff",
+    "accent-hot": "#3fb6ff",
+    "accent-soft": "rgba(87, 200, 255, 0.14)",
+    "accent-line": "rgba(87, 200, 255, 0.45)",
+    "accent-on": "#04121c",
+    "slider-fill": "#ffa550",
+    "control-off-bg": "#2a2c34",
+    "solar": "#ffcb42",
+    "success": "#3ddc84",
+    "warning": "#fc8427",
+    "danger": "#ff5d6c",
+    "info": "#3fb6ff",
+    "light-warm": "#ffcb42",
+    "light-hot": "#ffa550"
+   },
+   "look": {
+    "radius": 24,
+    "shadow": "soft",
+    "shadowStrength": 50,
+    "glass": false,
+    "borderWidth": 0,
+    "titleWeight": 700,
+    "font": "poppins",
+    "navStyle": "icons",
+    "pageFrame": "panel",
+    "pagePad": 18,
+    "pageRadius": 28,
+    "titleSize": 30,
+    "headGap": 20
+   }
+  }
+ },
+ "pages": [
+  {
+   "id": "home",
+   "name": "Home",
+   "icon": "home",
+   "nav": true,
+   "header": false,
+   "items": [
+    {
+     "id": "h-who",
+     "type": "presence",
+     "parent": null,
+     "config": {
+      "variant": "row",
+      "name": "Who’s home",
+      "people": [
+       {
+        "id": "p1",
+        "entity": "person.demo_mia",
+        "label": "Mia"
+       },
+       {
+        "id": "p2",
+        "entity": "person.demo_noah",
+        "label": "Noah"
+       },
+       {
+        "id": "p3",
+        "entity": "person.demo_lea",
+        "label": "Léa"
+       },
+       {
+        "id": "p4",
+        "entity": "person.demo_theo",
+        "label": "Theo"
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 7,
+       "h": 6
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 8,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 6
+      }
+     }
+    },
+    {
+     "id": "h-spot",
+     "type": "spotlight",
+     "parent": null,
+     "config": {
+      "name": "Household",
+      "entity": "calendar.demo_household",
+      "max": 3,
+      "auto": 8,
+      "chip": "Reminder",
+      "image": "assets/img/photos/spot-bin.jpg",
+      "rules": [
+       {
+        "id": "r1",
+        "match": "waste, recycling, bin",
+        "category": "Household waste",
+        "icon": "mdi:trash-can-outline",
+        "image": "assets/img/photos/spot-bin.jpg"
+       },
+       {
+        "id": "r2",
+        "match": "birthday",
+        "category": "Birthday",
+        "icon": "mdi:cake-variant",
+        "image": "assets/img/photos/spot-cake.jpg"
+       }
+      ],
+      "button": {
+       "label": "Calendar",
+       "icon": "mdi:calendar-month-outline",
+       "popup": "p-calendar"
+      }
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 7,
+       "w": 7,
+       "h": 17
+      },
+      "tablet": {
+       "x": 1,
+       "y": 7,
+       "w": 8,
+       "h": 17
+      },
+      "mobile": {
+       "w": 4,
+       "h": 16
+      }
+     }
+    },
+    {
+     "id": "h-notify",
+     "type": "inbox",
+     "parent": null,
+     "config": {
+      "variant": "list",
+      "name": "Notifications",
+      "max": 2,
+      "seed": [
+       {
+        "title": "Evening scene started",
+        "message": "Living room and kitchen dimmed to warm white.",
+        "icon": "mdi:weather-sunset",
+        "tone": "info",
+        "category": "Lighting",
+        "ago": 43
+       },
+       {
+        "title": "Front door locked",
+        "message": "Locked automatically 2 minutes after closing.",
+        "icon": "mdi:lock-check-outline",
+        "tone": "success",
+        "category": "Security",
+        "ago": 62,
+        "read": true
+       },
+       {
+        "title": "Living room reached 21.5 °C",
+        "message": "The heating reached its target temperature.",
+        "icon": "mdi:thermometer-check",
+        "tone": "info",
+        "category": "Climate",
+        "ago": 120,
+        "read": true
+       }
+      ],
+      "resetOn": "button.demo_reset"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 24,
+       "w": 7,
+       "h": 7
+      },
+      "tablet": {
+       "x": 1,
+       "y": 24,
+       "w": 8,
+       "h": 10
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "h-weather",
+     "type": "weather",
+     "parent": null,
+     "config": {
+      "variant": "current",
+      "location": "Today",
+      "entity": "weather.home"
+     },
+     "layout": {
+      "desktop": {
+       "x": 8,
+       "y": 1,
+       "w": 5,
+       "h": 6
+      },
+      "tablet": {
+       "x": 9,
+       "y": 1,
+       "w": 8,
+       "h": 7
+      },
+      "mobile": {
+       "w": 4,
+       "h": 6
+      }
+     }
+    },
+    {
+     "id": "h-forecast",
+     "type": "weather",
+     "parent": null,
+     "config": {
+      "variant": "daily",
+      "location": "Forecast",
+      "entity": "weather.home",
+      "forecastType": "daily",
+      "forecastRows": 3
+     },
+     "layout": {
+      "desktop": {
+       "x": 8,
+       "y": 7,
+       "w": 5,
+       "h": 9
+      },
+      "tablet": {
+       "x": 9,
+       "y": 8,
+       "w": 8,
+       "h": 9
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "h-sun",
+     "type": "sunmoon",
+     "parent": null,
+     "config": {
+      "variant": "arc",
+      "name": "Sun",
+      "entity": "sun.sun"
+     },
+     "layout": {
+      "desktop": {
+       "x": 8,
+       "y": 16,
+       "w": 5,
+       "h": 4
+      },
+      "tablet": {
+       "x": 9,
+       "y": 17,
+       "w": 8,
+       "h": 5
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "h-read",
+     "type": "readings",
+     "parent": null,
+     "config": {
+      "name": "Readings",
+      "columns": 2,
+      "items": [
+       {
+        "id": "v1",
+        "entity": "sensor.demo_living_temperature",
+        "label": "Indoor temp",
+        "color": "danger",
+        "decimals": 1
+       },
+       {
+        "id": "v2",
+        "entity": "sensor.demo_garden_temperature",
+        "label": "Outdoor temp",
+        "color": "warning",
+        "decimals": 1
+       },
+       {
+        "id": "v3",
+        "entity": "sensor.demo_living_humidity",
+        "label": "Humidity",
+        "color": "info",
+        "decimals": 0
+       },
+       {
+        "id": "v4",
+        "entity": "sensor.demo_water_flow",
+        "label": "Water flow",
+        "color": "purple",
+        "decimals": 1
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 8,
+       "y": 20,
+       "w": 5,
+       "h": 7
+      },
+      "tablet": {
+       "x": 9,
+       "y": 22,
+       "w": 8,
+       "h": 7
+      },
+      "mobile": {
+       "w": 4,
+       "h": 7
+      }
+     }
+    },
+    {
+     "id": "h-media",
+     "type": "media",
+     "parent": null,
+     "config": {
+      "variant": "minibar",
+      "name": "Living room",
+      "entity": "media_player.demo_living",
+      "interactions": {
+       "tap": {
+        "action": "popup",
+        "popup": "p-media"
+       }
+      }
+     },
+     "layout": {
+      "desktop": {
+       "x": 8,
+       "y": 27,
+       "w": 5,
+       "h": 4
+      },
+      "tablet": {
+       "x": 9,
+       "y": 29,
+       "w": 8,
+       "h": 5
+      },
+      "mobile": {
+       "w": 4,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "h-climate",
+     "type": "climate",
+     "parent": null,
+     "config": {
+      "variant": "dial",
+      "name": "Living room",
+      "entity": "climate.demo_living",
+      "hvacModes": [
+       "heat",
+       "off"
+      ],
+      "image": "assets/img/photos/fire.jpg",
+      "imageTreatment": "dim",
+      "controls": [
+       {
+        "type": "dial",
+        "design": "knob",
+        "label": "Temperature"
+       }
+      ],
+      "interactions": {
+       "tap": {
+        "action": "popup",
+        "popup": "p-climate"
+       }
+      }
+     },
+     "layout": {
+      "desktop": {
+       "x": 13,
+       "y": 1,
+       "w": 6,
+       "h": 17
+      },
+      "tablet": {
+       "x": 1,
+       "y": 34,
+       "w": 8,
+       "h": 19
+      },
+      "mobile": {
+       "w": 4,
+       "h": 18
+      }
+     }
+    },
+    {
+     "id": "h-dev-h",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "text",
+      "primary": "My devices",
+      "secondary": "",
+      "align": "left",
+      "size": 18,
+      "emphasis": "strong",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 13,
+       "y": 18,
+       "w": 6,
+       "h": 2
+      },
+      "tablet": {
+       "x": 9,
+       "y": 34,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 4,
+       "h": 2
+      }
+     }
+    },
+    {
+     "id": "h-d0",
+     "type": "devicetile",
+     "parent": null,
+     "config": {
+      "name": "Light",
+      "entity": "light.demo_living_floor",
+      "icon": "mdi:lightbulb-outline",
+      "color": "yellow"
+     },
+     "layout": {
+      "desktop": {
+       "x": 13,
+       "y": 20,
+       "w": 3,
+       "h": 6
+      },
+      "tablet": {
+       "x": 9,
+       "y": 36,
+       "w": 4,
+       "h": 7
+      },
+      "mobile": {
+       "w": 2,
+       "h": 6
+      }
+     }
+    },
+    {
+     "id": "h-d1",
+     "type": "devicetile",
+     "parent": null,
+     "config": {
+      "name": "Climate",
+      "entity": "climate.demo_bedroom",
+      "icon": "mdi:thermometer",
+      "color": "orange"
+     },
+     "layout": {
+      "desktop": {
+       "x": 16,
+       "y": 20,
+       "w": 3,
+       "h": 6
+      },
+      "tablet": {
+       "x": 13,
+       "y": 36,
+       "w": 4,
+       "h": 7
+      },
+      "mobile": {
+       "w": 2,
+       "h": 6
+      }
+     }
+    },
+    {
+     "id": "h-d2",
+     "type": "devicetile",
+     "parent": null,
+     "config": {
+      "name": "Fan",
+      "entity": "switch.demo_extractor",
+      "icon": "mdi:fan",
+      "color": "blue"
+     },
+     "layout": {
+      "desktop": {
+       "x": 13,
+       "y": 26,
+       "w": 3,
+       "h": 6
+      },
+      "tablet": {
+       "x": 9,
+       "y": 43,
+       "w": 4,
+       "h": 7
+      },
+      "mobile": {
+       "w": 2,
+       "h": 6
+      }
+     }
+    },
+    {
+     "id": "h-d3",
+     "type": "devicetile",
+     "parent": null,
+     "config": {
+      "name": "Sound",
+      "entity": "media_player.demo_kitchen",
+      "icon": "mdi:volume-high",
+      "color": "purple"
+     },
+     "layout": {
+      "desktop": {
+       "x": 16,
+       "y": 26,
+       "w": 3,
+       "h": 6
+      },
+      "tablet": {
+       "x": 13,
+       "y": 43,
+       "w": 4,
+       "h": 7
+      },
+      "mobile": {
+       "w": 2,
+       "h": 6
+      }
+     }
+    },
+    {
+     "id": "h-live",
+     "type": "activity",
+     "parent": null,
+     "config": {
+      "name": "Live activity",
+      "max": 6,
+      "entries": [
+       {
+        "entity": "light.demo_kitchen_cabinet",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "person.demo_lea",
+        "icon": "mdi:account",
+        "color": "info"
+       },
+       {
+        "entity": "climate.demo_living",
+        "icon": "mdi:fire",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_living_ceiling",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "media_player.demo_living",
+        "icon": "mdi:music",
+        "color": "accent"
+       },
+       {
+        "entity": "binary_sensor.demo_bedroom_window",
+        "icon": "mdi:window-open-variant",
+        "color": "danger"
+       },
+       {
+        "entity": "sensor.demo_washer_state",
+        "icon": "mdi:washing-machine",
+        "color": "info"
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 19,
+       "y": 1,
+       "w": 6,
+       "h": 20
+      },
+      "tablet": {
+       "x": 1,
+       "y": 53,
+       "w": 8,
+       "h": 16
+      },
+      "mobile": {
+       "w": 4,
+       "h": 14
+      }
+     }
+    },
+    {
+     "id": "h-sc-h",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "text",
+      "primary": "Scenes",
+      "secondary": "",
+      "align": "left",
+      "size": 18,
+      "emphasis": "strong",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 19,
+       "y": 21,
+       "w": 6,
+       "h": 2
+      },
+      "tablet": {
+       "x": 9,
+       "y": 50,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 4,
+       "h": 2
+      }
+     }
+    },
+    {
+     "id": "h-sc0",
+     "type": "action",
+     "parent": null,
+     "config": {
+      "name": "Evening",
+      "icon": "mdi:weather-sunset",
+      "run": "ha",
+      "entity": "scene.demo_evening",
+      "subtitle": "Living room + kitchen on",
+      "look": "scene",
+      "iconColor": "orange"
+     },
+     "layout": {
+      "desktop": {
+       "x": 19,
+       "y": 23,
+       "w": 3,
+       "h": 8
+      },
+      "tablet": {
+       "x": 9,
+       "y": 52,
+       "w": 4,
+       "h": 6
+      },
+      "mobile": {
+       "w": 2,
+       "h": 6
+      }
+     }
+    },
+    {
+     "id": "h-sc1",
+     "type": "action",
+     "parent": null,
+     "config": {
+      "name": "Movie",
+      "icon": "mdi:movie-open-outline",
+      "run": "ha",
+      "entity": "scene.demo_movie",
+      "subtitle": "Dim lights, speaker on",
+      "look": "scene",
+      "iconColor": "pink"
+     },
+     "layout": {
+      "desktop": {
+       "x": 22,
+       "y": 23,
+       "w": 3,
+       "h": 8
+      },
+      "tablet": {
+       "x": 13,
+       "y": 52,
+       "w": 4,
+       "h": 6
+      },
+      "mobile": {
+       "w": 2,
+       "h": 6
+      }
+     }
+    },
+    {
+     "id": "h-radial",
+     "type": "radial",
+     "parent": null,
+     "config": {
+      "name": "Menu",
+      "count": 4,
+      "float": true,
+      "corner": "bottom-right",
+      "ring": "standard",
+      "actions": [
+       {
+        "label": "Home",
+        "icon": "home",
+        "type": "navigate",
+        "page": "home",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "label": "Lights",
+        "icon": "bulb",
+        "type": "navigate",
+        "page": "lights",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "label": "Scenes",
+        "icon": "star",
+        "type": "popup",
+        "popup": "p-scenes",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "label": "Notifications",
+        "icon": "bell",
+        "type": "popup",
+        "popup": "p-notify",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 300,
+       "w": 1,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 300,
+       "w": 2,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     },
+     "frame": {
+      "desktop": {
+       "x": 24,
+       "y": 24,
+       "w": 84,
+       "h": 84
+      },
+      "tablet": {
+       "x": 24,
+       "y": 24,
+       "w": 84,
+       "h": 84
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "lights",
+   "name": "Lights",
+   "icon": "bulb",
+   "nav": true,
+   "header": false,
+   "items": [
+    {
+     "id": "l-title",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "heading",
+      "primary": "Lights",
+      "secondary": "",
+      "align": "left",
+      "size": "m",
+      "emphasis": "strong",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 12,
+       "h": 3
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 16,
+       "h": 3
+      },
+      "mobile": {
+       "w": 4,
+       "h": 3
+      }
+     }
+    },
+    {
+     "id": "l-hero",
+     "type": "sensor",
+     "parent": null,
+     "config": {
+      "variant": "value",
+      "name": "lights on",
+      "entity": "sensor.demo_lights_on",
+      "icon": "mdi:lightbulb-on-outline",
+      "precision": 0,
+      "widgetBg": "image",
+      "bgImage": "assets/img/photos/room-living.jpg",
+      "bgFit": "cover",
+      "bgPos": "center",
+      "bgOverlay": 55,
+      "bgOverlayMode": "even",
+      "textTone": "light"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 4,
+       "w": 16,
+       "h": 11
+      },
+      "tablet": {
+       "x": 1,
+       "y": 4,
+       "w": 16,
+       "h": 10
+      },
+      "mobile": {
+       "w": 4,
+       "h": 10
+      }
+     }
+    },
+    {
+     "id": "l-sc0",
+     "type": "action",
+     "parent": null,
+     "config": {
+      "name": "Evening",
+      "icon": "mdi:weather-sunset",
+      "run": "ha",
+      "entity": "scene.demo_evening",
+      "look": "pill",
+      "iconColor": "orange"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 15,
+       "w": 3,
+       "h": 3
+      },
+      "tablet": {
+       "x": 1,
+       "y": 14,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 2,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "l-sc1",
+     "type": "action",
+     "parent": null,
+     "config": {
+      "name": "Movie",
+      "icon": "mdi:movie-open-outline",
+      "run": "ha",
+      "entity": "scene.demo_movie",
+      "look": "pill",
+      "iconColor": "pink"
+     },
+     "layout": {
+      "desktop": {
+       "x": 4,
+       "y": 15,
+       "w": 3,
+       "h": 3
+      },
+      "tablet": {
+       "x": 9,
+       "y": 14,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 2,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "l-sc2",
+     "type": "action",
+     "parent": null,
+     "config": {
+      "name": "Welcome",
+      "icon": "mdi:home-heart",
+      "run": "ha",
+      "entity": "scene.demo_welcome",
+      "look": "pill",
+      "iconColor": "green"
+     },
+     "layout": {
+      "desktop": {
+       "x": 7,
+       "y": 15,
+       "w": 3,
+       "h": 3
+      },
+      "tablet": {
+       "x": 1,
+       "y": 17,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 2,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "l-sc3",
+     "type": "action",
+     "parent": null,
+     "config": {
+      "name": "Good night",
+      "icon": "mdi:weather-night",
+      "run": "ha",
+      "entity": "scene.demo_good_night",
+      "look": "pill",
+      "iconColor": "blue"
+     },
+     "layout": {
+      "desktop": {
+       "x": 10,
+       "y": 15,
+       "w": 3,
+       "h": 3
+      },
+      "tablet": {
+       "x": 9,
+       "y": 17,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 2,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "l-allof",
+     "type": "action",
+     "parent": null,
+     "config": {
+      "name": "All off",
+      "icon": "mdi:lightbulb-group-off-outline",
+      "run": "ha",
+      "entity": "scene.demo_all_off",
+      "look": "pill",
+      "iconColor": "purple"
+     },
+     "layout": {
+      "desktop": {
+       "x": 13,
+       "y": 15,
+       "w": 4,
+       "h": 3
+      },
+      "tablet": {
+       "x": 1,
+       "y": 20,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 2,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "l-h-living",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "text",
+      "primary": "Living room",
+      "secondary": "3 lights",
+      "align": "left",
+      "size": 17,
+      "emphasis": "strong",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 19,
+       "w": 4,
+       "h": 2
+      },
+      "tablet": {
+       "x": 1,
+       "y": 24,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 4,
+       "h": 2
+      }
+     }
+    },
+    {
+     "id": "l-living_ceiling",
+     "type": "light",
+     "parent": null,
+     "config": {
+      "variant": "image",
+      "name": "Ceiling",
+      "entity": "light.demo_living_ceiling"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 21,
+       "w": 4,
+       "h": 6
+      },
+      "tablet": {
+       "x": 1,
+       "y": 26,
+       "w": 8,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "l-living_floor",
+     "type": "light",
+     "parent": null,
+     "config": {
+      "variant": "image",
+      "name": "Floor lamp",
+      "entity": "light.demo_living_floor"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 27,
+       "w": 4,
+       "h": 6
+      },
+      "tablet": {
+       "x": 1,
+       "y": 32,
+       "w": 8,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "l-living_strip",
+     "type": "light",
+     "parent": null,
+     "config": {
+      "variant": "image",
+      "name": "LED strip",
+      "entity": "light.demo_living_strip"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 33,
+       "w": 4,
+       "h": 6
+      },
+      "tablet": {
+       "x": 1,
+       "y": 38,
+       "w": 8,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "l-h-garden",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "text",
+      "primary": "Garden",
+      "secondary": "2 lights",
+      "align": "left",
+      "size": 17,
+      "emphasis": "strong",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 39,
+       "w": 4,
+       "h": 2
+      },
+      "tablet": {
+       "x": 1,
+       "y": 44,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 4,
+       "h": 2
+      }
+     }
+    },
+    {
+     "id": "l-garden_path",
+     "type": "light",
+     "parent": null,
+     "config": {
+      "variant": "image",
+      "name": "Path lights",
+      "entity": "light.demo_garden_path"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 41,
+       "w": 4,
+       "h": 6
+      },
+      "tablet": {
+       "x": 1,
+       "y": 46,
+       "w": 8,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "l-garden_spots",
+     "type": "light",
+     "parent": null,
+     "config": {
+      "variant": "image",
+      "name": "Spotlights",
+      "entity": "light.demo_garden_spots"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 47,
+       "w": 4,
+       "h": 6
+      },
+      "tablet": {
+       "x": 1,
+       "y": 52,
+       "w": 8,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "l-h-kitchen",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "text",
+      "primary": "Kitchen",
+      "secondary": "2 lights",
+      "align": "left",
+      "size": 17,
+      "emphasis": "strong",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 5,
+       "y": 19,
+       "w": 4,
+       "h": 2
+      },
+      "tablet": {
+       "x": 9,
+       "y": 24,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 4,
+       "h": 2
+      }
+     }
+    },
+    {
+     "id": "l-kitchen_main",
+     "type": "light",
+     "parent": null,
+     "config": {
+      "variant": "image",
+      "name": "Main lights",
+      "entity": "light.demo_kitchen_main"
+     },
+     "layout": {
+      "desktop": {
+       "x": 5,
+       "y": 21,
+       "w": 4,
+       "h": 6
+      },
+      "tablet": {
+       "x": 9,
+       "y": 26,
+       "w": 8,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "l-kitchen_cabinet",
+     "type": "light",
+     "parent": null,
+     "config": {
+      "variant": "image",
+      "name": "Under-cabinet",
+      "entity": "light.demo_kitchen_cabinet"
+     },
+     "layout": {
+      "desktop": {
+       "x": 5,
+       "y": 27,
+       "w": 4,
+       "h": 6
+      },
+      "tablet": {
+       "x": 9,
+       "y": 32,
+       "w": 8,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "l-h-dining",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "text",
+      "primary": "Dining room",
+      "secondary": "1 light",
+      "align": "left",
+      "size": 17,
+      "emphasis": "strong",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 5,
+       "y": 33,
+       "w": 4,
+       "h": 2
+      },
+      "tablet": {
+       "x": 9,
+       "y": 38,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 4,
+       "h": 2
+      }
+     }
+    },
+    {
+     "id": "l-dining_pendant",
+     "type": "light",
+     "parent": null,
+     "config": {
+      "variant": "image",
+      "name": "Pendant",
+      "entity": "light.demo_dining_pendant"
+     },
+     "layout": {
+      "desktop": {
+       "x": 5,
+       "y": 35,
+       "w": 4,
+       "h": 6
+      },
+      "tablet": {
+       "x": 9,
+       "y": 40,
+       "w": 8,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "l-h-bathroom",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "text",
+      "primary": "Bathroom",
+      "secondary": "2 lights",
+      "align": "left",
+      "size": 17,
+      "emphasis": "strong",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 5,
+       "y": 41,
+       "w": 4,
+       "h": 2
+      },
+      "tablet": {
+       "x": 9,
+       "y": 46,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 4,
+       "h": 2
+      }
+     }
+    },
+    {
+     "id": "l-bathroom_mirror",
+     "type": "light",
+     "parent": null,
+     "config": {
+      "variant": "image",
+      "name": "Mirror",
+      "entity": "light.demo_bathroom_mirror"
+     },
+     "layout": {
+      "desktop": {
+       "x": 5,
+       "y": 43,
+       "w": 4,
+       "h": 6
+      },
+      "tablet": {
+       "x": 9,
+       "y": 48,
+       "w": 8,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "l-bathroom_ceiling",
+     "type": "light",
+     "parent": null,
+     "config": {
+      "variant": "image",
+      "name": "Ceiling",
+      "entity": "light.demo_bathroom_ceiling"
+     },
+     "layout": {
+      "desktop": {
+       "x": 5,
+       "y": 49,
+       "w": 4,
+       "h": 6
+      },
+      "tablet": {
+       "x": 9,
+       "y": 54,
+       "w": 8,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "l-h-bedroom",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "text",
+      "primary": "Bedroom",
+      "secondary": "3 lights",
+      "align": "left",
+      "size": 17,
+      "emphasis": "strong",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 9,
+       "y": 19,
+       "w": 4,
+       "h": 2
+      },
+      "tablet": {
+       "x": 1,
+       "y": 58,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 4,
+       "h": 2
+      }
+     }
+    },
+    {
+     "id": "l-bedroom_ceiling",
+     "type": "light",
+     "parent": null,
+     "config": {
+      "variant": "image",
+      "name": "Ceiling",
+      "entity": "light.demo_bedroom_ceiling"
+     },
+     "layout": {
+      "desktop": {
+       "x": 9,
+       "y": 21,
+       "w": 4,
+       "h": 6
+      },
+      "tablet": {
+       "x": 1,
+       "y": 60,
+       "w": 8,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "l-bedside_left",
+     "type": "light",
+     "parent": null,
+     "config": {
+      "variant": "image",
+      "name": "Bedside left",
+      "entity": "light.demo_bedside_left"
+     },
+     "layout": {
+      "desktop": {
+       "x": 9,
+       "y": 27,
+       "w": 4,
+       "h": 6
+      },
+      "tablet": {
+       "x": 1,
+       "y": 66,
+       "w": 8,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "l-bedside_right",
+     "type": "light",
+     "parent": null,
+     "config": {
+      "variant": "image",
+      "name": "Bedside right",
+      "entity": "light.demo_bedside_right"
+     },
+     "layout": {
+      "desktop": {
+       "x": 9,
+       "y": 33,
+       "w": 4,
+       "h": 6
+      },
+      "tablet": {
+       "x": 1,
+       "y": 72,
+       "w": 8,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "l-h-office",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "text",
+      "primary": "Office",
+      "secondary": "2 lights",
+      "align": "left",
+      "size": 17,
+      "emphasis": "strong",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 13,
+       "y": 19,
+       "w": 4,
+       "h": 2
+      },
+      "tablet": {
+       "x": 9,
+       "y": 60,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 4,
+       "h": 2
+      }
+     }
+    },
+    {
+     "id": "l-office_desk",
+     "type": "light",
+     "parent": null,
+     "config": {
+      "variant": "image",
+      "name": "Desk lamp",
+      "entity": "light.demo_office_desk"
+     },
+     "layout": {
+      "desktop": {
+       "x": 13,
+       "y": 21,
+       "w": 4,
+       "h": 6
+      },
+      "tablet": {
+       "x": 9,
+       "y": 62,
+       "w": 8,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "l-office_ceiling",
+     "type": "light",
+     "parent": null,
+     "config": {
+      "variant": "image",
+      "name": "Ceiling",
+      "entity": "light.demo_office_ceiling"
+     },
+     "layout": {
+      "desktop": {
+       "x": 13,
+       "y": 27,
+       "w": 4,
+       "h": 6
+      },
+      "tablet": {
+       "x": 9,
+       "y": 68,
+       "w": 8,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "l-h-hall",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "text",
+      "primary": "Hallway",
+      "secondary": "1 light",
+      "align": "left",
+      "size": 17,
+      "emphasis": "strong",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 13,
+       "y": 33,
+       "w": 4,
+       "h": 2
+      },
+      "tablet": {
+       "x": 9,
+       "y": 74,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 4,
+       "h": 2
+      }
+     }
+    },
+    {
+     "id": "l-hall",
+     "type": "light",
+     "parent": null,
+     "config": {
+      "variant": "image",
+      "name": "Hallway",
+      "entity": "light.demo_hall"
+     },
+     "layout": {
+      "desktop": {
+       "x": 13,
+       "y": 35,
+       "w": 4,
+       "h": 6
+      },
+      "tablet": {
+       "x": 9,
+       "y": 76,
+       "w": 8,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "l-active",
+     "type": "activity",
+     "parent": null,
+     "config": {
+      "name": "Active lights",
+      "max": 6,
+      "entries": [
+       {
+        "entity": "light.demo_living_ceiling",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_living_floor",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_living_strip",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_kitchen_main",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_kitchen_cabinet",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_dining_pendant",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_bedroom_ceiling",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_bedside_left",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_bedside_right",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_bathroom_mirror",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_bathroom_ceiling",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_office_desk",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_office_ceiling",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_garden_path",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_garden_spots",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 17,
+       "y": 4,
+       "w": 8,
+       "h": 30
+      },
+      "tablet": {
+       "x": 1,
+       "y": 83,
+       "w": 16,
+       "h": 20
+      },
+      "mobile": {
+       "w": 4,
+       "h": 20
+      }
+     }
+    },
+    {
+     "id": "l-radial",
+     "type": "radial",
+     "parent": null,
+     "config": {
+      "name": "Menu",
+      "count": 4,
+      "float": true,
+      "corner": "bottom-right",
+      "ring": "standard",
+      "actions": [
+       {
+        "label": "Home",
+        "icon": "home",
+        "type": "navigate",
+        "page": "home",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "label": "Lights",
+        "icon": "bulb",
+        "type": "navigate",
+        "page": "lights",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "label": "Scenes",
+        "icon": "star",
+        "type": "popup",
+        "popup": "p-scenes",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "label": "Notifications",
+        "icon": "bell",
+        "type": "popup",
+        "popup": "p-notify",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 300,
+       "w": 1,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 300,
+       "w": 2,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     },
+     "frame": {
+      "desktop": {
+       "x": 24,
+       "y": 24,
+       "w": 84,
+       "h": 84
+      },
+      "tablet": {
+       "x": 24,
+       "y": 24,
+       "w": 84,
+       "h": 84
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "climate",
+   "name": "Climate",
+   "icon": "thermo",
+   "nav": true,
+   "header": false,
+   "items": [
+    {
+     "id": "c-title",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "heading",
+      "primary": "Climate",
+      "secondary": "",
+      "align": "left",
+      "size": "m",
+      "emphasis": "strong",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 12,
+       "h": 3
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 16,
+       "h": 3
+      },
+      "mobile": {
+       "w": 4,
+       "h": 3
+      }
+     }
+    },
+    {
+     "id": "c-main",
+     "type": "climate",
+     "parent": null,
+     "config": {
+      "variant": "dial",
+      "name": "Living room",
+      "entity": "climate.demo_living",
+      "hvacModes": [
+       "heat",
+       "off"
+      ],
+      "image": "assets/img/photos/fire.jpg",
+      "imageTreatment": "dim",
+      "controls": [
+       {
+        "type": "dial",
+        "design": "knob",
+        "label": "Temperature"
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 4,
+       "w": 8,
+       "h": 24
+      },
+      "tablet": {
+       "x": 1,
+       "y": 4,
+       "w": 16,
+       "h": 22
+      },
+      "mobile": {
+       "w": 4,
+       "h": 22
+      }
+     }
+    },
+    {
+     "id": "c-bedroom",
+     "type": "climate",
+     "parent": null,
+     "config": {
+      "variant": "compact",
+      "name": "Bedroom",
+      "entity": "climate.demo_bedroom",
+      "hvacModes": [
+       "heat",
+       "off"
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 9,
+       "y": 4,
+       "w": 8,
+       "h": 11
+      },
+      "tablet": {
+       "x": 1,
+       "y": 26,
+       "w": 16,
+       "h": 10
+      },
+      "mobile": {
+       "w": 4,
+       "h": 10
+      }
+     }
+    },
+    {
+     "id": "c-office",
+     "type": "climate",
+     "parent": null,
+     "config": {
+      "variant": "compact",
+      "name": "Office",
+      "entity": "climate.demo_office",
+      "hvacModes": [
+       "heat",
+       "off"
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 9,
+       "y": 16,
+       "w": 8,
+       "h": 11
+      },
+      "tablet": {
+       "x": 1,
+       "y": 37,
+       "w": 16,
+       "h": 10
+      },
+      "mobile": {
+       "w": 4,
+       "h": 10
+      }
+     }
+    },
+    {
+     "id": "c-read",
+     "type": "readings",
+     "parent": null,
+     "config": {
+      "name": "Readings",
+      "columns": 2,
+      "items": [
+       {
+        "id": "v1",
+        "entity": "sensor.demo_living_temperature",
+        "label": "Indoor temp",
+        "color": "danger",
+        "decimals": 1
+       },
+       {
+        "id": "v2",
+        "entity": "sensor.demo_garden_temperature",
+        "label": "Outdoor temp",
+        "color": "warning",
+        "decimals": 1
+       },
+       {
+        "id": "v3",
+        "entity": "sensor.demo_living_humidity",
+        "label": "Humidity",
+        "color": "info",
+        "decimals": 0
+       },
+       {
+        "id": "v4",
+        "entity": "sensor.demo_bathroom_humidity",
+        "label": "Bathroom humidity",
+        "color": "purple",
+        "decimals": 0
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 17,
+       "y": 4,
+       "w": 8,
+       "h": 6
+      },
+      "tablet": {
+       "x": 1,
+       "y": 48,
+       "w": 16,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 8
+      }
+     }
+    },
+    {
+     "id": "c-list",
+     "type": "entitylist",
+     "parent": null,
+     "config": {
+      "name": "Heating & ventilation",
+      "rows": [
+       {
+        "id": "i1",
+        "entity": "climate.demo_living",
+        "label": "Living room"
+       },
+       {
+        "id": "i2",
+        "entity": "switch.demo_extractor",
+        "label": "Extractor fan"
+       },
+       {
+        "id": "i3",
+        "entity": "climate.demo_bedroom",
+        "label": "Bedroom"
+       },
+       {
+        "id": "i4",
+        "entity": "climate.demo_bathroom",
+        "label": "Bathroom"
+       },
+       {
+        "id": "i5",
+        "entity": "climate.demo_office",
+        "label": "Office"
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 17,
+       "y": 10,
+       "w": 8,
+       "h": 13
+      },
+      "tablet": {
+       "x": 1,
+       "y": 54,
+       "w": 16,
+       "h": 12
+      },
+      "mobile": {
+       "w": 4,
+       "h": 12
+      }
+     }
+    },
+    {
+     "id": "c-radial",
+     "type": "radial",
+     "parent": null,
+     "config": {
+      "name": "Menu",
+      "count": 4,
+      "float": true,
+      "corner": "bottom-right",
+      "ring": "standard",
+      "actions": [
+       {
+        "label": "Home",
+        "icon": "home",
+        "type": "navigate",
+        "page": "home",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "label": "Lights",
+        "icon": "bulb",
+        "type": "navigate",
+        "page": "lights",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "label": "Scenes",
+        "icon": "star",
+        "type": "popup",
+        "popup": "p-scenes",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "label": "Notifications",
+        "icon": "bell",
+        "type": "popup",
+        "popup": "p-notify",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 300,
+       "w": 1,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 300,
+       "w": 2,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     },
+     "frame": {
+      "desktop": {
+       "x": 24,
+       "y": 24,
+       "w": 84,
+       "h": 84
+      },
+      "tablet": {
+       "x": 24,
+       "y": 24,
+       "w": 84,
+       "h": 84
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "rooms",
+   "name": "Rooms",
+   "icon": "sofa",
+   "nav": true,
+   "header": false,
+   "items": [
+    {
+     "id": "r-title",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "heading",
+      "primary": "Rooms",
+      "secondary": "",
+      "align": "left",
+      "size": "m",
+      "emphasis": "strong",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 12,
+       "h": 3
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 16,
+       "h": 3
+      },
+      "mobile": {
+       "w": 4,
+       "h": 3
+      }
+     }
+    },
+    {
+     "id": "r-house",
+     "type": "roomtile",
+     "parent": null,
+     "config": {
+      "name": "Whole house",
+      "subtitle": "Energy · Security",
+      "icon": "mdi:home-outline",
+      "color": "purple",
+      "image": "assets/img/photos/house-night.jpg",
+      "temperature": "sensor.demo_garden_temperature",
+      "lights": "sensor.demo_lights_on",
+      "interactions": {
+       "tap": {
+        "action": "navigate",
+        "page": "energy"
+       }
+      }
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 4,
+       "w": 6,
+       "h": 11
+      },
+      "tablet": {
+       "x": 1,
+       "y": 4,
+       "w": 8,
+       "h": 10
+      },
+      "mobile": {
+       "w": 2,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "r-living",
+     "type": "roomtile",
+     "parent": null,
+     "config": {
+      "name": "Living room",
+      "subtitle": "Media · Lights",
+      "icon": "mdi:sofa-outline",
+      "color": "purple",
+      "image": "assets/img/photos/room-living.jpg",
+      "temperature": "sensor.demo_living_temperature",
+      "humidity": "sensor.demo_living_humidity",
+      "lights": "sensor.demo_living_lights_on",
+      "interactions": {
+       "tap": {
+        "action": "popup",
+        "popup": "p-room-living"
+       }
+      }
+     },
+     "layout": {
+      "desktop": {
+       "x": 7,
+       "y": 4,
+       "w": 6,
+       "h": 11
+      },
+      "tablet": {
+       "x": 9,
+       "y": 4,
+       "w": 8,
+       "h": 10
+      },
+      "mobile": {
+       "w": 2,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "r-kitchen",
+     "type": "roomtile",
+     "parent": null,
+     "config": {
+      "name": "Kitchen",
+      "subtitle": "Lights · Switches",
+      "icon": "mdi:stove",
+      "color": "orange",
+      "image": "assets/img/photos/room-kitchen.jpg",
+      "temperature": "sensor.demo_kitchen_temperature",
+      "humidity": "sensor.demo_kitchen_humidity",
+      "lights": "sensor.demo_kitchen_lights_on",
+      "interactions": {
+       "tap": {
+        "action": "popup",
+        "popup": "p-room-kitchen"
+       }
+      }
+     },
+     "layout": {
+      "desktop": {
+       "x": 13,
+       "y": 4,
+       "w": 6,
+       "h": 11
+      },
+      "tablet": {
+       "x": 1,
+       "y": 15,
+       "w": 8,
+       "h": 10
+      },
+      "mobile": {
+       "w": 2,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "r-dining",
+     "type": "roomtile",
+     "parent": null,
+     "config": {
+      "name": "Dining room",
+      "subtitle": "Lights · Media",
+      "icon": "mdi:silverware-fork-knife",
+      "color": "green",
+      "image": "assets/img/photos/room-dining.jpg",
+      "temperature": "sensor.demo_dining_temperature",
+      "humidity": "sensor.demo_dining_humidity",
+      "lights": "sensor.demo_dining_lights_on",
+      "interactions": {
+       "tap": {
+        "action": "popup",
+        "popup": "p-room-dining"
+       }
+      }
+     },
+     "layout": {
+      "desktop": {
+       "x": 19,
+       "y": 4,
+       "w": 6,
+       "h": 11
+      },
+      "tablet": {
+       "x": 9,
+       "y": 15,
+       "w": 8,
+       "h": 10
+      },
+      "mobile": {
+       "w": 2,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "r-bedroom",
+     "type": "roomtile",
+     "parent": null,
+     "config": {
+      "name": "Bedroom",
+      "subtitle": "Lights · Climate",
+      "icon": "mdi:weather-night",
+      "color": "purple",
+      "image": "assets/img/photos/room-bedroom.jpg",
+      "temperature": "sensor.demo_bedroom_temperature",
+      "humidity": "sensor.demo_bedroom_humidity",
+      "lights": "sensor.demo_bedroom_lights_on",
+      "interactions": {
+       "tap": {
+        "action": "popup",
+        "popup": "p-room-bedroom"
+       }
+      }
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 16,
+       "w": 6,
+       "h": 11
+      },
+      "tablet": {
+       "x": 1,
+       "y": 26,
+       "w": 8,
+       "h": 10
+      },
+      "mobile": {
+       "w": 2,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "r-bathroom",
+     "type": "roomtile",
+     "parent": null,
+     "config": {
+      "name": "Bathroom",
+      "subtitle": "Lights · Sensors",
+      "icon": "mdi:water-outline",
+      "color": "blue",
+      "image": "assets/img/photos/room-bathroom.jpg",
+      "temperature": "sensor.demo_bathroom_temperature",
+      "humidity": "sensor.demo_bathroom_humidity",
+      "lights": "sensor.demo_bathroom_lights_on",
+      "interactions": {
+       "tap": {
+        "action": "popup",
+        "popup": "p-room-bathroom"
+       }
+      }
+     },
+     "layout": {
+      "desktop": {
+       "x": 7,
+       "y": 16,
+       "w": 6,
+       "h": 11
+      },
+      "tablet": {
+       "x": 9,
+       "y": 26,
+       "w": 8,
+       "h": 10
+      },
+      "mobile": {
+       "w": 2,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "r-office",
+     "type": "roomtile",
+     "parent": null,
+     "config": {
+      "name": "Office",
+      "subtitle": "Lights · Climate",
+      "icon": "mdi:monitor",
+      "color": "pink",
+      "image": "assets/img/photos/room-office.jpg",
+      "temperature": "sensor.demo_office_temperature",
+      "humidity": "sensor.demo_office_humidity",
+      "lights": "sensor.demo_office_lights_on",
+      "interactions": {
+       "tap": {
+        "action": "popup",
+        "popup": "p-room-office"
+       }
+      }
+     },
+     "layout": {
+      "desktop": {
+       "x": 13,
+       "y": 16,
+       "w": 6,
+       "h": 11
+      },
+      "tablet": {
+       "x": 1,
+       "y": 37,
+       "w": 8,
+       "h": 10
+      },
+      "mobile": {
+       "w": 2,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "r-garden",
+     "type": "roomtile",
+     "parent": null,
+     "config": {
+      "name": "Garden",
+      "subtitle": "Lights · Cameras",
+      "icon": "mdi:pine-tree",
+      "color": "green",
+      "image": "assets/img/photos/room-garden.jpg",
+      "temperature": "sensor.demo_garden_temperature",
+      "humidity": "sensor.demo_garden_humidity",
+      "lights": "sensor.demo_garden_lights_on",
+      "interactions": {
+       "tap": {
+        "action": "popup",
+        "popup": "p-room-garden"
+       }
+      }
+     },
+     "layout": {
+      "desktop": {
+       "x": 19,
+       "y": 16,
+       "w": 6,
+       "h": 11
+      },
+      "tablet": {
+       "x": 9,
+       "y": 37,
+       "w": 8,
+       "h": 10
+      },
+      "mobile": {
+       "w": 2,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "r-radial",
+     "type": "radial",
+     "parent": null,
+     "config": {
+      "name": "Menu",
+      "count": 4,
+      "float": true,
+      "corner": "bottom-right",
+      "ring": "standard",
+      "actions": [
+       {
+        "label": "Home",
+        "icon": "home",
+        "type": "navigate",
+        "page": "home",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "label": "Lights",
+        "icon": "bulb",
+        "type": "navigate",
+        "page": "lights",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "label": "Scenes",
+        "icon": "star",
+        "type": "popup",
+        "popup": "p-scenes",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "label": "Notifications",
+        "icon": "bell",
+        "type": "popup",
+        "popup": "p-notify",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 300,
+       "w": 1,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 300,
+       "w": 2,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     },
+     "frame": {
+      "desktop": {
+       "x": 24,
+       "y": 24,
+       "w": 84,
+       "h": 84
+      },
+      "tablet": {
+       "x": 24,
+       "y": 24,
+       "w": 84,
+       "h": 84
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "energy",
+   "name": "Energy",
+   "icon": "bolt",
+   "nav": true,
+   "header": false,
+   "items": [
+    {
+     "id": "e-title",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "heading",
+      "primary": "Energy",
+      "secondary": "",
+      "align": "left",
+      "size": "m",
+      "emphasis": "strong",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 12,
+       "h": 3
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 16,
+       "h": 3
+      },
+      "mobile": {
+       "w": 4,
+       "h": 3
+      }
+     }
+    },
+    {
+     "id": "e-flow",
+     "type": "energy",
+     "parent": null,
+     "config": {
+      "variant": "house",
+      "name": "Live flows",
+      "subtitle": "Grid · solar · water · gas · CO₂",
+      "entity": "sensor.demo_house_power",
+      "houseImage": "assets/img/photos/house-night.jpg",
+      "lineShape": "elbow",
+      "flowStyle": "arrows",
+      "glow": true,
+      "nodes": [
+       {
+        "id": "solar",
+        "type": "solar",
+        "entity": "sensor.demo_solar_power"
+       },
+       {
+        "id": "grid",
+        "type": "grid",
+        "entity": "sensor.demo_grid_power",
+        "positive": "toward"
+       },
+       {
+        "id": "co2",
+        "type": "co2",
+        "label": "CO₂ today",
+        "entity": "sensor.demo_co2_today"
+       },
+       {
+        "id": "gas",
+        "type": "gas",
+        "entity": "sensor.demo_gas_flow"
+       },
+       {
+        "id": "water",
+        "type": "water",
+        "entity": "sensor.demo_water_flow"
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 4,
+       "w": 24,
+       "h": 19
+      },
+      "tablet": {
+       "x": 1,
+       "y": 4,
+       "w": 16,
+       "h": 14
+      },
+      "mobile": {
+       "w": 4,
+       "h": 12
+      }
+     }
+    },
+    {
+     "id": "e-cc",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "text",
+      "primary": "Consumption & costs",
+      "secondary": "Today · week · month",
+      "align": "left",
+      "size": 17,
+      "emphasis": "strong",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 23,
+       "w": 12,
+       "h": 2
+      },
+      "tablet": {
+       "x": 1,
+       "y": 31,
+       "w": 16,
+       "h": 2
+      },
+      "mobile": {
+       "w": 4,
+       "h": 2
+      }
+     }
+    },
+    {
+     "id": "e-hist",
+     "type": "tabs",
+     "parent": null,
+     "config": {
+      "title": "Consumption",
+      "tabs": [
+       {
+        "id": "today",
+        "label": "Today"
+       },
+       {
+        "id": "week",
+        "label": "Week"
+       },
+       {
+        "id": "month",
+        "label": "Month"
+       }
+      ],
+      "align": "start",
+      "style": "bare"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 25,
+       "w": 24,
+       "h": 19
+      },
+      "tablet": {
+       "x": 1,
+       "y": 33,
+       "w": 16,
+       "h": 24
+      },
+      "mobile": {
+       "w": 4,
+       "h": 30
+      }
+     }
+    },
+    {
+     "id": "e-t-el",
+     "type": "chart",
+     "parent": "e-hist",
+     "tab": "today",
+     "config": {
+      "name": "Electricity",
+      "entity": "sensor.demo_house_power",
+      "seriesLabel": "Home",
+      "kind": "area",
+      "range": "24h",
+      "unit": "W",
+      "color": "danger",
+      "smooth": true,
+      "legend": "on",
+      "showAxes": true,
+      "traces": [
+       {
+        "id": "t1",
+        "entity": "sensor.demo_solar_power",
+        "label": "Solar",
+        "color": "solar"
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 9,
+       "h": 17
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 16,
+       "h": 16
+      },
+      "mobile": {
+       "w": 4,
+       "h": 21
+      }
+     }
+    },
+    {
+     "id": "e-t-gas",
+     "type": "sensor",
+     "parent": "e-hist",
+     "tab": "today",
+     "config": {
+      "variant": "value",
+      "name": "Gas today",
+      "entity": "sensor.demo_gas_today",
+      "icon": "mdi:fire",
+      "precision": 2
+     },
+     "layout": {
+      "desktop": {
+       "x": 10,
+       "y": 1,
+       "w": 5,
+       "h": 17
+      },
+      "tablet": {
+       "x": 1,
+       "y": 17,
+       "w": 8,
+       "h": 14
+      },
+      "mobile": {
+       "w": 2,
+       "h": 17
+      }
+     }
+    },
+    {
+     "id": "e-t-water",
+     "type": "sensor",
+     "parent": "e-hist",
+     "tab": "today",
+     "config": {
+      "variant": "value",
+      "name": "Water today",
+      "entity": "sensor.demo_water_today",
+      "icon": "mdi:water",
+      "precision": 2
+     },
+     "layout": {
+      "desktop": {
+       "x": 15,
+       "y": 1,
+       "w": 5,
+       "h": 17
+      },
+      "tablet": {
+       "x": 9,
+       "y": 17,
+       "w": 8,
+       "h": 14
+      },
+      "mobile": {
+       "w": 2,
+       "h": 17
+      }
+     }
+    },
+    {
+     "id": "e-t-sum",
+     "type": "entitylist",
+     "parent": "e-hist",
+     "tab": "today",
+     "config": {
+      "name": "Today",
+      "rows": [
+       {
+        "id": "i1",
+        "entity": "sensor.demo_self_sufficiency_today",
+        "label": "Self-sufficiency"
+       },
+       {
+        "id": "i2",
+        "entity": "sensor.demo_self_consumption_today",
+        "label": "Solar used at home"
+       },
+       {
+        "id": "i3",
+        "entity": "sensor.demo_energy_cost_today",
+        "label": "Electricity cost"
+       },
+       {
+        "id": "i4",
+        "entity": "sensor.demo_gas_cost_today",
+        "label": "Gas cost"
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 20,
+       "y": 1,
+       "w": 5,
+       "h": 17
+      },
+      "tablet": {
+       "x": 1,
+       "y": 31,
+       "w": 16,
+       "h": 16
+      },
+      "mobile": {
+       "w": 4,
+       "h": 21
+      }
+     }
+    },
+    {
+     "id": "e-w-el",
+     "type": "chart",
+     "parent": "e-hist",
+     "tab": "week",
+     "config": {
+      "name": "Electricity · 7 days",
+      "entity": "sensor.demo_house_energy_today",
+      "seriesLabel": "Consumed",
+      "kind": "bar",
+      "source": "statistics",
+      "period": "day",
+      "count": 7,
+      "stat": "change",
+      "unit": "kWh",
+      "color": "danger",
+      "legend": "off",
+      "barRadius": 6,
+      "barWidth": 60,
+      "barOpacity": 60,
+      "colorTo": "#7a1f3a"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 8,
+       "h": 17
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 16,
+       "h": 16
+      },
+      "mobile": {
+       "w": 4,
+       "h": 21
+      }
+     }
+    },
+    {
+     "id": "e-w-gas",
+     "type": "chart",
+     "parent": "e-hist",
+     "tab": "week",
+     "config": {
+      "name": "Gas · 7 days",
+      "entity": "sensor.demo_gas_today",
+      "seriesLabel": "Gas",
+      "kind": "bar",
+      "source": "statistics",
+      "period": "day",
+      "count": 7,
+      "stat": "change",
+      "unit": "m³",
+      "color": "warning",
+      "legend": "off",
+      "barRadius": 6,
+      "barWidth": 60,
+      "barOpacity": 60,
+      "colorTo": "#7a3a10"
+     },
+     "layout": {
+      "desktop": {
+       "x": 9,
+       "y": 1,
+       "w": 8,
+       "h": 17
+      },
+      "tablet": {
+       "x": 1,
+       "y": 17,
+       "w": 16,
+       "h": 16
+      },
+      "mobile": {
+       "w": 4,
+       "h": 21
+      }
+     }
+    },
+    {
+     "id": "e-w-water",
+     "type": "chart",
+     "parent": "e-hist",
+     "tab": "week",
+     "config": {
+      "name": "Water · 7 days",
+      "entity": "sensor.demo_water_today",
+      "seriesLabel": "Water",
+      "kind": "bar",
+      "source": "statistics",
+      "period": "day",
+      "count": 7,
+      "stat": "change",
+      "unit": "m³",
+      "color": "info",
+      "legend": "off",
+      "barRadius": 6,
+      "barWidth": 60,
+      "barOpacity": 60,
+      "colorTo": "#10405e"
+     },
+     "layout": {
+      "desktop": {
+       "x": 17,
+       "y": 1,
+       "w": 8,
+       "h": 17
+      },
+      "tablet": {
+       "x": 1,
+       "y": 33,
+       "w": 16,
+       "h": 14
+      },
+      "mobile": {
+       "w": 4,
+       "h": 21
+      }
+     }
+    },
+    {
+     "id": "e-m-el",
+     "type": "chart",
+     "parent": "e-hist",
+     "tab": "month",
+     "config": {
+      "name": "Electricity · 30 days",
+      "entity": "sensor.demo_house_energy_today",
+      "seriesLabel": "Consumed",
+      "kind": "bar",
+      "source": "statistics",
+      "period": "day",
+      "stat": "change",
+      "unit": "kWh",
+      "color": "danger",
+      "legend": "off",
+      "barRadius": 3,
+      "barWidth": 60,
+      "barOpacity": 60,
+      "colorTo": "#7a1f3a"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 15,
+       "h": 17
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 16,
+       "h": 16
+      },
+      "mobile": {
+       "w": 4,
+       "h": 21
+      }
+     }
+    },
+    {
+     "id": "e-m-co2",
+     "type": "chart",
+     "parent": "e-hist",
+     "tab": "month",
+     "config": {
+      "name": "CO₂ · 30 days (estimate)",
+      "entity": "sensor.demo_co2_today",
+      "seriesLabel": "CO₂",
+      "kind": "bar",
+      "source": "statistics",
+      "period": "day",
+      "stat": "change",
+      "unit": "kg",
+      "color": "success",
+      "legend": "off",
+      "barRadius": 3,
+      "barWidth": 60,
+      "barOpacity": 60,
+      "colorTo": "#145a32"
+     },
+     "layout": {
+      "desktop": {
+       "x": 16,
+       "y": 1,
+       "w": 9,
+       "h": 17
+      },
+      "tablet": {
+       "x": 1,
+       "y": 17,
+       "w": 16,
+       "h": 16
+      },
+      "mobile": {
+       "w": 4,
+       "h": 21
+      }
+     }
+    },
+    {
+     "id": "e-note",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "text",
+      "primary": "About CO₂",
+      "secondary": "CO₂ estimate: grid 0.18 kg/kWh · gas 2.0 kg/m³ · solar 0. No savings are claimed.",
+      "align": "left",
+      "size": 13,
+      "emphasis": "muted",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 44,
+       "w": 24,
+       "h": 2
+      },
+      "tablet": {
+       "x": 1,
+       "y": 57,
+       "w": 16,
+       "h": 2
+      },
+      "mobile": {
+       "w": 4,
+       "h": 3
+      }
+     }
+    },
+    {
+     "id": "e-radial",
+     "type": "radial",
+     "parent": null,
+     "config": {
+      "name": "Menu",
+      "count": 4,
+      "float": true,
+      "corner": "bottom-right",
+      "ring": "standard",
+      "actions": [
+       {
+        "label": "Home",
+        "icon": "home",
+        "type": "navigate",
+        "page": "home",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "label": "Lights",
+        "icon": "bulb",
+        "type": "navigate",
+        "page": "lights",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "label": "Scenes",
+        "icon": "star",
+        "type": "popup",
+        "popup": "p-scenes",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "label": "Notifications",
+        "icon": "bell",
+        "type": "popup",
+        "popup": "p-notify",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 300,
+       "w": 1,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 300,
+       "w": 2,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     },
+     "frame": {
+      "desktop": {
+       "x": 24,
+       "y": 24,
+       "w": 84,
+       "h": 84
+      },
+      "tablet": {
+       "x": 24,
+       "y": 24,
+       "w": 84,
+       "h": 84
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "security",
+   "name": "Security",
+   "icon": "shield",
+   "nav": true,
+   "header": false,
+   "items": [
+    {
+     "id": "s-title",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "heading",
+      "primary": "Security",
+      "secondary": "",
+      "align": "left",
+      "size": "m",
+      "emphasis": "strong",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 12,
+       "h": 3
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 16,
+       "h": 3
+      },
+      "mobile": {
+       "w": 4,
+       "h": 3
+      }
+     }
+    },
+    {
+     "id": "s-alarm",
+     "type": "alarm",
+     "parent": null,
+     "config": {
+      "variant": "compact",
+      "name": "Home",
+      "entity": "alarm_control_panel.demo_alarm",
+      "modes": [
+       "arm_home",
+       "arm_away"
+      ],
+      "confirmDisarm": false,
+      "widgetBg": "gradient",
+      "bgFrom": "#173a29",
+      "bgTo": "#1c1d24",
+      "bgAngle": 135,
+      "borderWidth": 1,
+      "borderColor": "#2f7d55",
+      "borderStyle": "solid"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 4,
+       "w": 9,
+       "h": 8
+      },
+      "tablet": {
+       "x": 1,
+       "y": 4,
+       "w": 16,
+       "h": 8
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "s-sum",
+     "type": "entitylist",
+     "parent": null,
+     "config": {
+      "name": "Sensors",
+      "rows": [
+       {
+        "id": "i1",
+        "entity": "sensor.demo_open_contacts",
+        "label": "Open doors & windows"
+       },
+       {
+        "id": "i2",
+        "entity": "binary_sensor.demo_hall_motion",
+        "label": "Hallway motion"
+       },
+       {
+        "id": "i3",
+        "entity": "binary_sensor.demo_garden_motion",
+        "label": "Garden motion"
+       },
+       {
+        "id": "i4",
+        "entity": "binary_sensor.demo_bathroom_leak",
+        "label": "Bathroom leak"
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 10,
+       "y": 4,
+       "w": 6,
+       "h": 8
+      },
+      "tablet": {
+       "x": 1,
+       "y": 12,
+       "w": 16,
+       "h": 8
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     }
+    },
+    {
+     "id": "s-doors",
+     "type": "sensor",
+     "parent": null,
+     "config": {
+      "variant": "status",
+      "name": "Doors",
+      "entity": "binary_sensor.demo_front_door",
+      "icon": "mdi:door",
+      "widgetBg": "gradient",
+      "bgFrom": "#132438",
+      "bgTo": "#1c1d24",
+      "bgAngle": 160,
+      "borderWidth": 1,
+      "borderColor": "#2a5f93",
+      "borderStyle": "solid"
+     },
+     "layout": {
+      "desktop": {
+       "x": 16,
+       "y": 4,
+       "w": 3,
+       "h": 8
+      },
+      "tablet": {
+       "x": 1,
+       "y": 20,
+       "w": 6,
+       "h": 7
+      },
+      "mobile": {
+       "w": 2,
+       "h": 6
+      }
+     }
+    },
+    {
+     "id": "s-motion",
+     "type": "sensor",
+     "parent": null,
+     "config": {
+      "variant": "status",
+      "name": "Motion",
+      "entity": "binary_sensor.demo_living_motion",
+      "icon": "mdi:walk",
+      "widgetBg": "gradient",
+      "bgFrom": "#3a2412",
+      "bgTo": "#1c1d24",
+      "bgAngle": 160,
+      "borderWidth": 1,
+      "borderColor": "#9a5a1e",
+      "borderStyle": "solid"
+     },
+     "layout": {
+      "desktop": {
+       "x": 19,
+       "y": 4,
+       "w": 3,
+       "h": 8
+      },
+      "tablet": {
+       "x": 7,
+       "y": 20,
+       "w": 5,
+       "h": 7
+      },
+      "mobile": {
+       "w": 2,
+       "h": 6
+      }
+     }
+    },
+    {
+     "id": "s-water",
+     "type": "sensor",
+     "parent": null,
+     "config": {
+      "variant": "status",
+      "name": "Water",
+      "entity": "binary_sensor.demo_kitchen_leak",
+      "icon": "mdi:water-outline",
+      "widgetBg": "gradient",
+      "bgFrom": "#16301f",
+      "bgTo": "#1c1d24",
+      "bgAngle": 160,
+      "borderWidth": 1,
+      "borderColor": "#2f7d55",
+      "borderStyle": "solid"
+     },
+     "layout": {
+      "desktop": {
+       "x": 22,
+       "y": 4,
+       "w": 3,
+       "h": 8
+      },
+      "tablet": {
+       "x": 12,
+       "y": 20,
+       "w": 5,
+       "h": 7
+      },
+      "mobile": {
+       "w": 2,
+       "h": 6
+      }
+     }
+    },
+    {
+     "id": "s-cam-h",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "text",
+      "primary": "Live cameras",
+      "secondary": "Demo cameras — photo stills, not live video",
+      "align": "left",
+      "size": 17,
+      "emphasis": "strong",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 12,
+       "w": 16,
+       "h": 2
+      },
+      "tablet": {
+       "x": 1,
+       "y": 27,
+       "w": 16,
+       "h": 2
+      },
+      "mobile": {
+       "w": 4,
+       "h": 2
+      }
+     }
+    },
+    {
+     "id": "s-cam0",
+     "type": "camera",
+     "parent": null,
+     "config": {
+      "variant": "picture",
+      "name": "Garden",
+      "image": "assets/img/photos/cam-garden.jpg",
+      "state": "idle",
+      "fit": "cover",
+      "refresh": 10,
+      "showName": true
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 14,
+       "w": 8,
+       "h": 11
+      },
+      "tablet": {
+       "x": 1,
+       "y": 29,
+       "w": 8,
+       "h": 9
+      },
+      "mobile": {
+       "w": 4,
+       "h": 8
+      }
+     }
+    },
+    {
+     "id": "s-cam1",
+     "type": "camera",
+     "parent": null,
+     "config": {
+      "variant": "picture",
+      "name": "Living room",
+      "image": "assets/img/photos/cam-living.jpg",
+      "state": "idle",
+      "fit": "cover",
+      "refresh": 10,
+      "showName": true
+     },
+     "layout": {
+      "desktop": {
+       "x": 9,
+       "y": 14,
+       "w": 8,
+       "h": 11
+      },
+      "tablet": {
+       "x": 9,
+       "y": 29,
+       "w": 8,
+       "h": 9
+      },
+      "mobile": {
+       "w": 4,
+       "h": 8
+      }
+     }
+    },
+    {
+     "id": "s-log",
+     "type": "activitylog",
+     "parent": null,
+     "config": {
+      "name": "Activity",
+      "max": 6,
+      "link": {
+       "label": "Notifications",
+       "popup": "p-notify"
+      },
+      "entries": [
+       {
+        "id": "e1",
+        "entity": "binary_sensor.demo_front_door"
+       },
+       {
+        "id": "e2",
+        "entity": "binary_sensor.demo_back_door"
+       },
+       {
+        "id": "e3",
+        "entity": "binary_sensor.demo_living_motion"
+       },
+       {
+        "id": "e4",
+        "entity": "binary_sensor.demo_hall_motion"
+       },
+       {
+        "id": "e5",
+        "entity": "binary_sensor.demo_garden_motion"
+       },
+       {
+        "id": "e6",
+        "entity": "binary_sensor.demo_bedroom_window"
+       },
+       {
+        "id": "e7",
+        "entity": "binary_sensor.demo_kitchen_leak"
+       },
+       {
+        "id": "e9",
+        "entity": "lock.demo_front_door"
+       },
+       {
+        "id": "e10",
+        "entity": "alarm_control_panel.demo_alarm"
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 17,
+       "y": 12,
+       "w": 8,
+       "h": 18
+      },
+      "tablet": {
+       "x": 1,
+       "y": 38,
+       "w": 16,
+       "h": 18
+      },
+      "mobile": {
+       "w": 4,
+       "h": 18
+      }
+     }
+    },
+    {
+     "id": "s-demo-h",
+     "type": "text",
+     "parent": null,
+     "config": {
+      "variant": "text",
+      "primary": "Demo events",
+      "secondary": "Simulated only",
+      "align": "left",
+      "size": 17,
+      "emphasis": "strong",
+      "surface": false
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 25,
+       "w": 16,
+       "h": 2
+      },
+      "tablet": {
+       "x": 1,
+       "y": 56,
+       "w": 16,
+       "h": 2
+      },
+      "mobile": {
+       "w": 4,
+       "h": 2
+      }
+     }
+    },
+    {
+     "id": "s-ev0",
+     "type": "action",
+     "parent": null,
+     "config": {
+      "name": "Simulate motion",
+      "icon": "mdi:motion-sensor",
+      "run": "ha",
+      "entity": "button.demo_simulate_motion",
+      "look": "pill",
+      "iconColor": "orange"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 27,
+       "w": 8,
+       "h": 2
+      },
+      "tablet": {
+       "x": 1,
+       "y": 58,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 2,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "s-ev1",
+     "type": "action",
+     "parent": null,
+     "config": {
+      "name": "Open back door",
+      "icon": "mdi:door-open",
+      "run": "ha",
+      "entity": "button.demo_simulate_door",
+      "look": "pill",
+      "iconColor": "pink"
+     },
+     "layout": {
+      "desktop": {
+       "x": 9,
+       "y": 27,
+       "w": 8,
+       "h": 2
+      },
+      "tablet": {
+       "x": 9,
+       "y": 58,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 2,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "s-ev2",
+     "type": "action",
+     "parent": null,
+     "config": {
+      "name": "Clear events",
+      "icon": "mdi:broom",
+      "run": "ha",
+      "entity": "button.demo_clear_events",
+      "look": "pill",
+      "iconColor": "green"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 30,
+       "w": 8,
+       "h": 2
+      },
+      "tablet": {
+       "x": 1,
+       "y": 61,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 2,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "s-ev3",
+     "type": "action",
+     "parent": null,
+     "config": {
+      "name": "Reset demo",
+      "icon": "mdi:restore",
+      "run": "ha",
+      "entity": "button.demo_reset",
+      "look": "pill",
+      "iconColor": "blue",
+      "requiresConfirmation": true
+     },
+     "layout": {
+      "desktop": {
+       "x": 9,
+       "y": 30,
+       "w": 8,
+       "h": 2
+      },
+      "tablet": {
+       "x": 9,
+       "y": 61,
+       "w": 8,
+       "h": 2
+      },
+      "mobile": {
+       "w": 2,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "s-radial",
+     "type": "radial",
+     "parent": null,
+     "config": {
+      "name": "Menu",
+      "count": 4,
+      "float": true,
+      "corner": "bottom-right",
+      "ring": "standard",
+      "actions": [
+       {
+        "label": "Home",
+        "icon": "home",
+        "type": "navigate",
+        "page": "home",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "label": "Lights",
+        "icon": "bulb",
+        "type": "navigate",
+        "page": "lights",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "label": "Scenes",
+        "icon": "star",
+        "type": "popup",
+        "popup": "p-scenes",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "label": "Notifications",
+        "icon": "bell",
+        "type": "popup",
+        "popup": "p-notify",
+        "enabled": true,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       },
+       {
+        "icon": "star",
+        "type": "demo",
+        "enabled": false,
+        "confirm": false,
+        "keepOpen": false
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 300,
+       "w": 1,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 300,
+       "w": 2,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     },
+     "frame": {
+      "desktop": {
+       "x": 24,
+       "y": 24,
+       "w": 84,
+       "h": 84
+      },
+      "tablet": {
+       "x": 24,
+       "y": 24,
+       "w": 84,
+       "h": 84
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "popups": [
+  {
+   "id": "p-scenes",
+   "name": "Scenes",
+   "config": {
+    "title": "Scenes",
+    "subtitle": "One press, the whole house",
+    "icon": "mdi:palette-outline",
+    "heroShow": false,
+    "size": "custom",
+    "custom": {
+     "desktop": {
+      "w": 760,
+      "h": 320
+     },
+     "tablet": {
+      "w": 740,
+      "h": 320
+     }
+    },
+    "closeButton": true,
+    "backdrop": true,
+    "outsideClose": true,
+    "escClose": true,
+    "enter": "scale",
+    "exit": "fade",
+    "speed": "normal"
+   },
+   "items": [
+    {
+     "id": "ps-0",
+     "type": "action",
+     "parent": null,
+     "config": {
+      "name": "Evening",
+      "icon": "mdi:weather-sunset",
+      "run": "ha",
+      "entity": "scene.demo_evening"
+     },
+     "frame": {
+      "desktop": {
+       "x": 24,
+       "y": 20,
+       "w": 212,
+       "h": 112
+      },
+      "tablet": {
+       "x": 24,
+       "y": 20,
+       "w": 212,
+       "h": 112
+      }
+     },
+     "layout": {
+      "mobile": {
+       "w": 2,
+       "h": 6
+      }
+     }
+    },
+    {
+     "id": "ps-1",
+     "type": "action",
+     "parent": null,
+     "config": {
+      "name": "Movie",
+      "icon": "mdi:movie-open-outline",
+      "run": "ha",
+      "entity": "scene.demo_movie"
+     },
+     "frame": {
+      "desktop": {
+       "x": 252,
+       "y": 20,
+       "w": 212,
+       "h": 112
+      },
+      "tablet": {
+       "x": 252,
+       "y": 20,
+       "w": 212,
+       "h": 112
+      }
+     },
+     "layout": {
+      "mobile": {
+       "w": 2,
+       "h": 6
+      }
+     }
+    },
+    {
+     "id": "ps-2",
+     "type": "action",
+     "parent": null,
+     "config": {
+      "name": "Good night",
+      "icon": "mdi:weather-night",
+      "run": "ha",
+      "entity": "scene.demo_good_night"
+     },
+     "frame": {
+      "desktop": {
+       "x": 480,
+       "y": 20,
+       "w": 212,
+       "h": 112
+      },
+      "tablet": {
+       "x": 480,
+       "y": 20,
+       "w": 212,
+       "h": 112
+      }
+     },
+     "layout": {
+      "mobile": {
+       "w": 2,
+       "h": 6
+      }
+     }
+    },
+    {
+     "id": "ps-3",
+     "type": "action",
+     "parent": null,
+     "config": {
+      "name": "All lights off",
+      "icon": "mdi:lightbulb-group-off-outline",
+      "run": "ha",
+      "entity": "scene.demo_all_off"
+     },
+     "frame": {
+      "desktop": {
+       "x": 24,
+       "y": 148,
+       "w": 212,
+       "h": 112
+      },
+      "tablet": {
+       "x": 24,
+       "y": 148,
+       "w": 212,
+       "h": 112
+      }
+     },
+     "layout": {
+      "mobile": {
+       "w": 2,
+       "h": 6
+      }
+     }
+    },
+    {
+     "id": "ps-4",
+     "type": "action",
+     "parent": null,
+     "config": {
+      "name": "Away",
+      "icon": "mdi:home-export-outline",
+      "run": "ha",
+      "entity": "scene.demo_away"
+     },
+     "frame": {
+      "desktop": {
+       "x": 252,
+       "y": 148,
+       "w": 212,
+       "h": 112
+      },
+      "tablet": {
+       "x": 252,
+       "y": 148,
+       "w": 212,
+       "h": 112
+      }
+     },
+     "layout": {
+      "mobile": {
+       "w": 2,
+       "h": 6
+      }
+     }
+    },
+    {
+     "id": "ps-5",
+     "type": "action",
+     "parent": null,
+     "config": {
+      "name": "Welcome home",
+      "icon": "mdi:home-heart",
+      "run": "ha",
+      "entity": "scene.demo_welcome"
+     },
+     "frame": {
+      "desktop": {
+       "x": 480,
+       "y": 148,
+       "w": 212,
+       "h": 112
+      },
+      "tablet": {
+       "x": 480,
+       "y": 148,
+       "w": 212,
+       "h": 112
+      }
+     },
+     "layout": {
+      "mobile": {
+       "w": 2,
+       "h": 6
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "p-notify",
+   "name": "Notifications",
+   "config": {
+    "title": "Notifications",
+    "subtitle": "Simulated events of the demo home",
+    "icon": "mdi:bell-outline",
+    "heroShow": false,
+    "size": "custom",
+    "custom": {
+     "desktop": {
+      "w": 560,
+      "h": 600
+     },
+     "tablet": {
+      "w": 560,
+      "h": 600
+     }
+    },
+    "closeButton": true,
+    "backdrop": true,
+    "outsideClose": true,
+    "escClose": true,
+    "enter": "scale",
+    "exit": "fade",
+    "speed": "normal"
+   },
+   "items": [
+    {
+     "id": "pn-list",
+     "type": "inbox",
+     "parent": null,
+     "config": {
+      "variant": "list",
+      "name": "Notifications",
+      "max": 8,
+      "seed": [
+       {
+        "title": "Evening scene started",
+        "message": "Living room and kitchen dimmed to warm white.",
+        "icon": "mdi:weather-sunset",
+        "tone": "info",
+        "category": "Lighting",
+        "ago": 43
+       },
+       {
+        "title": "Front door locked",
+        "message": "Locked automatically 2 minutes after closing.",
+        "icon": "mdi:lock-check-outline",
+        "tone": "success",
+        "category": "Security",
+        "ago": 62,
+        "read": true
+       },
+       {
+        "title": "Living room reached 21.5 °C",
+        "message": "The heating reached its target temperature.",
+        "icon": "mdi:thermometer-check",
+        "tone": "info",
+        "category": "Climate",
+        "ago": 120,
+        "read": true
+       }
+      ],
+      "resetOn": "button.demo_reset"
+     },
+     "frame": {
+      "desktop": {
+       "x": 24,
+       "y": 12,
+       "w": 512,
+       "h": 500
+      },
+      "tablet": {
+       "x": 24,
+       "y": 12,
+       "w": 512,
+       "h": 500
+      }
+     },
+     "layout": {
+      "mobile": {
+       "w": 4,
+       "h": 18
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "p-calendar",
+   "name": "Calendar",
+   "config": {
+    "title": "Household calendar",
+    "subtitle": "Waste collection, birthdays and reminders",
+    "icon": "mdi:calendar-month-outline",
+    "heroShow": false,
+    "size": "custom",
+    "custom": {
+     "desktop": {
+      "w": 560,
+      "h": 480
+     },
+     "tablet": {
+      "w": 560,
+      "h": 480
+     }
+    },
+    "closeButton": true,
+    "backdrop": true,
+    "outsideClose": true,
+    "escClose": true,
+    "enter": "scale",
+    "exit": "fade",
+    "speed": "normal"
+   },
+   "items": [
+    {
+     "id": "pc-cal",
+     "type": "calendar",
+     "parent": null,
+     "config": {
+      "name": "Household",
+      "entity": "calendar.demo_household"
+     },
+     "frame": {
+      "desktop": {
+       "x": 24,
+       "y": 12,
+       "w": 512,
+       "h": 380
+      },
+      "tablet": {
+       "x": 24,
+       "y": 12,
+       "w": 512,
+       "h": 380
+      }
+     },
+     "layout": {
+      "mobile": {
+       "w": 4,
+       "h": 14
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "p-media",
+   "name": "Media",
+   "config": {
+    "title": "Media",
+    "subtitle": "Living room and kitchen speakers",
+    "icon": "mdi:music",
+    "heroShow": false,
+    "size": "custom",
+    "custom": {
+     "desktop": {
+      "w": 760,
+      "h": 420
+     },
+     "tablet": {
+      "w": 740,
+      "h": 420
+     }
+    },
+    "closeButton": true,
+    "backdrop": true,
+    "outsideClose": true,
+    "escClose": true,
+    "enter": "scale",
+    "exit": "fade",
+    "speed": "normal"
+   },
+   "items": [
+    {
+     "id": "pm-0",
+     "type": "media",
+     "parent": null,
+     "config": {
+      "variant": "artwork",
+      "name": "Living room",
+      "entity": "media_player.demo_living"
+     },
+     "frame": {
+      "desktop": {
+       "x": 24,
+       "y": 20,
+       "w": 400,
+       "h": 320
+      },
+      "tablet": {
+       "x": 24,
+       "y": 20,
+       "w": 400,
+       "h": 320
+      }
+     },
+     "layout": {
+      "mobile": {
+       "w": 4,
+       "h": 12
+      }
+     }
+    },
+    {
+     "id": "pm-1",
+     "type": "media",
+     "parent": null,
+     "config": {
+      "variant": "compact",
+      "name": "Kitchen",
+      "entity": "media_player.demo_kitchen"
+     },
+     "frame": {
+      "desktop": {
+       "x": 440,
+       "y": 20,
+       "w": 296,
+       "h": 160
+      },
+      "tablet": {
+       "x": 440,
+       "y": 20,
+       "w": 268,
+       "h": 160
+      }
+     },
+     "layout": {
+      "mobile": {
+       "w": 4,
+       "h": 6
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "p-climate",
+   "name": "Climate",
+   "config": {
+    "title": "Climate",
+    "subtitle": "Every room · set the temperature",
+    "icon": "mdi:thermostat",
+    "heroShow": false,
+    "size": "custom",
+    "custom": {
+     "desktop": {
+      "w": 800,
+      "h": 600
+     },
+     "tablet": {
+      "w": 740,
+      "h": 600
+     }
+    },
+    "closeButton": true,
+    "backdrop": true,
+    "outsideClose": true,
+    "escClose": true,
+    "enter": "scale",
+    "exit": "fade",
+    "speed": "normal"
+   },
+   "items": [
+    {
+     "id": "pc-main",
+     "type": "climate",
+     "parent": null,
+     "config": {
+      "variant": "dial",
+      "name": "Living room",
+      "entity": "climate.demo_living",
+      "hvacModes": [
+       "heat",
+       "off"
+      ]
+     },
+     "frame": {
+      "desktop": {
+       "x": 24,
+       "y": 20,
+       "w": 340,
+       "h": 480
+      },
+      "tablet": {
+       "x": 24,
+       "y": 20,
+       "w": 340,
+       "h": 480
+      }
+     },
+     "layout": {
+      "mobile": {
+       "w": 4,
+       "h": 18
+      }
+     }
+    },
+    {
+     "id": "pc-bedroom",
+     "type": "climate",
+     "parent": null,
+     "config": {
+      "variant": "compact",
+      "name": "Bedroom",
+      "entity": "climate.demo_bedroom",
+      "hvacModes": [
+       "heat",
+       "off"
+      ]
+     },
+     "frame": {
+      "desktop": {
+       "x": 384,
+       "y": 20,
+       "w": 352,
+       "h": 148
+      },
+      "tablet": {
+       "x": 384,
+       "y": 20,
+       "w": 324,
+       "h": 148
+      }
+     },
+     "layout": {
+      "mobile": {
+       "w": 4,
+       "h": 6
+      }
+     }
+    },
+    {
+     "id": "pc-bathroom",
+     "type": "climate",
+     "parent": null,
+     "config": {
+      "variant": "compact",
+      "name": "Bathroom",
+      "entity": "climate.demo_bathroom",
+      "hvacModes": [
+       "heat",
+       "off"
+      ]
+     },
+     "frame": {
+      "desktop": {
+       "x": 384,
+       "y": 180,
+       "w": 352,
+       "h": 148
+      },
+      "tablet": {
+       "x": 384,
+       "y": 180,
+       "w": 324,
+       "h": 148
+      }
+     },
+     "layout": {
+      "mobile": {
+       "w": 4,
+       "h": 6
+      }
+     }
+    },
+    {
+     "id": "pc-office",
+     "type": "climate",
+     "parent": null,
+     "config": {
+      "variant": "compact",
+      "name": "Office",
+      "entity": "climate.demo_office",
+      "hvacModes": [
+       "heat",
+       "off"
+      ]
+     },
+     "frame": {
+      "desktop": {
+       "x": 384,
+       "y": 340,
+       "w": 352,
+       "h": 148
+      },
+      "tablet": {
+       "x": 384,
+       "y": 340,
+       "w": 324,
+       "h": 148
+      }
+     },
+     "layout": {
+      "mobile": {
+       "w": 4,
+       "h": 6
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "p-room-living",
+   "name": "Living room",
+   "config": {
+    "title": "Living room",
+    "subtitle": "Media · Lights",
+    "icon": "mdi:sofa-outline",
+    "heroShow": true,
+    "size": "custom",
+    "custom": {
+     "desktop": {
+      "w": 900,
+      "h": 532
+     },
+     "tablet": {
+      "w": 740,
+      "h": 622
+     }
+    },
+    "closeButton": true,
+    "backdrop": true,
+    "outsideClose": true,
+    "escClose": true,
+    "enter": "scale",
+    "exit": "fade",
+    "speed": "normal",
+    "image": "assets/img/photos/room-living.jpg",
+    "hero": "small",
+    "overlay": "medium",
+    "titleSize": "large",
+    "backButton": true,
+    "heroInfo": [
+     {
+      "id": "h1",
+      "entity": "sensor.demo_living_humidity",
+      "value": "state",
+      "label": "Humidity",
+      "icon": "mdi:water-outline",
+      "color": "info",
+      "slot": "left",
+      "style": "card"
+     },
+     {
+      "id": "h2",
+      "entity": "sensor.demo_living_temperature",
+      "value": "state",
+      "label": "Room temperature",
+      "slot": "center",
+      "style": "emphasis",
+      "valueSize": "l"
+     },
+     {
+      "id": "h3",
+      "entity": "sensor.demo_living_lights_on",
+      "value": "state",
+      "label": "Lights on",
+      "icon": "mdi:lightbulb-on-outline",
+      "color": "warning",
+      "slot": "right",
+      "style": "card"
+     }
+    ]
+   },
+   "items": [
+    {
+     "id": "p-room-living-tabs",
+     "type": "tabs",
+     "parent": null,
+     "config": {
+      "title": "Living room tabs",
+      "tabs": [
+       {
+        "id": "active",
+        "label": "Active"
+       },
+       {
+        "id": "lights",
+        "label": "Lights"
+       },
+       {
+        "id": "heating",
+        "label": "Heating"
+       },
+       {
+        "id": "media",
+        "label": "Media"
+       },
+       {
+        "id": "security",
+        "label": "Security"
+       },
+       {
+        "id": "sensors",
+        "label": "Sensors"
+       }
+      ],
+      "align": "center",
+      "style": "bare",
+      "tabHeight": 34,
+      "textSize": 13,
+      "padX": 14,
+      "tabGap": 6,
+      "nav": {
+       "mode": "both"
+      }
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 9,
+       "h": 13
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 8,
+       "h": 13
+      },
+      "mobile": {
+       "w": 4,
+       "h": 9
+      }
+     },
+     "frame": {
+      "desktop": {
+       "x": 0,
+       "y": 0,
+       "w": 868,
+       "h": 262
+      },
+      "tablet": {
+       "x": 0,
+       "y": 0,
+       "w": 708,
+       "h": 352
+      }
+     }
+    },
+    {
+     "id": "p-room-living-0",
+     "type": "activity",
+     "parent": "p-room-living-tabs",
+     "tab": "active",
+     "config": {
+      "name": "Active now",
+      "show": "active",
+      "emptyText": "Nothing is on in the living room",
+      "max": 4,
+      "entries": [
+       {
+        "entity": "light.demo_living_ceiling",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_living_floor",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_living_strip",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "climate.demo_living",
+        "icon": "mdi:fire",
+        "color": "warning"
+       },
+       {
+        "entity": "media_player.demo_living",
+        "icon": "mdi:music",
+        "color": "accent"
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 9,
+       "h": 8
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 8,
+       "h": 8
+      },
+      "mobile": {
+       "w": 4,
+       "h": 10
+      }
+     }
+    },
+    {
+     "id": "p-room-living-1",
+     "type": "light",
+     "parent": "p-room-living-tabs",
+     "tab": "lights",
+     "config": {
+      "variant": "compact",
+      "name": "Ceiling",
+      "entity": "light.demo_living_ceiling"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "p-room-living-2",
+     "type": "light",
+     "parent": "p-room-living-tabs",
+     "tab": "lights",
+     "config": {
+      "variant": "compact",
+      "name": "Floor lamp",
+      "entity": "light.demo_living_floor"
+     },
+     "layout": {
+      "desktop": {
+       "x": 4,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 5,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "p-room-living-3",
+     "type": "light",
+     "parent": "p-room-living-tabs",
+     "tab": "lights",
+     "config": {
+      "variant": "compact",
+      "name": "LED strip",
+      "entity": "light.demo_living_strip"
+     },
+     "layout": {
+      "desktop": {
+       "x": 7,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 5,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "p-room-living-4",
+     "type": "climate",
+     "parent": "p-room-living-tabs",
+     "tab": "heating",
+     "config": {
+      "variant": "compact",
+      "name": "Living room",
+      "entity": "climate.demo_living"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 7
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 7
+      },
+      "mobile": {
+       "w": 4,
+       "h": 8
+      }
+     }
+    },
+    {
+     "id": "p-room-living-5",
+     "type": "media",
+     "parent": "p-room-living-tabs",
+     "tab": "media",
+     "config": {
+      "variant": "minibar",
+      "name": "Living room",
+      "entity": "media_player.demo_living"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 9,
+       "h": 3
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 8,
+       "h": 3
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "p-room-living-6",
+     "type": "sensor",
+     "parent": "p-room-living-tabs",
+     "tab": "security",
+     "config": {
+      "variant": "standard",
+      "name": "Living window",
+      "entity": "binary_sensor.demo_living_window",
+      "icon": "mdi:window-closed-variant"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-living-7",
+     "type": "sensor",
+     "parent": "p-room-living-tabs",
+     "tab": "security",
+     "config": {
+      "variant": "standard",
+      "name": "Living motion",
+      "entity": "binary_sensor.demo_living_motion",
+      "icon": "mdi:walk"
+     },
+     "layout": {
+      "desktop": {
+       "x": 4,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 5,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-living-8",
+     "type": "sensor",
+     "parent": "p-room-living-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Temperature",
+      "entity": "sensor.demo_living_temperature",
+      "icon": "mdi:thermometer"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-living-9",
+     "type": "sensor",
+     "parent": "p-room-living-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Humidity",
+      "entity": "sensor.demo_living_humidity",
+      "icon": "mdi:water-percent"
+     },
+     "layout": {
+      "desktop": {
+       "x": 4,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 5,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-living-10",
+     "type": "sensor",
+     "parent": "p-room-living-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Light level",
+      "entity": "sensor.demo_living_illuminance",
+      "icon": "mdi:brightness-6"
+     },
+     "layout": {
+      "desktop": {
+       "x": 7,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 5,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-living-11",
+     "type": "sensor",
+     "parent": "p-room-living-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Power",
+      "entity": "sensor.demo_living_power",
+      "icon": "mdi:flash-outline"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 5,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 5,
+       "y": 5,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-living-12",
+     "type": "sensor",
+     "parent": "p-room-living-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Energy",
+      "entity": "sensor.demo_living_energy",
+      "icon": "mdi:lightning-bolt"
+     },
+     "layout": {
+      "desktop": {
+       "x": 4,
+       "y": 5,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 9,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "p-room-kitchen",
+   "name": "Kitchen",
+   "config": {
+    "title": "Kitchen",
+    "subtitle": "Lights · Switches",
+    "icon": "mdi:stove",
+    "heroShow": true,
+    "size": "custom",
+    "custom": {
+     "desktop": {
+      "w": 900,
+      "h": 532
+     },
+     "tablet": {
+      "w": 740,
+      "h": 518
+     }
+    },
+    "closeButton": true,
+    "backdrop": true,
+    "outsideClose": true,
+    "escClose": true,
+    "enter": "scale",
+    "exit": "fade",
+    "speed": "normal",
+    "image": "assets/img/photos/room-kitchen.jpg",
+    "hero": "small",
+    "overlay": "medium",
+    "titleSize": "large",
+    "backButton": true,
+    "heroInfo": [
+     {
+      "id": "h1",
+      "entity": "sensor.demo_kitchen_humidity",
+      "value": "state",
+      "label": "Humidity",
+      "icon": "mdi:water-outline",
+      "color": "info",
+      "slot": "left",
+      "style": "card"
+     },
+     {
+      "id": "h2",
+      "entity": "sensor.demo_kitchen_temperature",
+      "value": "state",
+      "label": "Room temperature",
+      "slot": "center",
+      "style": "emphasis",
+      "valueSize": "l"
+     },
+     {
+      "id": "h3",
+      "entity": "sensor.demo_kitchen_lights_on",
+      "value": "state",
+      "label": "Lights on",
+      "icon": "mdi:lightbulb-on-outline",
+      "color": "warning",
+      "slot": "right",
+      "style": "card"
+     }
+    ]
+   },
+   "items": [
+    {
+     "id": "p-room-kitchen-tabs",
+     "type": "tabs",
+     "parent": null,
+     "config": {
+      "title": "Kitchen tabs",
+      "tabs": [
+       {
+        "id": "active",
+        "label": "Active"
+       },
+       {
+        "id": "lights",
+        "label": "Lights"
+       },
+       {
+        "id": "media",
+        "label": "Media"
+       },
+       {
+        "id": "security",
+        "label": "Security"
+       },
+       {
+        "id": "sensors",
+        "label": "Sensors"
+       }
+      ],
+      "align": "center",
+      "style": "bare",
+      "tabHeight": 34,
+      "textSize": 13,
+      "padX": 14,
+      "tabGap": 6,
+      "nav": {
+       "mode": "both"
+      }
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 9,
+       "h": 13
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 8,
+       "h": 13
+      },
+      "mobile": {
+       "w": 4,
+       "h": 8
+      }
+     },
+     "frame": {
+      "desktop": {
+       "x": 0,
+       "y": 0,
+       "w": 868,
+       "h": 262
+      },
+      "tablet": {
+       "x": 0,
+       "y": 0,
+       "w": 708,
+       "h": 248
+      }
+     }
+    },
+    {
+     "id": "p-room-kitchen-0",
+     "type": "activity",
+     "parent": "p-room-kitchen-tabs",
+     "tab": "active",
+     "config": {
+      "name": "Active now",
+      "show": "active",
+      "emptyText": "Nothing is on in the kitchen",
+      "max": 4,
+      "entries": [
+       {
+        "entity": "light.demo_kitchen_main",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_kitchen_cabinet",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "media_player.demo_kitchen",
+        "icon": "mdi:music",
+        "color": "accent"
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 9,
+       "h": 8
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 8,
+       "h": 8
+      },
+      "mobile": {
+       "w": 4,
+       "h": 10
+      }
+     }
+    },
+    {
+     "id": "p-room-kitchen-1",
+     "type": "light",
+     "parent": "p-room-kitchen-tabs",
+     "tab": "lights",
+     "config": {
+      "variant": "compact",
+      "name": "Main lights",
+      "entity": "light.demo_kitchen_main"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "p-room-kitchen-2",
+     "type": "light",
+     "parent": "p-room-kitchen-tabs",
+     "tab": "lights",
+     "config": {
+      "variant": "compact",
+      "name": "Under-cabinet",
+      "entity": "light.demo_kitchen_cabinet"
+     },
+     "layout": {
+      "desktop": {
+       "x": 4,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 5,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "p-room-kitchen-3",
+     "type": "media",
+     "parent": "p-room-kitchen-tabs",
+     "tab": "media",
+     "config": {
+      "variant": "minibar",
+      "name": "Kitchen",
+      "entity": "media_player.demo_kitchen"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 9,
+       "h": 3
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 8,
+       "h": 3
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "p-room-kitchen-4",
+     "type": "lock",
+     "parent": "p-room-kitchen-tabs",
+     "tab": "security",
+     "config": {
+      "name": "Back door lock",
+      "entity": "lock.demo_back_door",
+      "confirmUnlock": true
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-kitchen-5",
+     "type": "sensor",
+     "parent": "p-room-kitchen-tabs",
+     "tab": "security",
+     "config": {
+      "variant": "standard",
+      "name": "Back door",
+      "entity": "binary_sensor.demo_back_door",
+      "icon": "mdi:door"
+     },
+     "layout": {
+      "desktop": {
+       "x": 4,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 5,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-kitchen-6",
+     "type": "sensor",
+     "parent": "p-room-kitchen-tabs",
+     "tab": "security",
+     "config": {
+      "variant": "standard",
+      "name": "Kitchen leak",
+      "entity": "binary_sensor.demo_kitchen_leak",
+      "icon": "mdi:water-alert-outline"
+     },
+     "layout": {
+      "desktop": {
+       "x": 7,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 5,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-kitchen-7",
+     "type": "sensor",
+     "parent": "p-room-kitchen-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Temperature",
+      "entity": "sensor.demo_kitchen_temperature",
+      "icon": "mdi:thermometer"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-kitchen-8",
+     "type": "sensor",
+     "parent": "p-room-kitchen-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Humidity",
+      "entity": "sensor.demo_kitchen_humidity",
+      "icon": "mdi:water-percent"
+     },
+     "layout": {
+      "desktop": {
+       "x": 4,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 5,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-kitchen-9",
+     "type": "sensor",
+     "parent": "p-room-kitchen-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Power",
+      "entity": "sensor.demo_kitchen_power",
+      "icon": "mdi:flash-outline"
+     },
+     "layout": {
+      "desktop": {
+       "x": 7,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 5,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "p-room-dining",
+   "name": "Dining room",
+   "config": {
+    "title": "Dining room",
+    "subtitle": "Lights · Media",
+    "icon": "mdi:silverware-fork-knife",
+    "heroShow": true,
+    "size": "custom",
+    "custom": {
+     "desktop": {
+      "w": 900,
+      "h": 476
+     },
+     "tablet": {
+      "w": 740,
+      "h": 466
+     }
+    },
+    "closeButton": true,
+    "backdrop": true,
+    "outsideClose": true,
+    "escClose": true,
+    "enter": "scale",
+    "exit": "fade",
+    "speed": "normal",
+    "image": "assets/img/photos/room-dining.jpg",
+    "hero": "small",
+    "overlay": "medium",
+    "titleSize": "large",
+    "backButton": true,
+    "heroInfo": [
+     {
+      "id": "h1",
+      "entity": "sensor.demo_dining_humidity",
+      "value": "state",
+      "label": "Humidity",
+      "icon": "mdi:water-outline",
+      "color": "info",
+      "slot": "left",
+      "style": "card"
+     },
+     {
+      "id": "h2",
+      "entity": "sensor.demo_dining_temperature",
+      "value": "state",
+      "label": "Room temperature",
+      "slot": "center",
+      "style": "emphasis",
+      "valueSize": "l"
+     },
+     {
+      "id": "h3",
+      "entity": "sensor.demo_dining_lights_on",
+      "value": "state",
+      "label": "Lights on",
+      "icon": "mdi:lightbulb-on-outline",
+      "color": "warning",
+      "slot": "right",
+      "style": "card"
+     }
+    ]
+   },
+   "items": [
+    {
+     "id": "p-room-dining-tabs",
+     "type": "tabs",
+     "parent": null,
+     "config": {
+      "title": "Dining room tabs",
+      "tabs": [
+       {
+        "id": "active",
+        "label": "Active"
+       },
+       {
+        "id": "lights",
+        "label": "Lights"
+       },
+       {
+        "id": "media",
+        "label": "Media"
+       },
+       {
+        "id": "sensors",
+        "label": "Sensors"
+       }
+      ],
+      "align": "center",
+      "style": "bare",
+      "tabHeight": 34,
+      "textSize": 13,
+      "padX": 14,
+      "tabGap": 6,
+      "nav": {
+       "mode": "both"
+      }
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 9,
+       "h": 13
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 8,
+       "h": 13
+      },
+      "mobile": {
+       "w": 4,
+       "h": 8
+      }
+     },
+     "frame": {
+      "desktop": {
+       "x": 0,
+       "y": 0,
+       "w": 868,
+       "h": 206
+      },
+      "tablet": {
+       "x": 0,
+       "y": 0,
+       "w": 708,
+       "h": 196
+      }
+     }
+    },
+    {
+     "id": "p-room-dining-0",
+     "type": "activity",
+     "parent": "p-room-dining-tabs",
+     "tab": "active",
+     "config": {
+      "name": "Active now",
+      "show": "active",
+      "emptyText": "Nothing is on in the dining room",
+      "max": 4,
+      "entries": [
+       {
+        "entity": "light.demo_dining_pendant",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "media_player.demo_kitchen",
+        "icon": "mdi:music",
+        "color": "accent"
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 9,
+       "h": 6
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 8,
+       "h": 6
+      },
+      "mobile": {
+       "w": 4,
+       "h": 8
+      }
+     }
+    },
+    {
+     "id": "p-room-dining-1",
+     "type": "light",
+     "parent": "p-room-dining-tabs",
+     "tab": "lights",
+     "config": {
+      "variant": "compact",
+      "name": "Pendant",
+      "entity": "light.demo_dining_pendant"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "p-room-dining-2",
+     "type": "media",
+     "parent": "p-room-dining-tabs",
+     "tab": "media",
+     "config": {
+      "variant": "minibar",
+      "name": "Dining room",
+      "entity": "media_player.demo_kitchen"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 9,
+       "h": 3
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 8,
+       "h": 3
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "p-room-dining-3",
+     "type": "sensor",
+     "parent": "p-room-dining-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Temperature",
+      "entity": "sensor.demo_dining_temperature",
+      "icon": "mdi:thermometer"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-dining-4",
+     "type": "sensor",
+     "parent": "p-room-dining-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Humidity",
+      "entity": "sensor.demo_dining_humidity",
+      "icon": "mdi:water-percent"
+     },
+     "layout": {
+      "desktop": {
+       "x": 4,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 5,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "p-room-bedroom",
+   "name": "Bedroom",
+   "config": {
+    "title": "Bedroom",
+    "subtitle": "Lights · Climate",
+    "icon": "mdi:weather-night",
+    "heroShow": true,
+    "size": "custom",
+    "custom": {
+     "desktop": {
+      "w": 900,
+      "h": 532
+     },
+     "tablet": {
+      "w": 740,
+      "h": 518
+     }
+    },
+    "closeButton": true,
+    "backdrop": true,
+    "outsideClose": true,
+    "escClose": true,
+    "enter": "scale",
+    "exit": "fade",
+    "speed": "normal",
+    "image": "assets/img/photos/room-bedroom.jpg",
+    "hero": "small",
+    "overlay": "medium",
+    "titleSize": "large",
+    "backButton": true,
+    "heroInfo": [
+     {
+      "id": "h1",
+      "entity": "sensor.demo_bedroom_humidity",
+      "value": "state",
+      "label": "Humidity",
+      "icon": "mdi:water-outline",
+      "color": "info",
+      "slot": "left",
+      "style": "card"
+     },
+     {
+      "id": "h2",
+      "entity": "sensor.demo_bedroom_temperature",
+      "value": "state",
+      "label": "Room temperature",
+      "slot": "center",
+      "style": "emphasis",
+      "valueSize": "l"
+     },
+     {
+      "id": "h3",
+      "entity": "sensor.demo_bedroom_lights_on",
+      "value": "state",
+      "label": "Lights on",
+      "icon": "mdi:lightbulb-on-outline",
+      "color": "warning",
+      "slot": "right",
+      "style": "card"
+     }
+    ]
+   },
+   "items": [
+    {
+     "id": "p-room-bedroom-tabs",
+     "type": "tabs",
+     "parent": null,
+     "config": {
+      "title": "Bedroom tabs",
+      "tabs": [
+       {
+        "id": "active",
+        "label": "Active"
+       },
+       {
+        "id": "lights",
+        "label": "Lights"
+       },
+       {
+        "id": "heating",
+        "label": "Heating"
+       },
+       {
+        "id": "security",
+        "label": "Security"
+       },
+       {
+        "id": "sensors",
+        "label": "Sensors"
+       }
+      ],
+      "align": "center",
+      "style": "bare",
+      "tabHeight": 34,
+      "textSize": 13,
+      "padX": 14,
+      "tabGap": 6,
+      "nav": {
+       "mode": "both"
+      }
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 9,
+       "h": 13
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 8,
+       "h": 13
+      },
+      "mobile": {
+       "w": 4,
+       "h": 8
+      }
+     },
+     "frame": {
+      "desktop": {
+       "x": 0,
+       "y": 0,
+       "w": 868,
+       "h": 262
+      },
+      "tablet": {
+       "x": 0,
+       "y": 0,
+       "w": 708,
+       "h": 248
+      }
+     }
+    },
+    {
+     "id": "p-room-bedroom-0",
+     "type": "activity",
+     "parent": "p-room-bedroom-tabs",
+     "tab": "active",
+     "config": {
+      "name": "Active now",
+      "show": "active",
+      "emptyText": "Nothing is on in the bedroom",
+      "max": 4,
+      "entries": [
+       {
+        "entity": "light.demo_bedroom_ceiling",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_bedside_left",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_bedside_right",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "climate.demo_bedroom",
+        "icon": "mdi:fire",
+        "color": "warning"
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 9,
+       "h": 8
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 8,
+       "h": 8
+      },
+      "mobile": {
+       "w": 4,
+       "h": 10
+      }
+     }
+    },
+    {
+     "id": "p-room-bedroom-1",
+     "type": "light",
+     "parent": "p-room-bedroom-tabs",
+     "tab": "lights",
+     "config": {
+      "variant": "compact",
+      "name": "Ceiling",
+      "entity": "light.demo_bedroom_ceiling"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "p-room-bedroom-2",
+     "type": "light",
+     "parent": "p-room-bedroom-tabs",
+     "tab": "lights",
+     "config": {
+      "variant": "compact",
+      "name": "Bedside left",
+      "entity": "light.demo_bedside_left"
+     },
+     "layout": {
+      "desktop": {
+       "x": 4,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 5,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "p-room-bedroom-3",
+     "type": "light",
+     "parent": "p-room-bedroom-tabs",
+     "tab": "lights",
+     "config": {
+      "variant": "compact",
+      "name": "Bedside right",
+      "entity": "light.demo_bedside_right"
+     },
+     "layout": {
+      "desktop": {
+       "x": 7,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 5,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "p-room-bedroom-4",
+     "type": "climate",
+     "parent": "p-room-bedroom-tabs",
+     "tab": "heating",
+     "config": {
+      "variant": "compact",
+      "name": "Bedroom",
+      "entity": "climate.demo_bedroom"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 7
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 7
+      },
+      "mobile": {
+       "w": 4,
+       "h": 8
+      }
+     }
+    },
+    {
+     "id": "p-room-bedroom-5",
+     "type": "sensor",
+     "parent": "p-room-bedroom-tabs",
+     "tab": "security",
+     "config": {
+      "variant": "standard",
+      "name": "Bedroom window",
+      "entity": "binary_sensor.demo_bedroom_window",
+      "icon": "mdi:window-closed-variant"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-bedroom-6",
+     "type": "sensor",
+     "parent": "p-room-bedroom-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Temperature",
+      "entity": "sensor.demo_bedroom_temperature",
+      "icon": "mdi:thermometer"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-bedroom-7",
+     "type": "sensor",
+     "parent": "p-room-bedroom-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Humidity",
+      "entity": "sensor.demo_bedroom_humidity",
+      "icon": "mdi:water-percent"
+     },
+     "layout": {
+      "desktop": {
+       "x": 4,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 5,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-bedroom-8",
+     "type": "sensor",
+     "parent": "p-room-bedroom-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Light level",
+      "entity": "sensor.demo_bedroom_illuminance",
+      "icon": "mdi:brightness-6"
+     },
+     "layout": {
+      "desktop": {
+       "x": 7,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 5,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "p-room-bathroom",
+   "name": "Bathroom",
+   "config": {
+    "title": "Bathroom",
+    "subtitle": "Lights · Sensors",
+    "icon": "mdi:water-outline",
+    "heroShow": true,
+    "size": "custom",
+    "custom": {
+     "desktop": {
+      "w": 900,
+      "h": 532
+     },
+     "tablet": {
+      "w": 740,
+      "h": 518
+     }
+    },
+    "closeButton": true,
+    "backdrop": true,
+    "outsideClose": true,
+    "escClose": true,
+    "enter": "scale",
+    "exit": "fade",
+    "speed": "normal",
+    "image": "assets/img/photos/room-bathroom.jpg",
+    "hero": "small",
+    "overlay": "medium",
+    "titleSize": "large",
+    "backButton": true,
+    "heroInfo": [
+     {
+      "id": "h1",
+      "entity": "sensor.demo_bathroom_humidity",
+      "value": "state",
+      "label": "Humidity",
+      "icon": "mdi:water-outline",
+      "color": "info",
+      "slot": "left",
+      "style": "card"
+     },
+     {
+      "id": "h2",
+      "entity": "sensor.demo_bathroom_temperature",
+      "value": "state",
+      "label": "Room temperature",
+      "slot": "center",
+      "style": "emphasis",
+      "valueSize": "l"
+     },
+     {
+      "id": "h3",
+      "entity": "sensor.demo_bathroom_lights_on",
+      "value": "state",
+      "label": "Lights on",
+      "icon": "mdi:lightbulb-on-outline",
+      "color": "warning",
+      "slot": "right",
+      "style": "card"
+     }
+    ]
+   },
+   "items": [
+    {
+     "id": "p-room-bathroom-tabs",
+     "type": "tabs",
+     "parent": null,
+     "config": {
+      "title": "Bathroom tabs",
+      "tabs": [
+       {
+        "id": "active",
+        "label": "Active"
+       },
+       {
+        "id": "lights",
+        "label": "Lights"
+       },
+       {
+        "id": "heating",
+        "label": "Heating"
+       },
+       {
+        "id": "security",
+        "label": "Security"
+       },
+       {
+        "id": "sensors",
+        "label": "Sensors"
+       }
+      ],
+      "align": "center",
+      "style": "bare",
+      "tabHeight": 34,
+      "textSize": 13,
+      "padX": 14,
+      "tabGap": 6,
+      "nav": {
+       "mode": "both"
+      }
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 9,
+       "h": 13
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 8,
+       "h": 13
+      },
+      "mobile": {
+       "w": 4,
+       "h": 8
+      }
+     },
+     "frame": {
+      "desktop": {
+       "x": 0,
+       "y": 0,
+       "w": 868,
+       "h": 262
+      },
+      "tablet": {
+       "x": 0,
+       "y": 0,
+       "w": 708,
+       "h": 248
+      }
+     }
+    },
+    {
+     "id": "p-room-bathroom-0",
+     "type": "activity",
+     "parent": "p-room-bathroom-tabs",
+     "tab": "active",
+     "config": {
+      "name": "Active now",
+      "show": "active",
+      "emptyText": "Nothing is on in the bathroom",
+      "max": 4,
+      "entries": [
+       {
+        "entity": "light.demo_bathroom_mirror",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_bathroom_ceiling",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "climate.demo_bathroom",
+        "icon": "mdi:fire",
+        "color": "warning"
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 9,
+       "h": 8
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 8,
+       "h": 8
+      },
+      "mobile": {
+       "w": 4,
+       "h": 10
+      }
+     }
+    },
+    {
+     "id": "p-room-bathroom-1",
+     "type": "light",
+     "parent": "p-room-bathroom-tabs",
+     "tab": "lights",
+     "config": {
+      "variant": "compact",
+      "name": "Mirror",
+      "entity": "light.demo_bathroom_mirror"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "p-room-bathroom-2",
+     "type": "light",
+     "parent": "p-room-bathroom-tabs",
+     "tab": "lights",
+     "config": {
+      "variant": "compact",
+      "name": "Ceiling",
+      "entity": "light.demo_bathroom_ceiling"
+     },
+     "layout": {
+      "desktop": {
+       "x": 4,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 5,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "p-room-bathroom-3",
+     "type": "climate",
+     "parent": "p-room-bathroom-tabs",
+     "tab": "heating",
+     "config": {
+      "variant": "compact",
+      "name": "Bathroom",
+      "entity": "climate.demo_bathroom"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 7
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 7
+      },
+      "mobile": {
+       "w": 4,
+       "h": 8
+      }
+     }
+    },
+    {
+     "id": "p-room-bathroom-4",
+     "type": "sensor",
+     "parent": "p-room-bathroom-tabs",
+     "tab": "security",
+     "config": {
+      "variant": "standard",
+      "name": "Bathroom leak",
+      "entity": "binary_sensor.demo_bathroom_leak",
+      "icon": "mdi:water-alert-outline"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-bathroom-5",
+     "type": "sensor",
+     "parent": "p-room-bathroom-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Temperature",
+      "entity": "sensor.demo_bathroom_temperature",
+      "icon": "mdi:thermometer"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-bathroom-6",
+     "type": "sensor",
+     "parent": "p-room-bathroom-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Humidity",
+      "entity": "sensor.demo_bathroom_humidity",
+      "icon": "mdi:water-percent"
+     },
+     "layout": {
+      "desktop": {
+       "x": 4,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 5,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-bathroom-7",
+     "type": "sensor",
+     "parent": "p-room-bathroom-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Washing machine",
+      "entity": "sensor.demo_washer_state",
+      "icon": "mdi:gauge"
+     },
+     "layout": {
+      "desktop": {
+       "x": 7,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 5,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "p-room-office",
+   "name": "Office",
+   "config": {
+    "title": "Office",
+    "subtitle": "Lights · Climate",
+    "icon": "mdi:monitor",
+    "heroShow": true,
+    "size": "custom",
+    "custom": {
+     "desktop": {
+      "w": 900,
+      "h": 532
+     },
+     "tablet": {
+      "w": 740,
+      "h": 518
+     }
+    },
+    "closeButton": true,
+    "backdrop": true,
+    "outsideClose": true,
+    "escClose": true,
+    "enter": "scale",
+    "exit": "fade",
+    "speed": "normal",
+    "image": "assets/img/photos/room-office.jpg",
+    "hero": "small",
+    "overlay": "medium",
+    "titleSize": "large",
+    "backButton": true,
+    "heroInfo": [
+     {
+      "id": "h1",
+      "entity": "sensor.demo_office_humidity",
+      "value": "state",
+      "label": "Humidity",
+      "icon": "mdi:water-outline",
+      "color": "info",
+      "slot": "left",
+      "style": "card"
+     },
+     {
+      "id": "h2",
+      "entity": "sensor.demo_office_temperature",
+      "value": "state",
+      "label": "Room temperature",
+      "slot": "center",
+      "style": "emphasis",
+      "valueSize": "l"
+     },
+     {
+      "id": "h3",
+      "entity": "sensor.demo_office_lights_on",
+      "value": "state",
+      "label": "Lights on",
+      "icon": "mdi:lightbulb-on-outline",
+      "color": "warning",
+      "slot": "right",
+      "style": "card"
+     }
+    ]
+   },
+   "items": [
+    {
+     "id": "p-room-office-tabs",
+     "type": "tabs",
+     "parent": null,
+     "config": {
+      "title": "Office tabs",
+      "tabs": [
+       {
+        "id": "active",
+        "label": "Active"
+       },
+       {
+        "id": "lights",
+        "label": "Lights"
+       },
+       {
+        "id": "heating",
+        "label": "Heating"
+       },
+       {
+        "id": "security",
+        "label": "Security"
+       },
+       {
+        "id": "sensors",
+        "label": "Sensors"
+       }
+      ],
+      "align": "center",
+      "style": "bare",
+      "tabHeight": 34,
+      "textSize": 13,
+      "padX": 14,
+      "tabGap": 6,
+      "nav": {
+       "mode": "both"
+      }
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 9,
+       "h": 13
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 8,
+       "h": 13
+      },
+      "mobile": {
+       "w": 4,
+       "h": 8
+      }
+     },
+     "frame": {
+      "desktop": {
+       "x": 0,
+       "y": 0,
+       "w": 868,
+       "h": 262
+      },
+      "tablet": {
+       "x": 0,
+       "y": 0,
+       "w": 708,
+       "h": 248
+      }
+     }
+    },
+    {
+     "id": "p-room-office-0",
+     "type": "activity",
+     "parent": "p-room-office-tabs",
+     "tab": "active",
+     "config": {
+      "name": "Active now",
+      "show": "active",
+      "emptyText": "Nothing is on in the office",
+      "max": 4,
+      "entries": [
+       {
+        "entity": "light.demo_office_desk",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "light.demo_office_ceiling",
+        "icon": "mdi:lightbulb-on",
+        "color": "warning"
+       },
+       {
+        "entity": "climate.demo_office",
+        "icon": "mdi:fire",
+        "color": "warning"
+       }
+      ]
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 9,
+       "h": 8
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 8,
+       "h": 8
+      },
+      "mobile": {
+       "w": 4,
+       "h": 10
+      }
+     }
+    },
+    {
+     "id": "p-room-office-1",
+     "type": "light",
+     "parent": "p-room-office-tabs",
+     "tab": "lights",
+     "config": {
+      "variant": "compact",
+      "name": "Desk lamp",
+      "entity": "light.demo_office_desk"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "p-room-office-2",
+     "type": "light",
+     "parent": "p-room-office-tabs",
+     "tab": "lights",
+     "config": {
+      "variant": "compact",
+      "name": "Ceiling",
+      "entity": "light.demo_office_ceiling"
+     },
+     "layout": {
+      "desktop": {
+       "x": 4,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 5,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "p-room-office-3",
+     "type": "climate",
+     "parent": "p-room-office-tabs",
+     "tab": "heating",
+     "config": {
+      "variant": "compact",
+      "name": "Office",
+      "entity": "climate.demo_office"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 7
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 7
+      },
+      "mobile": {
+       "w": 4,
+       "h": 8
+      }
+     }
+    },
+    {
+     "id": "p-room-office-4",
+     "type": "sensor",
+     "parent": "p-room-office-tabs",
+     "tab": "security",
+     "config": {
+      "variant": "standard",
+      "name": "Office window",
+      "entity": "binary_sensor.demo_office_window",
+      "icon": "mdi:window-closed-variant"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-office-5",
+     "type": "sensor",
+     "parent": "p-room-office-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Temperature",
+      "entity": "sensor.demo_office_temperature",
+      "icon": "mdi:thermometer"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-office-6",
+     "type": "sensor",
+     "parent": "p-room-office-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Humidity",
+      "entity": "sensor.demo_office_humidity",
+      "icon": "mdi:water-percent"
+     },
+     "layout": {
+      "desktop": {
+       "x": 4,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 5,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-office-7",
+     "type": "sensor",
+     "parent": "p-room-office-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Power",
+      "entity": "sensor.demo_office_power",
+      "icon": "mdi:flash-outline"
+     },
+     "layout": {
+      "desktop": {
+       "x": 7,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 5,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "p-room-garden",
+   "name": "Garden",
+   "config": {
+    "title": "Garden",
+    "subtitle": "Lights · Cameras",
+    "icon": "mdi:pine-tree",
+    "heroShow": true,
+    "size": "custom",
+    "custom": {
+     "desktop": {
+      "w": 900,
+      "h": 420
+     },
+     "tablet": {
+      "w": 740,
+      "h": 414
+     }
+    },
+    "closeButton": true,
+    "backdrop": true,
+    "outsideClose": true,
+    "escClose": true,
+    "enter": "scale",
+    "exit": "fade",
+    "speed": "normal",
+    "image": "assets/img/photos/room-garden.jpg",
+    "hero": "small",
+    "overlay": "medium",
+    "titleSize": "large",
+    "backButton": true,
+    "heroInfo": [
+     {
+      "id": "h1",
+      "entity": "sensor.demo_garden_humidity",
+      "value": "state",
+      "label": "Humidity",
+      "icon": "mdi:water-outline",
+      "color": "info",
+      "slot": "left",
+      "style": "card"
+     },
+     {
+      "id": "h2",
+      "entity": "sensor.demo_garden_temperature",
+      "value": "state",
+      "label": "Room temperature",
+      "slot": "center",
+      "style": "emphasis",
+      "valueSize": "l"
+     },
+     {
+      "id": "h3",
+      "entity": "sensor.demo_garden_lights_on",
+      "value": "state",
+      "label": "Lights on",
+      "icon": "mdi:lightbulb-on-outline",
+      "color": "warning",
+      "slot": "right",
+      "style": "card"
+     }
+    ]
+   },
+   "items": [
+    {
+     "id": "p-room-garden-tabs",
+     "type": "tabs",
+     "parent": null,
+     "config": {
+      "title": "Garden tabs",
+      "tabs": [
+       {
+        "id": "lights",
+        "label": "Lights"
+       },
+       {
+        "id": "security",
+        "label": "Security"
+       },
+       {
+        "id": "sensors",
+        "label": "Sensors"
+       }
+      ],
+      "align": "center",
+      "style": "bare",
+      "tabHeight": 34,
+      "textSize": 13,
+      "padX": 14,
+      "tabGap": 6,
+      "nav": {
+       "mode": "both"
+      }
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 9,
+       "h": 13
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 8,
+       "h": 13
+      },
+      "mobile": {
+       "w": 4,
+       "h": 8
+      }
+     },
+     "frame": {
+      "desktop": {
+       "x": 0,
+       "y": 0,
+       "w": 868,
+       "h": 150
+      },
+      "tablet": {
+       "x": 0,
+       "y": 0,
+       "w": 708,
+       "h": 144
+      }
+     }
+    },
+    {
+     "id": "p-room-garden-0",
+     "type": "light",
+     "parent": "p-room-garden-tabs",
+     "tab": "lights",
+     "config": {
+      "variant": "compact",
+      "name": "Path lights",
+      "entity": "light.demo_garden_path"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "p-room-garden-1",
+     "type": "light",
+     "parent": "p-room-garden-tabs",
+     "tab": "lights",
+     "config": {
+      "variant": "compact",
+      "name": "Spotlights",
+      "entity": "light.demo_garden_spots"
+     },
+     "layout": {
+      "desktop": {
+       "x": 4,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 5,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 4,
+       "h": 4
+      }
+     }
+    },
+    {
+     "id": "p-room-garden-2",
+     "type": "sensor",
+     "parent": "p-room-garden-tabs",
+     "tab": "security",
+     "config": {
+      "variant": "standard",
+      "name": "Garden motion",
+      "entity": "binary_sensor.demo_garden_motion",
+      "icon": "mdi:walk"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-garden-3",
+     "type": "sensor",
+     "parent": "p-room-garden-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Temperature",
+      "entity": "sensor.demo_garden_temperature",
+      "icon": "mdi:thermometer"
+     },
+     "layout": {
+      "desktop": {
+       "x": 1,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 1,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    },
+    {
+     "id": "p-room-garden-4",
+     "type": "sensor",
+     "parent": "p-room-garden-tabs",
+     "tab": "sensors",
+     "config": {
+      "variant": "standard",
+      "name": "Humidity",
+      "entity": "sensor.demo_garden_humidity",
+      "icon": "mdi:water-percent"
+     },
+     "layout": {
+      "desktop": {
+       "x": 4,
+       "y": 1,
+       "w": 3,
+       "h": 4
+      },
+      "tablet": {
+       "x": 5,
+       "y": 1,
+       "w": 4,
+       "h": 4
+      },
+      "mobile": {
+       "w": 2,
+       "h": 5
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "notifications": {
+  "templates": [
+   {
+    "id": "t-motion",
+    "name": "Motion in the garden",
+    "config": {
+     "title": "Motion in the garden",
+     "message": "Demo event · the garden motion sensor saw movement.",
+     "icon": "mdi:motion-sensor",
+     "tone": "warning",
+     "category": "Security",
+     "position": "top-right",
+     "duration": 6,
+     "closeButton": true,
+     "style": "card"
+    }
+   },
+   {
+    "id": "t-door",
+    "name": "Back door opened",
+    "config": {
+     "title": "Back door opened",
+     "message": "Demo event · the back door contact reports open.",
+     "icon": "mdi:door-open",
+     "tone": "warning",
+     "category": "Security",
+     "position": "top-right",
+     "duration": 6,
+     "closeButton": true,
+     "style": "card"
+    }
+   },
+   {
+    "id": "t-alarm",
+    "name": "Alarm triggered",
+    "config": {
+     "title": "Alarm triggered",
+     "message": "Demo event · a door opened while the alarm was armed. Disarm to acknowledge.",
+     "icon": "mdi:alarm-light-outline",
+     "tone": "danger",
+     "category": "Security",
+     "position": "top-center",
+     "duration": 6,
+     "closeButton": true,
+     "style": "card",
+     "persistent": true
+    }
+   },
+   {
+    "id": "t-armed",
+    "name": "Alarm armed",
+    "config": {
+     "title": "Alarm armed",
+     "message": "The simulated alarm is armed.",
+     "icon": "mdi:shield-lock-outline",
+     "tone": "info",
+     "category": "Security",
+     "position": "top-right",
+     "duration": 6,
+     "closeButton": true,
+     "style": "card"
+    }
+   },
+   {
+    "id": "t-disarmed",
+    "name": "Alarm disarmed",
+    "config": {
+     "title": "Alarm disarmed",
+     "message": "The simulated alarm is off.",
+     "icon": "mdi:shield-off-outline",
+     "tone": "success",
+     "category": "Security",
+     "position": "top-right",
+     "duration": 6,
+     "closeButton": true,
+     "style": "card"
+    }
+   },
+   {
+    "id": "t-ev-washer_done",
+    "name": "Demo event · Washing machine finished",
+    "config": {
+     "title": "Washing machine finished",
+     "message": "Simulated · The 40° cycle is done — time to hang the laundry.",
+     "icon": "mdi:washing-machine",
+     "tone": "success",
+     "category": "Appliances",
+     "position": "top-right",
+     "duration": 6,
+     "closeButton": true,
+     "style": "card"
+    }
+   },
+   {
+    "id": "t-ev-dishwasher_done",
+    "name": "Demo event · Dishwasher finished",
+    "config": {
+     "title": "Dishwasher finished",
+     "message": "Simulated · The eco cycle is done.",
+     "icon": "mdi:dishwasher",
+     "tone": "success",
+     "category": "Appliances",
+     "position": "top-right",
+     "duration": 6,
+     "closeButton": true,
+     "style": "card"
+    }
+   },
+   {
+    "id": "t-ev-solar_peak",
+    "name": "Demo event · Solar is running strong",
+    "config": {
+     "title": "Solar is running strong",
+     "message": "Simulated · A good moment for the dishwasher.",
+     "icon": "mdi:solar-power-variant",
+     "tone": "success",
+     "category": "Energy",
+     "position": "top-right",
+     "duration": 6,
+     "closeButton": true,
+     "style": "card"
+    }
+   },
+   {
+    "id": "t-ev-evening_lights",
+    "name": "Demo event · Evening lighting",
+    "config": {
+     "title": "Evening lighting",
+     "message": "Simulated · The hallway lights follow the evening schedule.",
+     "icon": "mdi:weather-sunset",
+     "tone": "info",
+     "category": "Lighting",
+     "position": "top-right",
+     "duration": 6,
+     "closeButton": true,
+     "style": "card"
+    }
+   },
+   {
+    "id": "t-ev-garden_motion",
+    "name": "Demo event · Motion in the garden",
+    "config": {
+     "title": "Motion in the garden",
+     "message": "Simulated · The garden camera saw movement near the shed.",
+     "icon": "mdi:motion-sensor",
+     "tone": "warning",
+     "category": "Security",
+     "position": "top-right",
+     "duration": 6,
+     "closeButton": true,
+     "style": "card"
+    }
+   },
+   {
+    "id": "t-ev-parcel",
+    "name": "Demo event · A parcel was delivered",
+    "config": {
+     "title": "A parcel was delivered",
+     "message": "Simulated · Left at the front door.",
+     "icon": "mdi:package-variant-closed",
+     "tone": "info",
+     "category": "Home",
+     "position": "top-right",
+     "duration": 6,
+     "closeButton": true,
+     "style": "card"
+    }
+   },
+   {
+    "id": "t-ev-high_use",
+    "name": "Demo event · High energy use",
+    "config": {
+     "title": "High energy use",
+     "message": "Simulated · The oven and the kettle draw 3.4 kW together.",
+     "icon": "mdi:flash-alert-outline",
+     "tone": "warning",
+     "category": "Energy",
+     "position": "top-right",
+     "duration": 6,
+     "closeButton": true,
+     "style": "card"
+    }
+   },
+   {
+    "id": "t-ev-window_reminder",
+    "name": "Demo event · Office window is open",
+    "config": {
+     "title": "Office window is open",
+     "message": "Simulated · It is 11 °C outside — close it when you leave.",
+     "icon": "mdi:window-open-variant",
+     "tone": "warning",
+     "category": "Climate",
+     "position": "top-right",
+     "duration": 6,
+     "closeButton": true,
+     "style": "card"
+    }
+   },
+   {
+    "id": "t-ev-birthday",
+    "name": "Demo event · It's Léa's birthday",
+    "config": {
+     "title": "It's Léa's birthday",
+     "message": "Simulated · Dinner at 19:00 — the cake is in the fridge.",
+     "icon": "mdi:cake-variant",
+     "tone": "success",
+     "category": "Family",
+     "position": "top-right",
+     "duration": 6,
+     "closeButton": true,
+     "style": "card"
+    }
+   }
+  ],
+  "rules": [
+   {
+    "id": "r-motion",
+    "name": "Garden motion",
+    "event": "ha.binary_sensor.demo_garden_motion.on",
+    "template": "t-motion",
+    "enabled": true
+   },
+   {
+    "id": "r-door",
+    "name": "Back door",
+    "event": "ha.binary_sensor.demo_back_door.on",
+    "template": "t-door",
+    "enabled": true
+   },
+   {
+    "id": "r-alarm",
+    "name": "Alarm triggered",
+    "event": "ha.alarm_control_panel.demo_alarm.triggered",
+    "template": "t-alarm",
+    "enabled": true
+   },
+   {
+    "id": "r-away",
+    "name": "Armed away",
+    "event": "ha.alarm_control_panel.demo_alarm.armed_away",
+    "template": "t-armed",
+    "enabled": true
+   },
+   {
+    "id": "r-home",
+    "name": "Armed home",
+    "event": "ha.alarm_control_panel.demo_alarm.armed_home",
+    "template": "t-armed",
+    "enabled": true
+   },
+   {
+    "id": "r-disarm",
+    "name": "Disarmed",
+    "event": "ha.alarm_control_panel.demo_alarm.disarmed",
+    "template": "t-disarmed",
+    "enabled": true
+   },
+   {
+    "id": "r-ev-washer_done",
+    "name": "Demo event · Washing machine finished",
+    "event": "ha.sensor.demo_event.washer_done",
+    "template": "t-ev-washer_done",
+    "enabled": true
+   },
+   {
+    "id": "r-ev-dishwasher_done",
+    "name": "Demo event · Dishwasher finished",
+    "event": "ha.sensor.demo_event.dishwasher_done",
+    "template": "t-ev-dishwasher_done",
+    "enabled": true
+   },
+   {
+    "id": "r-ev-solar_peak",
+    "name": "Demo event · Solar is running strong",
+    "event": "ha.sensor.demo_event.solar_peak",
+    "template": "t-ev-solar_peak",
+    "enabled": true
+   },
+   {
+    "id": "r-ev-evening_lights",
+    "name": "Demo event · Evening lighting",
+    "event": "ha.sensor.demo_event.evening_lights",
+    "template": "t-ev-evening_lights",
+    "enabled": true
+   },
+   {
+    "id": "r-ev-garden_motion",
+    "name": "Demo event · Motion in the garden",
+    "event": "ha.sensor.demo_event.garden_motion",
+    "template": "t-ev-garden_motion",
+    "enabled": true
+   },
+   {
+    "id": "r-ev-parcel",
+    "name": "Demo event · A parcel was delivered",
+    "event": "ha.sensor.demo_event.parcel",
+    "template": "t-ev-parcel",
+    "enabled": true
+   },
+   {
+    "id": "r-ev-high_use",
+    "name": "Demo event · High energy use",
+    "event": "ha.sensor.demo_event.high_use",
+    "template": "t-ev-high_use",
+    "enabled": true
+   },
+   {
+    "id": "r-ev-window_reminder",
+    "name": "Demo event · Office window is open",
+    "event": "ha.sensor.demo_event.window_reminder",
+    "template": "t-ev-window_reminder",
+    "enabled": true
+   },
+   {
+    "id": "r-ev-birthday",
+    "name": "Demo event · It's Léa's birthday",
+    "event": "ha.sensor.demo_event.birthday",
+    "template": "t-ev-birthday",
+    "enabled": true
+   }
+  ]
+ }
+}

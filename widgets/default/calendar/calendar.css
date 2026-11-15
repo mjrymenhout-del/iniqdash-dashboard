@@ -1,0 +1,213 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Calendar / Event Widget V1 — widget-specific CSS only (theme from assets/css/tokens.css).
+
+   Identity: a small calendar leaf (month band + today's date), the next event as the hero with an
+   accent rail (live events glow), then a quiet agenda: time column + title/place, and "+N more".
+
+   Arrangements (container "ca" = the widget's own box):
+     compact   < 260px   leaf + calendar, then the next event only
+     standard  260–479   next event + the following one(s) when the height allows
+     wide     >= 480px   next event on the left, agenda list on the right
+   ========================================================================== */
+
+.ca {
+  position: relative;
+  container: ca / size;
+  min-width: 0;
+  min-height: 92px;
+  overflow: hidden;
+  border-radius: var(--radius-device);
+  color: var(--text-primary);
+  font-family: var(--font);
+  background: var(--device-surface);
+  box-shadow: var(--device-shadow);
+}
+.ca__in {
+  height: 100%;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  grid-template-areas: "head" "legend" "next" "list" "more";
+  row-gap: 7px;
+}
+
+/* ---- header: leaf + calendar name ---- */
+.ca__head { grid-area: head; display: flex; align-items: center; gap: 9px; min-width: 0; }
+.ca__leaf {
+  flex: none;
+  width: 32px;
+  height: 34px;
+  border-radius: 7px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-tertiary);
+  box-shadow: var(--shadow-icon), 0 0 0 1px var(--border-subtle);
+  text-align: center;
+}
+.ca__leaf-m { display: block; padding: 1px 0; font-size: 11px; font-weight: 700; letter-spacing: .06em; line-height: 1.15; text-transform: uppercase; color: var(--page-bg); background: var(--accent); }
+.ca__leaf-d { flex: 1; display: grid; place-items: center; font-size: 13px; font-weight: 700; color: var(--text-primary); }
+.ca__cal { display: flex; flex-direction: column; min-width: 0; }
+.ca__cal-name { font-size: 12.5px; font-weight: 600; line-height: 1.25; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ca__cal-day { font-size: 11px; line-height: 1.25; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---- the next event ---- */
+.ca__next { grid-area: next; position: relative; min-width: 0; padding-left: 11px; }
+.ca__next::before { content: ""; position: absolute; left: 0; top: 2px; bottom: 2px; width: 3px; border-radius: 2px; background: var(--accent); }
+.ca[data-live="true"] .ca__next::before { box-shadow: 0 0 8px var(--accent-line); }
+.ca__when { margin: 0; font-size: 11.5px; font-weight: 600; line-height: 1.3; color: var(--accent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ca__title { margin: 1px 0 0; font-size: 14.5px; font-weight: var(--iq-fw-title); line-height: 1.25; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: break-word; }
+.ca__where { margin: 1px 0 0; font-size: 12px; line-height: 1.3; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ca__where[hidden] { display: none; }
+.ca__empty { margin: 0; font-size: 13px; color: var(--text-muted); }
+.ca__next:has(.ca__empty)::before { background: var(--border-primary); }
+.ca[data-state="unavailable"] .ca__leaf { opacity: var(--unavailable-opacity); filter: grayscale(1); }
+
+/* ---- agenda list ---- */
+.ca__list { grid-area: list; display: none; margin: 0; padding: 0; list-style: none; overflow: hidden; min-height: 0; }
+.ca__row { display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: 8px; padding: 6px 0; border-top: 1px solid var(--border-subtle); font-size: 12px; line-height: 1.3; }
+.ca__row[hidden] { display: none; }
+.ca__row-t { color: var(--text-secondary); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ca__row-x { display: flex; flex-direction: column; min-width: 0; }
+.ca__row-x b { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ca__row-x span { color: var(--text-muted); font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ca__row-x span:empty { display: none; }
+.ca__more { grid-area: more; display: none; margin: 0; font-size: 11.5px; font-weight: 600; color: var(--text-muted); }
+.ca__more[hidden] { display: none; }
+
+/* ---------------------------------------------------------------- standard: 260–479px */
+@container ca (min-width: 260px) {
+  .ca__in { padding: 14px 18px; }
+  .ca__title { font-size: 16px; }
+  .ca__list { display: block; }
+  .ca__more { display: block; }
+}
+
+/* ---------------------------------------------------------------- wide: ≥ 480px */
+@container ca (min-width: 480px) {
+  .ca__in {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    grid-template-areas: "head list" "legend list" "next list" ". more";
+    column-gap: 22px;
+  }
+  .ca__next { align-self: start; }
+  .ca__title { font-size: 18px; -webkit-line-clamp: 3; }
+  .ca__list { border-left: 1px solid var(--border-subtle); padding-left: 18px; }
+  .ca__row:first-child { border-top: 0; padding-top: 0; }
+  .ca__more { padding-left: 19px; }
+}
+
+/* ---------------------------------------------------------------- own size (height too)
+   narrow but tall: the agenda list appears under the next event as soon as there is room
+   (rows that do not fit completely are hidden and counted, as everywhere — calendar.js fit()) */
+@container ca (max-width: 259px) and (min-height: 220px) {
+  .ca__list { display: block; }
+  .ca__more { display: block; }
+  .ca__row { grid-template-columns: 40px minmax(0, 1fr); gap: 6px; }
+}
+/* a long strip: the agenda runs in columns beside the next event instead of a clipped list */
+@container ca (min-width: 720px) and (max-height: 239px) {
+  .ca__list { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); grid-auto-rows: max-content; column-gap: 16px; align-content: start; }
+  .ca__row, .ca__row:first-child { border-top: 0; padding-top: 0; }
+}
+/* large: the next event reads from further away */
+@container ca (min-height: 300px) and (min-width: 260px) {
+  .ca__title { font-size: clamp(16px, 4.6cqmin, 22px); }
+  .ca__when { font-size: clamp(11.5px, 3cqmin, 13.5px); }
+  .ca__row { padding: 8px 0; font-size: 12.5px; }
+}
+
+/* ==========================================================================
+   V2 — several calendars, views, navigation, details (see calendar.js)
+   ========================================================================== */
+.ca__body { display: contents; }
+.ca__body[hidden] { display: none; }
+.ca__head { position: relative; }
+.ca__cal { flex: 1; }
+.ca__nav { display: flex; gap: 4px; flex: none; }
+.ca__nav[hidden] { display: none; }
+.ca__navb { min-width: 28px; height: 28px; padding: 0 8px; border: 1px solid var(--border-subtle); border-radius: 8px; background: var(--surface-tertiary); color: var(--text-secondary); font: 600 12px/1 var(--font); cursor: pointer; }
+.ca__navb:hover { color: var(--text-primary); border-color: var(--border-primary); }
+.ca__navb:disabled { opacity: .45; cursor: default; }
+.ca__navb:focus-visible, .ca__chip:focus-visible, .ca__ev:focus-visible, .ca__hero:focus-visible, .ca__blk:focus-visible, .ca__mo-ev:focus-visible, .ca__chipev:focus-visible, .ca__close:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* the calendars (legend): a tap shows / hides one on this screen */
+.ca__legend { grid-area: legend; display: flex; flex-wrap: wrap; gap: 5px; margin: 0; padding: 0; list-style: none; min-width: 0; }
+.ca__legend[hidden] { display: none; }
+.ca__chip { display: inline-flex; align-items: center; gap: 5px; max-width: 100%; padding: 3px 8px 3px 6px; border: 1px solid var(--border-subtle); border-radius: 999px; background: transparent; color: var(--text-secondary); font: 600 11px/1.2 var(--font); cursor: pointer; }
+.ca__chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); flex: none; }
+.ca__chip span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ca__chip[aria-pressed="false"] { opacity: .5; }
+.ca__chip[aria-pressed="false"] i { background: transparent; box-shadow: inset 0 0 0 1.5px var(--c); }
+.ca__chip[data-ok="false"] { color: var(--text-muted); border-style: dashed; }
+
+/* events are buttons (details on tap) and carry their calendar's colour */
+.ca__hero, .ca__ev { all: unset; cursor: pointer; display: inline; overflow-wrap: anywhere; }
+.ca__row-x b .ca__ev { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ca__next::before { background: var(--c, var(--accent)); }
+.ca__when { color: var(--c, var(--accent)); }
+.ca__row { position: relative; }
+.ca__row-t { box-shadow: inset 3px 0 0 var(--c, transparent); padding-left: 6px; }
+
+/* the other views share one area */
+.ca__grid { grid-area: list; min-height: 0; overflow: hidden; position: relative; }
+.ca[data-view]:not([data-view="agenda"]) .ca__in { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); grid-template-areas: "head" "legend" "list"; }
+.ca__grid[hidden] { display: none; }
+
+/* LIST */
+.ca__days { height: 100%; overflow-y: auto; scrollbar-width: thin; }
+.ca__day h4 { margin: 8px 0 3px; font-size: 11.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; }
+.ca__day h4[data-today="true"] { color: var(--accent); }
+.ca__day:first-child h4 { margin-top: 0; }
+.ca__day ul { margin: 0; padding: 0; list-style: none; }
+.ca__lrow { display: grid; grid-template-columns: 52px minmax(0, 1fr); column-gap: 8px; padding: 5px 0 5px 8px; border-left: 3px solid var(--c); margin: 3px 0; font-size: 12.5px; line-height: 1.3; }
+.ca__lt { color: var(--text-secondary); font-weight: 600; font-variant-numeric: tabular-nums; }
+.ca__lrow .ca__ev { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ca__lw { grid-column: 2; color: var(--text-muted); font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* DAY / WEEK: all-day row, hours, events placed by time; overlapping ones share the width */
+.ca__tg { height: 100%; display: grid; grid-template-rows: auto auto minmax(0, 1fr); --hw: 40px; }
+.ca__tg-head, .ca__tg-all, .ca__tg-body { display: grid; grid-template-columns: var(--hw) repeat(var(--cols), minmax(0, 1fr)); }
+.ca__tg-d { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-align: center; padding-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ca__tg-d[data-today="true"] { color: var(--accent); }
+.ca__tg-all { border-bottom: 1px solid var(--border-subtle); padding-bottom: 3px; }
+.ca__tg-alll { font-size: 9.5px; color: var(--text-muted); align-self: center; }
+.ca__tg-ad { display: flex; flex-direction: column; gap: 2px; padding: 0 1px; min-width: 0; }
+.ca__chipev, .ca__mo-ev { all: unset; cursor: pointer; display: block; font-size: 10.5px; font-weight: 600; line-height: 1.35; padding: 1px 5px; border-radius: 4px; color: var(--text-primary); background: color-mix(in srgb, var(--c) 28%, transparent); box-shadow: inset 2px 0 0 var(--c); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ca__tg-body { position: relative; min-height: 0; }
+.ca__tg-hours { position: relative; }
+.ca__tg-hours span { position: absolute; right: 6px; transform: translateY(-1px); font-size: 9.5px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.ca__tg-col { position: relative; border-left: 1px solid var(--border-subtle); background-image: linear-gradient(var(--border-subtle) 1px, transparent 1px); background-size: 100% calc(100% / var(--hrs, 15)); }
+.ca__tg-col[data-today="true"] { background-color: color-mix(in srgb, var(--accent) 6%, transparent); }
+.ca__now { position: absolute; left: 0; right: 0; height: 2px; background: var(--accent); z-index: 2; pointer-events: none; }
+.ca__blk { all: unset; box-sizing: border-box; cursor: pointer; position: absolute; padding: 2px 4px; border-radius: 5px; overflow: hidden; background: color-mix(in srgb, var(--c) 30%, var(--surface-tertiary)); border-left: 3px solid var(--c); font-size: 10.5px; line-height: 1.25; color: var(--text-primary); }
+.ca__blk b { display: block; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ca__blk small { display: block; font-size: 9.5px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* MONTH */
+.ca__mo { height: 100%; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-template-rows: auto repeat(6, minmax(0, 1fr)); gap: 2px; }
+.ca__mo-wd { font-size: 10px; font-weight: 700; color: var(--text-muted); text-align: center; text-transform: uppercase; }
+.ca__mo-c { min-width: 0; min-height: 0; overflow: hidden; border-radius: 6px; padding: 2px 3px; background: var(--surface-tertiary); display: flex; flex-direction: column; gap: 1px; }
+.ca__mo-c[data-out="true"] { opacity: .45; }
+.ca__mo-c[data-today="true"] { box-shadow: inset 0 0 0 1.5px var(--accent); }
+.ca__mo-n { font-size: 10.5px; font-weight: 700; color: var(--text-secondary); }
+.ca__mo-c[data-today="true"] .ca__mo-n { color: var(--accent); }
+.ca__mo-ev { font-size: 9.5px; padding: 0 3px; }
+.ca__mo-more { font-size: 9.5px; color: var(--text-muted); font-weight: 600; }
+.ca__over { position: absolute; inset: 40% 0 auto; text-align: center; }
+
+/* DETAILS (inside the card) */
+.ca__detail { position: absolute; inset: 8px; z-index: 5; padding: 14px 16px; border-radius: calc(var(--radius-device) - 4px); background: var(--device-surface); box-shadow: 0 8px 30px rgba(0, 0, 0, .35), inset 4px 0 0 var(--c, var(--accent)); overflow: auto; }
+.ca__detail[hidden] { display: none; }
+.ca__close { position: absolute; top: 6px; right: 8px; width: 28px; height: 28px; border: 0; border-radius: 50%; background: var(--surface-tertiary); color: var(--text-secondary); font: 400 18px/1 var(--font); cursor: pointer; }
+.ca__d-cal { margin: 0 32px 2px 0; font-size: 11px; font-weight: 700; color: var(--c, var(--accent)); text-transform: uppercase; letter-spacing: .05em; }
+.ca__d-title { margin: 0 32px 6px 0; font-size: 16px; font-weight: var(--iq-fw-title); line-height: 1.25; overflow-wrap: anywhere; }
+.ca__d-when, .ca__d-where, .ca__d-desc { margin: 0 0 4px; font-size: 12.5px; color: var(--text-secondary); overflow-wrap: anywhere; }
+.ca__d-where[hidden], .ca__d-desc[hidden] { display: none; }
+@container ca (max-width: 330px) { .ca__tg { --hw: 30px; } .ca__tg-hours span { font-size: 8.5px; } }

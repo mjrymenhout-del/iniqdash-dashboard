@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "batteries",
+  "name": "Batteries",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "batteries.js",
+  "style": "batteries.css",
+  "assets": "assets/",
+  "api": "MaisonBatteries"
+}

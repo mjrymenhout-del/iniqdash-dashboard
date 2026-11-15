@@ -1,0 +1,27 @@
+# IniqDash on Apache: every request goes through gate.php, which serves files only
+# to a signed-in administrator. Only login.php and logout.php are reachable without a session.
+
+Options -Indexes -MultiViews
+DirectoryIndex gate.php
+
+# Fail closed: without mod_rewrite nothing would be gated, so nothing is served at all.
+<IfModule !mod_rewrite.c>
+    Require all denied
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # dotfiles and dot-folders (.git, .htaccess, .env, ...)
+    RewriteRule (^|/)\. - [F,L]
+    # server code, settings and tools
+    RewriteRule ^server(/|$) - [F,L]
+    # the public entry points
+    RewriteRule ^(login|logout|gate)\.php$ - [L]
+    # everything else: through the gate
+    RewriteRule ^ gate.php [L,QSA]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "same-origin"
+</IfModule>

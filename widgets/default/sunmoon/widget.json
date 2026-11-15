@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "sunmoon",
+  "name": "Sun & Moon",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "sunmoon.js",
+  "style": "sunmoon.css",
+  "assets": "assets/",
+  "api": "MaisonSunMoon"
+}

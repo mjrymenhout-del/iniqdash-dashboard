@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "id": "custom.battery-status",
+  "name": "Battery Status",
+  "source": "custom",
+  "version": "1.0.0",
+  "entry": "battery-status.js",
+  "style": "battery-status.css",
+  "assets": "assets/",
+  "api": "IniqBatteryStatus",
+  "ha": {
+    "domains": ["sensor"],
+    "deviceClasses": ["battery"]
+  }
+}

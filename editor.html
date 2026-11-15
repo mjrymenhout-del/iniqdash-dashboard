@@ -1,0 +1,204 @@
+<!doctype html>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/.
+   - Copyright © 2026 Marcel Rymenhout and IniqDash contributors -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IniqDash</title>
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="components/container/container.css">
+<link rel="stylesheet" href="components/tabs/tabs.css">
+<link rel="stylesheet" href="components/expandlist/expandlist.css">
+<link rel="stylesheet" href="components/grid/grid.css">
+<link rel="stylesheet" href="components/fit/fit.css">
+<link rel="stylesheet" href="components/ha/ha.css">
+<link rel="stylesheet" href="components/icons/icons.css">
+<link rel="stylesheet" href="components/widget-kit/widget-kit.css">
+<link rel="stylesheet" href="components/widget-visuals/visuals.css">
+<link rel="stylesheet" href="components/controls/controls.css">
+<link rel="stylesheet" href="components/info/info.css">
+<link rel="stylesheet" href="components/dial/dial.css">
+<link rel="stylesheet" href="components/gauge/gauge.css">
+<link rel="stylesheet" href="components/text/text.css">
+<link rel="stylesheet" href="components/slider/slider.css">
+<link rel="stylesheet" href="components/flow/flow.css">
+<link rel="stylesheet" href="components/sunarc/sunarc.css">
+<link rel="stylesheet" href="components/elements/elements.css">
+<link rel="stylesheet" href="widgets/default/light/light.css">
+<link rel="stylesheet" href="widgets/default/climate/climate.css">
+<link rel="stylesheet" href="widgets/default/sensor/sensor.css">
+<link rel="stylesheet" href="widgets/default/switch/switch.css">
+<link rel="stylesheet" href="widgets/default/fan/fan.css">
+<link rel="stylesheet" href="widgets/default/numsel/numsel.css">
+<link rel="stylesheet" href="widgets/default/cover/cover.css">
+<link rel="stylesheet" href="widgets/default/media/media.css">
+<link rel="stylesheet" href="widgets/default/action/action.css">
+<link rel="stylesheet" href="widgets/default/inbox/inbox.css">
+<link rel="stylesheet" href="widgets/default/presence/presence.css">
+<link rel="stylesheet" href="widgets/default/activitylog/activitylog.css">
+<link rel="stylesheet" href="widgets/default/spotlight/spotlight.css">
+<link rel="stylesheet" href="widgets/default/devicetile/devicetile.css">
+<link rel="stylesheet" href="widgets/default/readings/readings.css">
+<link rel="stylesheet" href="widgets/default/batteries/batteries.css">
+<link rel="stylesheet" href="widgets/default/vehicle/vehicle.css">
+<link rel="stylesheet" href="widgets/default/countdown/countdown.css">
+<link rel="stylesheet" href="widgets/default/humidifier/humidifier.css">
+<link rel="stylesheet" href="widgets/default/updates/updates.css">
+<link rel="stylesheet" href="widgets/default/todo/todo.css">
+<link rel="stylesheet" href="widgets/default/solar/solar.css">
+<link rel="stylesheet" href="widgets/default/homebattery/homebattery.css">
+<link rel="stylesheet" href="widgets/default/climategroup/climategroup.css">
+<link rel="stylesheet" href="widgets/default/roomtile/roomtile.css">
+<link rel="stylesheet" href="widgets/default/appliance/appliance.css">
+<link rel="stylesheet" href="widgets/default/energy/energy.css">
+<link rel="stylesheet" href="widgets/default/robot/robot.css">
+<link rel="stylesheet" href="widgets/default/sunmoon/sunmoon.css">
+<link rel="stylesheet" href="widgets/default/timer/timer.css">
+<link rel="stylesheet" href="widgets/default/datetime/datetime.css">
+<link rel="stylesheet" href="widgets/default/entitylist/entitylist.css">
+<link rel="stylesheet" href="widgets/default/activity/activity.css">
+<link rel="stylesheet" href="widgets/default/weather/weather.css">
+<link rel="stylesheet" href="widgets/default/person/person.css">
+<link rel="stylesheet" href="widgets/default/calendar/calendar.css">
+<link rel="stylesheet" href="widgets/default/radial/radial.css">
+<link rel="stylesheet" href="widgets/default/button/button.css">
+<link rel="stylesheet" href="widgets/default/camera/camera.css">
+<link rel="stylesheet" href="widgets/default/lock/lock.css">
+<link rel="stylesheet" href="widgets/default/alarm/alarm.css">
+<link rel="stylesheet" href="widgets/default/gauge/gauge.css">
+<link rel="stylesheet" href="widgets/default/chart/chart.css">
+<link rel="stylesheet" href="widgets/default/text/text.css">
+<link rel="stylesheet" href="widgets/default/image/image.css">
+<link rel="stylesheet" href="widgets/default/studio/studio.css">
+<!-- custom widget packages: the server puts the stylesheets of every valid widgets/custom/<folder>/ here (gate.php) -->
+<!-- iniqdash:custom-widget-styles -->
+<link rel="stylesheet" href="components/app/app.css">
+<link rel="stylesheet" href="components/floating/floating.css">
+<link rel="stylesheet" href="components/popup/popup.css">
+<link rel="stylesheet" href="components/notify/notify.css">
+<link rel="stylesheet" href="assets/css/template.css">
+<link rel="stylesheet" href="components/editor/editor.css">
+<link rel="stylesheet" href="components/editor/configure.css">
+<link rel="stylesheet" href="components/theme/theme.css">
+<link rel="stylesheet" href="components/editor/themestudio.css">
+<link rel="stylesheet" href="components/artwork/artwork.css">
+<link rel="stylesheet" href="components/studio/studio.css">
+<link rel="stylesheet" href="components/app-header/app-header.css">
+</head>
+<body>
+<div data-app-header></div>
+<main class="show show--wide show--editor">
+  <div data-editor></div>
+</main>
+<script src="components/foundation/components.js"></script>
+<script src="components/studio/library.js"></script>
+<script src="components/studio/manager.js"></script>
+<script src="components/editor/generate.js"></script>
+<script src="components/editor/design-presets.js"></script>
+<script src="components/editor/generate-demo.js"></script>
+<script src="components/container/container.js"></script>
+<script src="components/tabs/tabs.js"></script>
+<script src="components/expandlist/expandlist.js"></script>
+<script src="components/grid/grid.js"></script>
+<script src="components/fit/fit.js"></script>
+<script src="components/widget-kit/widget-kit.js"></script>
+<script src="components/widget-visuals/visuals.js"></script>
+<script src="components/controls/controls.js"></script>
+<script src="components/info/info.js"></script>
+<script src="components/gauge/gauge.js"></script>
+<script src="components/text/text.js"></script>
+<script src="components/dial/dial.js"></script>
+<script src="components/slider/slider.js"></script>
+<script src="components/artwork/artwork.js"></script>
+<script src="components/flow/flow.js"></script>
+<script src="components/sunarc/sunarc.js"></script>
+<script src="components/elements/elements.js"></script>
+<script src="components/elements/chart.js"></script>
+<script src="components/foundation/public.js"></script>
+<script src="widgets/default/light/light.js"></script>
+<script src="widgets/default/climate/climate.js"></script>
+<script src="widgets/default/sensor/sensor.js"></script>
+<script src="widgets/default/switch/switch.js"></script>
+<script src="widgets/default/fan/fan.js"></script>
+<script src="widgets/default/numsel/numsel.js"></script>
+<script src="widgets/default/cover/cover.js"></script>
+<script src="widgets/default/media/media.js"></script>
+<script src="widgets/default/action/action.js"></script>
+<script src="widgets/default/inbox/inbox.js"></script>
+<script src="widgets/default/presence/presence.js"></script>
+<script src="widgets/default/activitylog/activitylog.js"></script>
+<script src="widgets/default/spotlight/spotlight.js"></script>
+<script src="widgets/default/devicetile/devicetile.js"></script>
+<script src="widgets/default/readings/readings.js"></script>
+<script src="widgets/default/batteries/batteries.js"></script>
+<script src="widgets/default/vehicle/vehicle.js"></script>
+<script src="widgets/default/countdown/countdown.js"></script>
+<script src="widgets/default/humidifier/humidifier.js"></script>
+<script src="widgets/default/updates/updates.js"></script>
+<script src="widgets/default/todo/todo.js"></script>
+<script src="widgets/default/solar/solar.js"></script>
+<script src="widgets/default/homebattery/homebattery.js"></script>
+<script src="widgets/default/climategroup/climategroup.js"></script>
+<script src="widgets/default/roomtile/roomtile.js"></script>
+<script src="widgets/default/appliance/appliance.js"></script>
+<script src="widgets/default/energy/energy.js"></script>
+<script src="widgets/default/robot/robot.js"></script>
+<script src="widgets/default/sunmoon/sunmoon.js"></script>
+<script src="widgets/default/timer/timer.js"></script>
+<script src="widgets/default/datetime/datetime.js"></script>
+<script src="widgets/default/entitylist/entitylist.js"></script>
+<script src="widgets/default/activity/activity.js"></script>
+<script src="widgets/default/weather/weather.js"></script>
+<script src="widgets/default/person/person.js"></script>
+<script src="widgets/default/calendar/calendar.js"></script>
+<script src="widgets/default/radial/radial.js"></script>
+<script src="widgets/default/button/button.js"></script>
+<script src="widgets/default/camera/camera.js"></script>
+<script src="widgets/default/lock/lock.js"></script>
+<script src="widgets/default/alarm/alarm.js"></script>
+<script src="widgets/default/gauge/gauge.js"></script>
+<script src="widgets/default/chart/chart.js"></script>
+<script src="widgets/default/text/text.js"></script>
+<script src="widgets/default/image/image.js"></script>
+<script src="widgets/default/studio/studio.js"></script>
+<!-- custom widget packages: the server puts the discovered list and their scripts here, before the registry (gate.php) -->
+<!-- iniqdash:custom-widgets -->
+<!-- My Widgets (Widget Studio definitions): the server puts them here as data (gate.php) -->
+<!-- iniqdash:studio-widgets -->
+<script src="components/app/app.js"></script>
+<script src="components/floating/floating.js"></script>
+<script src="components/popup/popup.js"></script>
+<script src="components/notify/notify.js"></script>
+<script src="assets/js/demo-icons.js"></script>
+<script src="components/ha/ha.js"></script>
+<script src="components/ha/template.js"></script>
+<script src="components/ha/bindings.js"></script>
+<script src="components/ha/picker.js"></script>
+<script src="components/ha/inspector.js"></script>
+<script src="components/ha/binding.js"></script>
+<script src="components/icons/icons.js"></script>
+<script src="components/ha/details.js"></script>
+<script src="widgets/index.js"></script>
+<script src="components/editor/registry.js"></script>
+<script src="components/theme/theme.js"></script>
+<script src="components/editor/model.js"></script>
+<script src="components/editor/repair.js"></script>
+<script src="components/editor/history.js"></script>
+<script src="components/editor/reflow.js"></script>
+<script src="components/editor/form.js"></script>
+<script src="components/editor/themestudio.js"></script>
+<script src="components/editor/configure.js"></script>
+<script src="components/editor/server-store.js"></script>
+<script src="components/studio/studio.js"></script>
+<script src="components/editor/editaccess.js"></script>
+<script src="components/editor/editor.js"></script>
+<script src="components/app-header/app-header.js"></script>
+<script src="assets/js/dashboards/maison.js"></script>
+<script src="assets/js/dashboards/test-fixture.js"></script>
+<script src="assets/js/dashboards/showcase.js"></script>
+<script src="assets/js/editor-demo.js"></script>
+</body>
+</html>

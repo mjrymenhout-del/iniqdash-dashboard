@@ -1,0 +1,143 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Neon Temperature Gauge — CUSTOM widget package styles.
+   ISOLATION: every selector starts with the package scope [data-widget="custom.neon-temperature-gauge"]
+   (the attribute is on the widget's root). No global selectors, no @keyframes / @property / @font-face,
+   no changes to shared tokens: tokens are only READ (font, text colours, radius).
+   Arrangements (data-fit-arr, from the widget's own box via MaisonFit):
+     full     dial with ticks + scale labels, full information panel
+     compact  dial, every other tick, compact panel
+     small    dial only (no panel), every other tick
+     mini     the value inside a plain ring (no ticks, no labels, no panel)
+     side     wide boxes: dial left, the panel as a column on the right
+   ========================================================================== */
+[data-widget="custom.neon-temperature-gauge"] {
+  --ntg-bg-top: #24272e;
+  --ntg-bg: #1b1d22;
+  --ntg-bg-bottom: #17181c;
+  --ntg-track: #111215;
+  --ntg-panel: #1e2026;
+  --fit-ref-w: 300; --fit-ref-h: 430; --fit-min: .62px; --fit-max: 1.5px;
+  position: relative;
+  container: ntg / size;
+  min-width: 0; min-height: 72px;
+  overflow: hidden;
+  border-radius: var(--radius-device, 22px);
+  color: var(--text-primary, #f2f3f6);
+  font-family: var(--font, system-ui, sans-serif);
+  background:
+    radial-gradient(90% 55% at 50% 38%, rgba(255, 255, 255, .035), transparent 70%),
+    linear-gradient(180deg, var(--ntg-bg-top) 0%, var(--ntg-bg) 45%, var(--ntg-bg-bottom) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), inset 0 0 0 1px rgba(255, 255, 255, .03), 0 16px 34px -18px rgba(0, 0, 0, .85);
+}
+
+[data-widget="custom.neon-temperature-gauge"] .ntg__in {
+  height: 100%;
+  box-sizing: border-box;
+  padding: clamp(8px, calc(16 * var(--fit)), 24px);
+  display: grid;
+  /* the dial takes the height its width allows (aspect ratio), shrinking when the box is short; dial + panel are
+     centred together, so a tall box does not open a gap between them */
+  grid-template-rows: minmax(0, max-content) auto;
+  align-content: center;
+  row-gap: clamp(6px, calc(16 * var(--fit)), 22px);
+}
+[data-widget="custom.neon-temperature-gauge"] .ntg__dial { position: relative; min-height: 0; min-width: 0; width: 100%; aspect-ratio: 260 / 248; max-height: 100%; }
+/* pinned to its cell: the viewBox scales to fit (meet), so the dial can never push into the panel */
+[data-widget="custom.neon-temperature-gauge"] .ntg__svg { position: absolute; inset: 0; display: block; width: 100%; height: 100%; overflow: visible; }
+
+/* ---- the dial */
+[data-widget="custom.neon-temperature-gauge"] .ntg__track { stroke: var(--ntg-track); stroke-width: 26; }
+[data-widget="custom.neon-temperature-gauge"] .ntg__track-rim { stroke: rgba(255, 255, 255, .045); stroke-width: 1; }
+[data-widget="custom.neon-temperature-gauge"] .ntg__path { stroke: rgba(255, 255, 255, .035); stroke-width: 7; stroke-linecap: round; }
+[data-widget="custom.neon-temperature-gauge"] .ntg__seg { stroke-width: 6.6; stroke-linecap: butt; }
+[data-widget="custom.neon-temperature-gauge"] .ntg__gseg { stroke-width: 6.6; stroke-linecap: butt; }
+[data-widget="custom.neon-temperature-gauge"] .ntg__ghost { opacity: .36; }
+[data-widget="custom.neon-temperature-gauge"] .ntg__ghost .ntg__gseg-cap:first-child { display: none; }
+[data-widget="custom.neon-temperature-gauge"] .ntg__seg-cap, [data-widget="custom.neon-temperature-gauge"] .ntg__gseg-cap { stroke: none; }
+[data-widget="custom.neon-temperature-gauge"] .ntg__face-rim { stroke-width: 1.2; }
+[data-widget="custom.neon-temperature-gauge"] .ntg__knob-b { stroke: rgba(255, 255, 255, .14); stroke-width: 1; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .7)); }
+[data-widget="custom.neon-temperature-gauge"] .ntg__knob-c { fill: var(--ntg-tone); filter: drop-shadow(0 0 3px var(--ntg-tone)); }
+
+[data-widget="custom.neon-temperature-gauge"] .ntg__tick { stroke: rgba(255, 255, 255, .11); stroke-width: 1.4; stroke-linecap: round; }
+[data-widget="custom.neon-temperature-gauge"] .ntg__tick.is-on { stroke: rgba(255, 255, 255, .3); }
+[data-widget="custom.neon-temperature-gauge"] .ntg__tick--major { stroke: rgba(255, 255, 255, .34); stroke-width: 1.6; }
+[data-widget="custom.neon-temperature-gauge"] .ntg__lim { fill: rgba(255, 255, 255, .34); font: 500 12px var(--font, system-ui, sans-serif); }
+
+[data-widget="custom.neon-temperature-gauge"] .ntg__val { fill: var(--text-primary, #f2f3f6); font: 600 54px var(--font, system-ui, sans-serif); letter-spacing: -1px; }
+[data-widget="custom.neon-temperature-gauge"] .ntg__unit { font-size: 22px; font-weight: 500; fill: var(--text-secondary, #b7bbc5); letter-spacing: 0; }
+[data-widget="custom.neon-temperature-gauge"] .ntg__unit--deg { font-size: 54px; font-weight: 500; fill: var(--text-primary, #f2f3f6); }
+[data-widget="custom.neon-temperature-gauge"] .ntg__cap { fill: #a9adb8; font: 500 13px var(--font, system-ui, sans-serif); letter-spacing: .1px; }
+
+[data-widget="custom.neon-temperature-gauge"]:is([data-out="below"], [data-out="above"]) .ntg__cap { fill: #ff8fa8; }
+[data-widget="custom.neon-temperature-gauge"][data-show-ticks="false"] .ntg__ticks,
+[data-widget="custom.neon-temperature-gauge"][data-show-min-max="false"] .ntg__lim { display: none; }
+
+/* states: unknown / unavailable / not a number — subdued, no arc, no knob, never NaN geometry */
+[data-widget="custom.neon-temperature-gauge"]:not([data-state="ok"]) .ntg__ghost { opacity: .07; }
+[data-widget="custom.neon-temperature-gauge"]:not([data-state="ok"]) .ntg__val { fill: #7e838f; font-size: 40px; }
+[data-widget="custom.neon-temperature-gauge"][data-state="text"] .ntg__val { font-size: 26px; }
+[data-widget="custom.neon-temperature-gauge"]:not([data-state="ok"]) .ntg__face { opacity: .78; }
+[data-widget="custom.neon-temperature-gauge"]:not([data-state="ok"]) .ntg__tick, [data-widget="custom.neon-temperature-gauge"]:not([data-state="ok"]) .ntg__lim { opacity: .55; }
+[data-widget="custom.neon-temperature-gauge"]:not([data-state="ok"]) .ntg__panel { opacity: .7; }
+
+/* ---- the information panel */
+[data-widget="custom.neon-temperature-gauge"] .ntg__panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  min-width: 0;
+  padding: clamp(8px, calc(15 * var(--fit)), 22px) clamp(10px, calc(20 * var(--fit)), 30px);
+  border-radius: clamp(12px, calc(20 * var(--fit)), 26px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .025), transparent 60%), var(--ntg-panel);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .045), inset 0 0 0 1px rgba(255, 255, 255, .03), 0 10px 22px -14px rgba(0, 0, 0, .8);
+}
+[data-widget="custom.neon-temperature-gauge"][data-panel="false"] .ntg__panel { display: none; }
+[data-widget="custom.neon-temperature-gauge"][data-panel="false"] .ntg__in { grid-template-rows: minmax(0, max-content); }
+[data-widget="custom.neon-temperature-gauge"] .ntg__cell { display: grid; row-gap: clamp(1px, calc(3 * var(--fit)), 5px); min-width: 0; }
+[data-widget="custom.neon-temperature-gauge"] .ntg__cell[hidden] { display: none; }
+[data-widget="custom.neon-temperature-gauge"] .ntg__cell--r { padding-left: clamp(10px, calc(22 * var(--fit)), 32px); }
+[data-widget="custom.neon-temperature-gauge"] .ntg__cell--l { padding-right: clamp(6px, calc(10 * var(--fit)), 14px); }
+[data-widget="custom.neon-temperature-gauge"] .ntg__sep { align-self: stretch; width: 1px; margin: 2px 0; background: linear-gradient(180deg, transparent, rgba(255, 255, 255, .1) 25%, rgba(255, 255, 255, .1) 75%, transparent); }
+[data-widget="custom.neon-temperature-gauge"] .ntg__sep[hidden] { display: none; }
+[data-widget="custom.neon-temperature-gauge"] .ntg__pv { font-size: max(13px, calc(25 * var(--fit))); font-weight: 600; line-height: 1.1; letter-spacing: -.3px; color: var(--text-primary, #f2f3f6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+[data-widget="custom.neon-temperature-gauge"] .ntg__pl { font-size: max(10px, calc(12.5 * var(--fit))); font-weight: 500; color: var(--text-muted, #7e838f); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+[data-widget="custom.neon-temperature-gauge"] .ntg__pv:empty, [data-widget="custom.neon-temperature-gauge"] .ntg__pl:empty { display: none; }
+
+/* ---- arrangements */
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="compact"] { --fit-ref-w: 260; --fit-ref-h: 330; }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="compact"] .ntg__tick--odd:not(.ntg__tick--major),
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="small"] .ntg__tick--odd:not(.ntg__tick--major) { display: none; }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="compact"] .ntg__lim { font-size: 14px; }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="compact"] .ntg__cap { font-size: 14.5px; }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="compact"] .ntg__in { row-gap: clamp(5px, calc(10 * var(--fit)), 14px); }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="compact"] .ntg__panel { padding-block: clamp(6px, calc(10 * var(--fit)), 14px); }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="small"] .ntg__lim--mid { display: none; }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="small"] .ntg__in { padding: clamp(6px, calc(10 * var(--fit)), 14px); }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="small"] .ntg__panel,
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="mini"] .ntg__panel { display: none; }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="small"] .ntg__in,
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="mini"] .ntg__in { grid-template-rows: minmax(0, max-content); }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="small"] .ntg__lim { font-size: 16px; }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="small"] .ntg__cap { font-size: 16px; }
+/* mini: the value has the whole face; ticks, labels and the knob go */
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="mini"] .ntg__in { padding: 6px; }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="mini"] .ntg__ticks,
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="mini"] .ntg__lim,
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="mini"] .ntg__halo { display: none; }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="mini"] .ntg__svg { overflow: hidden; }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="mini"] .ntg__val { font-size: 64px; }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="mini"] .ntg__unit--deg { font-size: 64px; }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="mini"] .ntg__cap { font-size: 19px; }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="mini"][data-fit-h="xs"] .ntg__cap { display: none; }
+/* side (wide boxes): dial left, the two values stacked on the right */
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="side"] { --fit-ref-w: 420; --fit-ref-h: 260; }
+/* the dial is as wide as the height allows; the panel sits next to it (capped), the pair centred in very wide boxes */
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="side"] .ntg__in { grid-template-rows: minmax(0, 1fr); align-content: stretch; grid-template-columns: minmax(0, max-content) minmax(0, 300px); justify-content: center; column-gap: clamp(10px, calc(20 * var(--fit)), 32px); }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="side"] .ntg__dial { width: auto; height: 100%; max-width: 100%; }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="side"] .ntg__panel { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; row-gap: clamp(8px, calc(14 * var(--fit)), 20px); align-self: center; }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="side"] .ntg__sep { width: auto; height: 1px; margin: 0; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .1) 20%, rgba(255, 255, 255, .1) 80%, transparent); }
+[data-widget="custom.neon-temperature-gauge"][data-fit-arr="side"] .ntg__cell--r, [data-widget="custom.neon-temperature-gauge"][data-fit-arr="side"] .ntg__cell--l { padding: 0; }

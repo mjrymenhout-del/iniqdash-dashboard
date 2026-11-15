@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "datetime",
+  "name": "Date & Time",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "datetime.js",
+  "style": "datetime.css",
+  "assets": "assets/",
+  "api": "MaisonDateTime"
+}

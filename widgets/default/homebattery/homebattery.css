@@ -1,0 +1,31 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+.iq-hb { container: hb / size; height: 100%; box-sizing: border-box; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 10px; padding: 14px 16px; border-radius: var(--radius-device);
+  color: var(--text-primary); font-family: var(--font); background: var(--device-surface); box-shadow: var(--device-shadow); overflow: hidden; }
+.iq-hb__head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.iq-hb__name { margin: 0; font-size: 14px; font-weight: var(--iq-fw-title); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-hb__state { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+.iq-hb[data-state="charging"] .iq-hb__state { color: var(--success); }
+.iq-hb[data-state="discharging"] .iq-hb__state { color: var(--warning); }
+.iq-hb__main { display: flex; align-items: center; gap: 16px; min-height: 0; }
+.iq-hb__cell { position: relative; flex: none; width: clamp(56px, 22cqw, 92px); height: min(100%, 150px); min-height: 80px; border-radius: 14px; border: 2px solid var(--border-primary); overflow: hidden; background: var(--surface-tertiary); --iq-hb-c: var(--success); }
+.iq-hb__cell::before { content: ""; position: absolute; top: -7px; left: 32%; right: 32%; height: 6px; border-radius: 3px 3px 0 0; background: var(--border-primary); }
+.iq-hb__cell[data-tone="mid"] { --iq-hb-c: var(--warning); } .iq-hb__cell[data-tone="low"] { --iq-hb-c: var(--danger); }
+.iq-hb__fill { position: absolute; inset: auto 0 0; background: linear-gradient(0deg, var(--iq-hb-c), color-mix(in srgb, var(--iq-hb-c) 60%, transparent)); transition: height .6s ease; }
+.iq-hb[data-state="charging"] .iq-hb__fill { animation: iq-hb-pulse 2.4s ease-in-out infinite; }
+.iq-hb__res { position: absolute; left: 0; right: 0; height: 0; border-top: 2px dashed var(--text-primary); opacity: .6; }
+.iq-hb__res[hidden] { display: none; }
+.iq-hb__pct { position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(15px, 6cqmin, 22px); font-weight: 700; text-shadow: 0 1px 4px rgba(0, 0, 0, .5); }
+.iq-hb__facts { display: grid; gap: 4px; min-width: 0; }
+.iq-hb__facts p { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-hb__kwh { font-size: clamp(15px, 6cqmin, 22px); font-weight: 700; }
+.iq-hb__pw { font-size: 13px; color: var(--text-secondary); }
+.iq-hb__time { font-size: 12.5px; color: var(--text-muted); }
+.iq-hb__chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.iq-hb__chips li { display: grid; padding: 4px 9px; border-radius: 10px; background: var(--surface-tertiary); }
+.iq-hb__chips span { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; }
+.iq-hb__chips b { font-size: 12.5px; }
+@keyframes iq-hb-pulse { 50% { filter: brightness(1.25); } }
+@media (prefers-reduced-motion: reduce) { .iq-hb__fill { animation: none !important; transition: none; } }

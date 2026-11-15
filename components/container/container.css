@@ -1,0 +1,221 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Universal Container
+   One component, three variants (primary · secondary · bare), nestable to any
+   depth. The container owns: surface, optional header, padding, child layout
+   and nesting presentation. It knows nothing about what its children are.
+
+   DOM
+   <section class="mc mc--primary" data-layout="grid">
+     <header class="mc__header">            (optional)
+       <span class="mc__icon">…</span>      (optional)
+       <div class="mc__titles">
+         <h2 class="mc__title">…</h2>       (optional)
+         <p class="mc__subtitle">…</p>      (optional)
+       </div>
+       <div class="mc__meta">
+         <span class="mc__status">…</span>  (optional)
+         <div class="mc__actions">…</div>   (optional)
+       </div>
+     </header>
+     <div class="mc__content"> children (widgets or containers) </div>
+     <footer class="mc__footer">…</footer>  (optional)
+   </section>
+   ========================================================================== */
+
+.mc {
+  /* per-variant knobs, set below; children read their own variant's values */
+  --mc-pad: var(--space-lg);
+  --mc-gap: var(--space-md);
+  --mc-radius: var(--radius-container);
+  --mc-title: var(--fs-title);
+  --mc-icon: var(--icon-size);
+  --mc-min-col: 150px;              /* grid layout: smallest child column */
+
+  position: relative;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--mc-gap);
+  padding: var(--mc-pad);
+  border-radius: var(--mc-radius);
+  color: var(--text-primary);
+  font-family: var(--font);
+  container-type: inline-size;      /* the container adapts to its OWN width, not the screen */
+  container-name: mc;
+}
+
+/* ---- variants ---- */
+.mc--primary {
+  background: linear-gradient(180deg, var(--surface-primary-top) 0%, var(--surface-primary) 60%);
+  box-shadow: var(--shadow-primary);
+}
+.mc--primary::before {           /* fine edge: a hairline that is brighter at the top */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(180deg, var(--border-primary), transparent 55%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.mc--secondary {
+  --mc-pad: var(--space-md);
+  --mc-gap: var(--space-sm);
+  --mc-radius: var(--radius-subcontainer);
+  --mc-title: var(--fs-title-secondary);
+  --mc-icon: var(--icon-size-secondary);
+  --mc-min-col: 120px;
+  /* the group is established by spacing and a quiet tint — its widgets already carry their own surface, so no heavy inset box around them */
+  background: color-mix(in srgb, var(--surface-secondary) 62%, transparent);
+  box-shadow: 0 0 0 1px var(--border-subtle);
+}
+.mc--bare {
+  --mc-pad: 0;
+  --mc-gap: var(--space-sm);
+  --mc-radius: 0;
+  --mc-title: var(--fs-title-secondary);
+  --mc-icon: var(--icon-size-secondary);
+  --mc-min-col: 120px;
+  background: none;
+  box-shadow: none;
+}
+/* a secondary inside a secondary steps down once more instead of repeating the same inset box */
+.mc--secondary .mc--secondary {
+  background: transparent;
+  box-shadow: 0 0 0 1px var(--border-subtle);
+}
+
+/* ---- header ---- */
+.mc__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  min-width: 0;
+}
+.mc__icon {
+  flex: none;
+  width: var(--mc-icon);
+  height: var(--mc-icon);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--text-secondary);
+  background: var(--surface-tertiary);
+  box-shadow: var(--shadow-icon);
+}
+.mc__icon svg { width: 46%; height: 46%; }
+.mc[data-tone="accent"] > .mc__header .mc__icon {
+  color: var(--accent);
+  box-shadow: var(--shadow-icon), 0 0 0 3px var(--accent-soft), 0 0 18px var(--accent-soft);
+}
+.mc__titles { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.mc__title {
+  margin: 0;
+  font-size: var(--mc-title);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: .005em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mc__subtitle {
+  margin: 0;
+  font-size: var(--fs-subtitle);
+  color: var(--text-muted);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mc__meta { flex: none; display: flex; align-items: center; gap: var(--space-sm); }
+.mc__status {
+  font-size: var(--fs-status);
+  font-weight: 600;
+  line-height: 1;
+  padding: 6px 10px;
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  background: var(--surface-tertiary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.mc__status[data-tone="accent"] { color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 1px var(--accent-line) inset; }
+.mc__status[data-tone="success"] { color: var(--success); background: color-mix(in srgb, var(--success) 14%, transparent); }
+.mc__status[data-tone="warning"] { color: var(--warning); background: color-mix(in srgb, var(--warning) 14%, transparent); }
+.mc__status[data-tone="danger"] { color: var(--danger); background: color-mix(in srgb, var(--danger) 14%, transparent); }
+.mc__actions { display: flex; gap: var(--space-xs); }
+.mc__action {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  padding: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--text-muted);
+  background: transparent;
+  font: inherit;
+}
+.mc__action svg { width: 18px; height: 18px; }
+.mc__action { position: relative; }
+.mc__action::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; }   /* 40px effective target, 32px visible */
+.mc__action:hover { color: var(--text-primary); background: var(--surface-tertiary); }
+.mc__action:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.mc--secondary > .mc__header, .mc--bare > .mc__header { gap: var(--space-sm); }
+
+/* ---- content + layouts ---- */
+.mc__content { min-width: 0; }
+.mc[data-layout="stack"] > .mc__content { display: flex; flex-direction: column; gap: var(--mc-gap); }
+/* (layouts read --mc-gap / --mc-min-col from .mc__content, so a container query can retune them) */
+.mc[data-layout="row"] > .mc__content { display: flex; flex-wrap: wrap; gap: var(--mc-gap); }
+.mc[data-layout="row"] > .mc__content > * { flex: 1 1 var(--mc-min-col); min-width: 0; }
+.mc[data-layout="grid"] > .mc__content { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--mc-min-col)), 1fr)); gap: var(--mc-gap); }
+.mc[data-layout="free"] > .mc__content { display: block; }
+/* a child can ask for the full row in grid/row layouts (e.g. a nested container) */
+.mc > .mc__content > [data-span="full"] { grid-column: 1 / -1; flex-basis: 100%; }
+
+/* ---- footer ---- */
+.mc__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border-subtle);
+  font-size: var(--fs-subtitle);
+  color: var(--text-muted);
+}
+
+/* ---- fill mode (grid mode) ----
+   Flow mode (default): height follows content.
+   Fill mode (.mc--fill): the container stretches to the area its parent gives it (e.g. a grid
+   item's row span) and its content area takes the remaining height. The assigned area is fixed:
+   content adapts to it and never makes it larger (a widget that needs more room declares minH). */
+.mc--fill { height: 100%; }
+.mc--fill > .mc__content { flex: 1 1 auto; min-height: 0; }
+
+/* ---- responsive: the container reacts to its OWN width (container queries), never the screen ----
+   A container query styles the descendants of the queried box, so the rules target .mc__header /
+   .mc__content; the nearest .mc ancestor is the one measured, which keeps nested containers independent. */
+@container mc (max-width: 340px) {
+  .mc__header { gap: var(--space-sm); }
+  .mc__subtitle { font-size: 11px; }
+  .mc__status { padding: 5px 8px; }
+}
+@container mc (max-width: 200px) {          /* half-width tiles on a phone (2 of 4 columns) */
+  .mc__header { --mc-icon: var(--icon-size-secondary); gap: 6px; }
+  .mc__status { padding: 4px 7px; }
+}
+@container mc (min-width: 640px) {
+  .mc--primary > .mc__content { --mc-gap: var(--space-lg); --mc-min-col: 180px; }
+  .mc--primary > .mc__header { gap: var(--space-lg); }
+}

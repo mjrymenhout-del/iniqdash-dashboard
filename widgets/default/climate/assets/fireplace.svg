@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+  <!-- IniqDash Climate built-in artwork: a stone fireplace in a dark living room (original illustration) -->
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d1916"/><stop offset=".7" stop-color="#2a221c"/><stop offset="1" stop-color="#120e0b"/></linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#241911"/><stop offset="1" stop-color="#0a0706"/></linearGradient>
+    <linearGradient id="stone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b3631"/><stop offset="1" stop-color="#26221e"/></linearGradient>
+    <linearGradient id="mantel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6b4a30"/><stop offset="1" stop-color="#3a2717"/></linearGradient>
+    <radialGradient id="fire" cx=".5" cy=".85" r=".75"><stop offset="0" stop-color="#ffd08a"/><stop offset=".35" stop-color="#ff8a2e"/><stop offset=".7" stop-color="#b8380e"/><stop offset="1" stop-color="#2a0e05"/></radialGradient>
+    <radialGradient id="warm" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ff9a45" stop-opacity=".5"/><stop offset=".6" stop-color="#ff7a2a" stop-opacity=".12"/><stop offset="1" stop-color="#ff7a2a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="vig" cx=".5" cy=".5" r=".8"><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".6"/></radialGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#wall)"/>
+  <rect y="620" width="1200" height="180" fill="url(#floor)"/>
+  <ellipse cx="760" cy="560" rx="560" ry="330" fill="url(#warm)"/>
+  <!-- chimney breast -->
+  <rect x="560" y="0" width="400" height="640" fill="url(#stone)"/>
+  <g fill="none" stroke="#000" stroke-opacity=".22" stroke-width="3">
+    <path d="M560 90h400M560 180h400M560 270h400M560 360h400"/>
+    <path d="M660 0v90M860 0v90M610 90v90M760 90v90M910 90v90M660 180v90M860 180v90M610 270v90M760 270v90M910 270v90"/>
+  </g>
+  <!-- mantel -->
+  <rect x="520" y="372" width="480" height="30" rx="4" fill="url(#mantel)"/>
+  <rect x="520" y="372" width="480" height="4" fill="#9a6d46" opacity=".55"/>
+  <!-- firebox -->
+  <rect x="620" y="430" width="280" height="210" rx="10" fill="#0c0806"/>
+  <path d="M640 640c10-60 40-80 50-130 18 40 38 58 44 100 14-52 48-74 56-128 26 48 46 82 50 158z" fill="url(#fire)"/>
+  <path d="M690 640c8-34 24-46 30-74 12 24 22 36 26 60 10-30 26-44 30-74 14 28 24 52 26 88z" fill="#ffe2a8" opacity=".7"/>
+  <rect x="640" y="626" width="240" height="14" rx="5" fill="#3b2414"/>
+  <rect x="600" y="640" width="320" height="18" fill="#2e2a26"/>
+  <!-- logs basket and a plant -->
+  <rect x="380" y="560" width="120" height="90" rx="10" fill="#2b1f16"/>
+  <g fill="#5b3a22"><rect x="392" y="540" width="96" height="22" rx="11"/><rect x="398" y="520" width="84" height="22" rx="11"/></g>
+  <path d="M1090 650c-6-90 10-170 40-220-10 70-8 140 6 220zM1100 650c20-80 60-130 90-150-34 50-56 100-66 150z" fill="#1f3524"/>
+  <rect x="1060" y="640" width="90" height="40" rx="8" fill="#2e2620"/>
+  <!-- armchair silhouette -->
+  <path d="M90 700V520c0-40 30-60 70-60h160c40 0 70 20 70 60v180z" fill="#1e1712"/>
+  <path d="M60 700V580c0-18 14-30 32-30s32 12 32 30v120zM356 700V580c0-18 14-30 32-30s32 12 32 30v120z" fill="#271d16"/>
+  <rect width="1200" height="800" fill="url(#vig)"/>
+</svg>

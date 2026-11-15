@@ -1,0 +1,72 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* Notification Centre — the bell (in its cell) and the panel (on the body: above the dashboard, beside the bell / a sheet) */
+.ibx { width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-end; container-type: size; }
+.ibx__btn { position: relative; display: inline-flex; align-items: center; gap: 10px; height: min(56px, 100cqh); min-width: min(56px, 100cqh); padding: 0 16px; border: 0; border-radius: 999px;
+  cursor: pointer; color: var(--text-primary, #eef1f6); font: 600 14px var(--font, system-ui); background: var(--surface-primary, #1b1f27);
+  box-shadow: 0 8px 20px -12px rgba(0, 0, 0, .8), inset 0 0 0 1px var(--card-border, rgba(255, 255, 255, .06)); transition: background .18s ease, box-shadow .18s ease, transform .18s ease; }
+.ibx[data-label="off"] .ibx__btn { padding: 0; justify-content: center; width: min(56px, 100cqh); }
+.ibx[data-label="off"] .ibx__label { display: none; }
+.ibx__btn:hover { background: var(--surface-tertiary, #252b38); transform: translateY(-1px); }
+.ibx__btn:focus-visible { outline: var(--focus-ring, 2px solid var(--accent, #7cc4ff)); outline-offset: 3px; }
+.ibx__bell { display: inline-flex; width: 22px; height: 22px; color: var(--text-secondary, #a3abbd); }
+.ibx[data-unread="yes"] .ibx__bell { color: var(--accent, #7cc4ff); animation: ibx-ring 2.4s ease-in-out 1; }
+.ibx__bell svg { width: 100%; height: 100%; }
+.ibx__count { position: absolute; top: 6px; right: 6px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; font: 700 11px/18px var(--font, system-ui); text-align: center;
+  color: #fff; background: var(--danger, #ff5d5d); box-shadow: 0 0 0 2px var(--surface-primary, #1b1f27); }
+.ibx[data-label="on"] .ibx__count { position: static; box-shadow: none; }
+@keyframes ibx-ring { 0%, 100% { transform: rotate(0); } 8% { transform: rotate(14deg); } 16% { transform: rotate(-12deg); } 24% { transform: rotate(8deg); } 32% { transform: rotate(0); } }
+
+.ibx-p { position: fixed; z-index: 920; display: flex; flex-direction: column; max-height: 70vh; border-radius: 20px; overflow: hidden; color: var(--text-primary, #eef1f6);
+  font-family: var(--font, system-ui); background: linear-gradient(var(--surface-primary, #171b24), var(--surface-primary, #171b24)), var(--page-bg, #0e1117);   /* opaque even when a glass theme makes surfaces translucent */
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); box-shadow: 0 24px 60px -18px rgba(0, 0, 0, .85), 0 0 0 1px var(--border-primary, rgba(255, 255, 255, .08));
+  animation: ibx-in .18s ease-out; }
+.ibx-p.is-leaving { animation: ibx-out .16s ease-in forwards; }
+.ibx-p[data-layout="sheet"] { left: 0; right: 0; bottom: 0; max-height: 82vh; border-radius: 22px 22px 0 0; padding-bottom: env(safe-area-inset-bottom); }
+@keyframes ibx-in { from { opacity: 0; transform: translateY(-6px) scale(.98); } }
+@keyframes ibx-out { to { opacity: 0; transform: translateY(-6px) scale(.98); } }
+@media (prefers-reduced-motion: reduce) { .ibx-p, .ibx-p.is-leaving, .ibx[data-unread="yes"] .ibx__bell { animation: none; } }
+.ibx-p__head { display: flex; align-items: center; gap: 8px; padding: 16px 14px 12px 20px; border-bottom: 1px solid var(--border-primary, rgba(255, 255, 255, .08)); }
+.ibx-p__h { flex: 1; margin: 0; font-size: 17px; font-weight: 700; color: var(--text-heading, #fff); }
+.ibx-p__all, .ibx-p__clear { border: 0; background: none; color: var(--accent, #7cc4ff); font: 600 13px var(--font, system-ui); cursor: pointer; padding: 8px 10px; border-radius: 10px; }
+.ibx-p__all:hover, .ibx-p__clear:hover { background: var(--accent-soft, rgba(124, 196, 255, .14)); }
+.ibx-p__all:disabled, .ibx-p__clear:disabled { color: var(--text-muted, #7d8699); cursor: default; background: none; }
+.ibx-p__x { display: inline-flex; width: 36px; height: 36px; align-items: center; justify-content: center; border: 0; border-radius: 50%; background: var(--surface-tertiary, #222836); color: var(--text-secondary, #a3abbd); cursor: pointer; }
+.ibx-p__x svg, .ibx-p__del svg { width: 16px; height: 16px; }
+.ibx-p__list { flex: 1; overflow: auto; margin: 0; padding: 8px; list-style: none; }
+.ibx-p__empty { padding: 36px 16px; text-align: center; color: var(--text-muted, #7d8699); font-size: 14px; }
+.ibx-p__item { position: relative; display: flex; align-items: flex-start; border-radius: 14px; }
+.ibx-p__item + .ibx-p__item { margin-top: 2px; }
+.ibx-p__item:hover { background: var(--surface-secondary, #141821); }
+.ibx-p__main { flex: 1; display: flex; gap: 12px; align-items: flex-start; min-width: 0; padding: 12px 8px 12px 12px; border: 0; background: none; color: inherit; text-align: left; font: inherit; cursor: pointer; border-radius: 14px; }
+.ibx-p__icon { flex: none; display: inline-flex; width: 36px; height: 36px; padding: 8px; border-radius: 12px; color: var(--info, #7cc4ff); background: color-mix(in srgb, currentColor 16%, transparent); }
+.ibx-p__icon svg { width: 100%; height: 100%; }
+.ibx-p__item[data-tone="success"] .ibx-p__icon { color: var(--success, #4fd18b); }
+.ibx-p__item[data-tone="warning"] .ibx-p__icon { color: var(--warning, #ffb547); }
+.ibx-p__item[data-tone="danger"] .ibx-p__icon { color: var(--danger, #ff5d5d); }
+.ibx-p__txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ibx-p__title { font-size: 14px; font-weight: 600; color: var(--text-secondary, #a3abbd); }
+.ibx-p__item.is-unread .ibx-p__title { color: var(--text-heading, #fff); }
+.ibx-p__item.is-unread::before { content: ""; position: absolute; left: 3px; top: 50%; width: 5px; height: 5px; margin-top: -2.5px; border-radius: 50%; background: var(--accent, #7cc4ff); }
+.ibx-p__msg { font-size: 13px; line-height: 1.4; color: var(--text-secondary, #a3abbd); }
+.ibx-p__meta { font-size: 11.5px; color: var(--text-muted, #7d8699); }
+.ibx-p__del { flex: none; margin: 10px 8px 0 0; display: inline-flex; width: 30px; height: 30px; align-items: center; justify-content: center; border: 0; border-radius: 50%; background: none; color: var(--text-muted, #7d8699); cursor: pointer; opacity: .55; }
+.ibx-p__item:hover .ibx-p__del, .ibx-p__del:focus-visible { opacity: 1; background: var(--surface-tertiary, #222836); }
+.ibx-p__foot { display: flex; justify-content: flex-end; padding: 8px 12px; border-top: 1px solid var(--border-primary, rgba(255, 255, 255, .08)); }
+
+/* ---- LIST variant: the notification centre on the dashboard (a card: the widget surface, header, scrolling list) */
+.ibx[data-variant="list"] { align-items: stretch; justify-content: stretch; border-radius: var(--radius-device, 22px); background: linear-gradient(165deg, var(--surface-primary-top), var(--surface-primary) 60%, var(--surface-secondary));
+  box-shadow: var(--device-shadow, 0 12px 26px -16px rgba(0, 0, 0, .75)); overflow: hidden; }
+.ibx-l { display: flex; flex-direction: column; flex: 1; min-height: 0; min-width: 0; }
+.ibx-l__head { display: flex; align-items: center; gap: 10px; padding: 14px 16px 6px; }
+.ibx-l__h { margin: 0; font: 650 16px/1.2 var(--font, system-ui); color: var(--text-heading, #fff); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ibx-l__n { flex: none; padding: 3px 9px; border-radius: 999px; font: 700 11px/1.3 var(--font, system-ui); letter-spacing: .02em; color: var(--text-secondary); background: var(--surface-tertiary, #222836); }
+.ibx-l__n[data-unread="yes"] { color: var(--accent-on, #06121f); background: var(--accent, #7cc4ff); }
+.ibx-l__all { margin-left: auto; flex: none; border: 0; background: none; padding: 6px 4px; color: var(--accent, #7cc4ff); font: 600 12px/1.2 var(--font, system-ui); cursor: pointer; border-radius: 8px; }
+.ibx-l__all:disabled { color: var(--text-muted); cursor: default; }
+.ibx-l__all:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ibx-l__list { padding: 4px 8px 10px; }
+@container (max-height: 180px) { .ibx-l .ibx-p__msg { display: none; } }
+@container (max-width: 300px) { .ibx-l__all { display: none; } }

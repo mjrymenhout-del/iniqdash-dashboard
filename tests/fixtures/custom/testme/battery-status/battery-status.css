@@ -1,0 +1,98 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Battery Status — CUSTOM widget package styles.
+   ISOLATION: every selector starts with [data-widget="custom.battery-status"] (set on the widget's root).
+   No global selectors, no @keyframes / @property / @font-face; shared tokens are only read.
+   Arrangements (data-fit-arr, from the widget's own box via MaisonFit):
+     full   name · large percentage · battery graphic across the width
+     row    short boxes: name above, battery left, percentage right
+     mini   small boxes: percentage with a small battery, name hidden when very short
+   ========================================================================== */
+[data-widget="custom.battery-status"] {
+  --bat-tone: var(--success, #5fd98a);
+  --fit-ref-w: 300; --fit-ref-h: 200; --fit-min: .7px; --fit-max: 1.5px;
+  position: relative;
+  container: bat / size;
+  min-width: 0; min-height: 60px;
+  overflow: hidden;
+  border-radius: var(--radius-device, 22px);
+  color: var(--text-primary, #f2f3f6);
+  font-family: var(--font, system-ui, sans-serif);
+  background: var(--device-surface, linear-gradient(165deg, #25282f 0%, #1c1e24 55%, #18191e 100%));
+  box-shadow: var(--device-shadow, inset 0 1px 0 rgba(255, 255, 255, .06), 0 14px 30px -16px rgba(0, 0, 0, .8));
+}
+[data-widget="custom.battery-status"][data-level="low"] { --bat-tone: var(--warning, #ffb547); }
+[data-widget="custom.battery-status"][data-level="critical"] { --bat-tone: var(--danger, #ff6464); }
+[data-widget="custom.battery-status"][data-level="none"] { --bat-tone: var(--text-muted, #7e838f); }
+
+[data-widget="custom.battery-status"] .bat__in {
+  height: 100%;
+  box-sizing: border-box;
+  padding: clamp(9px, calc(16 * var(--fit)), 26px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  grid-template-areas: "name" "level" "cell" "note";
+  row-gap: calc(8 * var(--fit));
+  align-items: end;
+}
+[data-widget="custom.battery-status"] .bat__name { grid-area: name; margin: 0; min-width: 0; font-size: max(11.5px, calc(14.5 * var(--fit))); font-weight: 600; color: var(--text-secondary, #b7bbc5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+[data-widget="custom.battery-status"] .bat__level { grid-area: level; margin: 0; min-width: 0; display: flex; align-items: baseline; gap: 2px; white-space: nowrap; line-height: 1; }
+[data-widget="custom.battery-status"] .bat__num { font-size: max(22px, calc(46 * var(--fit))); font-weight: 600; letter-spacing: -1px; color: var(--text-primary, #f2f3f6); overflow: hidden; text-overflow: ellipsis; }
+[data-widget="custom.battery-status"] .bat__pct { font-size: max(12px, calc(20 * var(--fit))); font-weight: 500; color: var(--text-secondary, #b7bbc5); }
+[data-widget="custom.battery-status"] .bat__pct[hidden] { display: none; }
+[data-widget="custom.battery-status"] .bat__note { grid-area: note; margin: 0; min-height: 0; font-size: max(10px, calc(11.5 * var(--fit))); font-weight: 600; color: var(--bat-tone); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+[data-widget="custom.battery-status"] .bat__note:empty { display: none; }
+
+/* the battery: a rounded body with a terminal cap; the fill is the level (width = level) */
+[data-widget="custom.battery-status"] .bat__cell { grid-area: cell; display: flex; align-items: center; min-width: 0; height: clamp(18px, calc(34 * var(--fit)), 54px); }
+[data-widget="custom.battery-status"] .bat__body {
+  position: relative; flex: 1 1 auto; min-width: 0; height: 100%; box-sizing: border-box;
+  padding: clamp(2px, calc(3.5 * var(--fit)), 5px);
+  border-radius: clamp(5px, calc(9 * var(--fit)), 13px);
+  background: var(--control-well, #121317);
+  box-shadow: var(--control-well-shadow, inset 0 2px 5px rgba(0, 0, 0, .55)), inset 0 0 0 1.5px rgba(255, 255, 255, .14);
+}
+[data-widget="custom.battery-status"] .bat__fill {
+  display: block; height: 100%;
+  width: calc(var(--bat-level) * 100%);
+  min-width: 0;
+  border-radius: clamp(3px, calc(6 * var(--fit)), 9px);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bat-tone) 82%, #fff), var(--bat-tone));
+  box-shadow: 0 0 calc(10 * var(--fit)) color-mix(in srgb, var(--bat-tone) 40%, transparent);
+  transition: width var(--dur-slow, .4s) var(--ease, ease), background var(--dur-medium, .3s) var(--ease, ease);
+}
+[data-widget="custom.battery-status"] .bat__cap { flex: 0 0 auto; width: clamp(3px, calc(5 * var(--fit)), 7px); height: 42%; margin-left: 2px; border-radius: 0 3px 3px 0; background: rgba(255, 255, 255, .22); }
+
+/* unavailable / unknown / not a number: no fill, dashed outline, muted */
+[data-widget="custom.battery-status"]:not([data-state="ok"]) .bat__num { color: var(--text-muted, #7e838f); }
+[data-widget="custom.battery-status"]:not([data-state="ok"]) .bat__body { box-shadow: var(--control-well-shadow, inset 0 2px 5px rgba(0, 0, 0, .55)); outline: 1.5px dashed rgba(255, 255, 255, .18); outline-offset: -1.5px; }
+[data-widget="custom.battery-status"]:not([data-state="ok"]) .bat__fill { display: none; }
+[data-widget="custom.battery-status"][data-state="unavailable"] .bat__note, [data-widget="custom.battery-status"][data-state="unknown"] .bat__note { color: var(--text-muted, #7e838f); }
+
+/* row: short, wide boxes — battery left, percentage right */
+[data-widget="custom.battery-status"][data-fit-arr="row"] { --fit-ref-h: 130; }
+[data-widget="custom.battery-status"][data-fit-arr="row"] .bat__in {
+  grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: "name name" "cell level" "note note"; column-gap: calc(14 * var(--fit)); align-items: center;
+}
+[data-widget="custom.battery-status"][data-fit-arr="row"] .bat__num { font-size: max(20px, calc(34 * var(--fit))); }
+/* mini: small boxes — percentage and a small battery side by side */
+[data-widget="custom.battery-status"][data-fit-arr="mini"] .bat__in {
+  padding: 8px 10px; row-gap: 4px;
+  grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas: "name name" "level cell"; column-gap: 8px; align-items: center;
+}
+[data-widget="custom.battery-status"][data-fit-arr="mini"] .bat__num { font-size: max(18px, min(calc(30 * var(--fit)), 34px)); }
+[data-widget="custom.battery-status"][data-fit-arr="mini"] .bat__cell { width: 34px; height: 17px; }
+[data-widget="custom.battery-status"][data-fit-arr="mini"] .bat__body { padding: 2px; border-radius: 5px; }
+[data-widget="custom.battery-status"][data-fit-arr="mini"] .bat__fill { border-radius: 3px; }
+[data-widget="custom.battery-status"][data-fit-arr="mini"] .bat__note { display: none; }
+[data-widget="custom.battery-status"][data-fit-arr="mini"][data-fit-h="xs"] .bat__name { font-size: 11px; }
+@container bat (max-height: 70px) {
+  [data-widget="custom.battery-status"] .bat__name { display: none; }
+  [data-widget="custom.battery-status"][data-fit-arr="mini"] .bat__in { grid-template-areas: "level cell"; grid-template-rows: minmax(0, 1fr); }
+}

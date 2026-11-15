@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "camera",
+  "name": "Camera",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "camera.js",
+  "style": "camera.css",
+  "assets": "assets/",
+  "api": "MaisonCamera"
+}

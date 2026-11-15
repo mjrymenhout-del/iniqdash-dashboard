@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "humidifier",
+  "name": "Humidifier",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "humidifier.js",
+  "style": "humidifier.css",
+  "assets": "assets/",
+  "api": "MaisonHumidifier"
+}

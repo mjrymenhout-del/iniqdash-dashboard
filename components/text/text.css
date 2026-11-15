@@ -1,0 +1,12 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   IniqText — Widget Studio's Value / Text primitive (components/text/text.js). Its typography and background are configuration (set
+   inline from it); this sheet only keeps one line from spilling out of its box.
+   ========================================================================== */
+.iqtx { overflow: hidden; pointer-events: none; font-family: var(--font); font-variant-numeric: tabular-nums; }
+.iqtx__t { white-space: pre; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.iqtx[data-state="unavailable"] { opacity: .5; }
+.iqtx[data-wrap="wrap"] .iqtx__t { white-space: pre-line; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow-wrap: anywhere; min-width: 0; max-width: 100%; }

@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "readings",
+  "name": "Readings",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "readings.js",
+  "style": "readings.css",
+  "assets": "assets/",
+  "api": "MaisonReadings"
+}

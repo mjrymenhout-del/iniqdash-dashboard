@@ -1,0 +1,158 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Popup host (current development theme; shared tokens). The layer is the application's screen.
+   ========================================================================== */
+.mpop { position: absolute; inset: 0; z-index: 40; display: grid; place-items: center; padding: 24px; font-family: var(--font); }
+.mpop.is-passthrough { pointer-events: none; }
+.mpop.is-passthrough .mpop__panel { pointer-events: auto; }
+.mpop.is-leaving { pointer-events: none; }
+.mpop__backdrop { position: absolute; inset: 0; background: rgba(4, 4, 6, .66); }
+.mpop__backdrop.is-clear { background: transparent; }
+.mpop__panel {
+  position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; max-width: 100%; max-height: 100%;
+  border-radius: var(--radius-xl); color: var(--text-primary); overflow: hidden;
+  /* on the page colour underneath: opaque even when a glass theme makes the surfaces translucent (nothing shows through a popup) */
+  background: linear-gradient(165deg, var(--surface-primary-top), var(--surface-primary) 55%, var(--surface-secondary)), var(--page-bg, #0e1117);
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .85), inset 0 0 0 1px var(--border-primary);
+}
+.mpop__panel:focus { outline: none; }
+.mpop__head { position: relative; z-index: 2; flex: none; display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 8px 8px 0 18px; }
+.mpop__titles { flex: 1; min-width: 0; }
+.mpop__subtitle { margin: 2px 0 0; font-size: 13px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mpop__end { flex: none; display: flex; align-items: center; gap: var(--mpop-gap, 10px); margin-left: auto; }
+.mpop__head[data-align="center"] .mpop__titles { text-align: center; }
+.mpop__head[data-title="large"] .mpop__title { font-size: clamp(22px, 3.2vw, 32px); letter-spacing: -.01em; }
+.mpop__head[data-title="n"] .mpop__title { font-size: var(--mpop-title, 16px); letter-spacing: -.01em; line-height: 1.1; }
+/* a header over the picture: the room's look (round, translucent buttons; white type) */
+.mpop__head.is-over { padding: 20px 20px 0 22px; }
+.mpop__head.is-over .mpop__title { color: #fff; text-shadow: 0 2px 14px rgba(0, 0, 0, .55); }
+.mpop__head.is-over .mpop__subtitle { color: rgba(255, 255, 255, .78); text-shadow: 0 1px 8px rgba(0, 0, 0, .5); }
+/* header buttons, in two regions (left · right). Style: solid (a raised control) · glass (round, translucent — over a picture) ·
+   plain (the bare icon); size small · medium · large; an optional token colour for the icon (--mpop-btn-c). */
+.mpop__start { flex: none; display: flex; align-items: center; gap: var(--mpop-gap, 10px); }
+.mpop__btn { --mpop-btn: 44px; --mpop-btn-i: 18px; flex: none; box-sizing: border-box; width: var(--mpop-btn); height: var(--mpop-btn); border: 0; border-radius: calc(var(--mpop-btn) * .3); display: grid; place-items: center; color: var(--mpop-btn-c, var(--text-secondary)); background: var(--control-raised); cursor: pointer; padding: 0; transition: background var(--dur-fast, .15s) ease, color var(--dur-fast, .15s) ease; }
+/* each button's own style (bare · subtle · outline · filled), shape (circle · rounded) and treatment (normal · accent) — theme tokens only */
+.mpop__btn[data-shape="circle"] { border-radius: 50%; }
+.mpop__btn[data-style="bare"] { background: transparent; box-shadow: none; }
+.mpop__btn[data-style="subtle"] { color: var(--mpop-btn-c, var(--text-primary)); background: color-mix(in srgb, var(--surface-primary) 52%, transparent); box-shadow: inset 0 0 0 1px var(--border-subtle); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.mpop__btn[data-style="outline"] { color: var(--mpop-btn-c, var(--text-primary)); background: color-mix(in srgb, var(--surface-primary) 22%, transparent); box-shadow: inset 0 0 0 1.5px var(--border-primary); }
+.mpop__btn[data-style="filled"] { color: var(--mpop-btn-c, var(--text-primary)); background: var(--control-raised); box-shadow: inset 0 0 0 1px var(--border-subtle); }
+.mpop__btn[data-tone="accent"] { color: var(--mpop-btn-c, var(--accent)); }
+.mpop__btn[data-tone="accent"][data-style="subtle"] { background: color-mix(in srgb, var(--accent) 16%, color-mix(in srgb, var(--surface-primary) 52%, transparent)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent); }
+.mpop__btn[data-tone="accent"][data-style="outline"] { box-shadow: inset 0 0 0 1.5px var(--accent), 0 0 18px -6px color-mix(in srgb, var(--accent) 60%, transparent); }
+.mpop__btn[data-tone="accent"][data-style="filled"] { color: var(--mpop-btn-c, var(--accent-on, #1a1006)); background: var(--accent); box-shadow: none; }
+/* over the picture: light icons, a soft shadow for the bare ones */
+.mpop__head.is-over .mpop__btn:not([data-tone="accent"]) { color: var(--mpop-btn-c, #fff); }
+.mpop__head.is-over .mpop__btn[data-style="bare"] { filter: drop-shadow(0 1px 6px rgba(0, 0, 0, .6)); }
+.mpop__btn svg, .mpop__btn-ic { width: var(--mpop-btn-i); height: var(--mpop-btn-i); }
+.mpop__btn-ic { display: grid; }
+.mpop__btn-ic svg { width: 100%; height: 100%; }
+.mpop__btn:hover { color: var(--mpop-btn-c, var(--text-primary)); }
+.mpop__btn:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.mpop__title.is-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+
+/* HERO INFORMATION: a structured 3 × 3 grid — rows top · centre · bottom × columns left · centre · right (popup.js heroFacts); several
+   items in one cell sit side by side in list order (wrapping, never overlapping). It is BELOW the header (title, buttons): nothing in it
+   runs under them. With a picture each row is at least a third of the area over the picture (more when its content needs it), so top /
+   centre / bottom are genuinely different places on the picture (an empty row keeps its share); without one the rows simply stack. A narrow popup reflows each row: its centre
+   item on its own line, then its left / right items. Presentations: card (subtle surface) · emphasis (a large value) · minimal (bare).
+   Sizes are independent: value s · m · l · xl, label s · m · l, icon s · m · l · xl. */
+.mpop__info { position: relative; z-index: 1; flex: none; container-type: inline-size; padding: 14px 20px 4px; box-sizing: border-box; }
+/* the area over the picture, shared by the three rows (each row at least a third of it — more when its content needs it) */
+.mpop__info[data-hero="small"] { --mpop-row: 4px; }   /* a compact header: the facts sit right under the title */
+.mpop__info[data-hero="medium"] { --mpop-row: 46px; }
+.mpop__info[data-hero="large"] { --mpop-row: 80px; }
+.mpop__info[data-hero="full"] { --mpop-row: 90px; }
+.mpop__facts {
+  display: grid; column-gap: 16px; row-gap: 0;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); grid-template-rows: repeat(3, minmax(var(--mpop-row, 0px), auto));
+  grid-template-areas: "top-left top-center top-right" "center-left center-center center-right" "bottom-left bottom-center bottom-right";
+}
+.mpop__slot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; min-width: 0; padding-block: 4px; }
+.mpop__slot[data-empty] { display: none; }
+.mpop__slot[data-slot="left"] { justify-content: flex-start; }
+.mpop__slot[data-slot="center"] { justify-content: center; }
+.mpop__slot[data-slot="right"] { justify-content: flex-end; }
+.mpop__slot[data-row="top"] { align-self: start; align-items: flex-start; }
+.mpop__slot[data-row="center"] { align-self: center; }
+.mpop__slot[data-row="bottom"] { align-self: end; align-items: flex-end; }
+.mpop__slot[data-cell="top-left"] { grid-area: top-left; } .mpop__slot[data-cell="top-center"] { grid-area: top-center; } .mpop__slot[data-cell="top-right"] { grid-area: top-right; }
+.mpop__slot[data-cell="center-left"] { grid-area: center-left; } .mpop__slot[data-cell="center-center"] { grid-area: center-center; } .mpop__slot[data-cell="center-right"] { grid-area: center-right; }
+.mpop__slot[data-cell="bottom-left"] { grid-area: bottom-left; } .mpop__slot[data-cell="bottom-center"] { grid-area: bottom-center; } .mpop__slot[data-cell="bottom-right"] { grid-area: bottom-right; }
+/* one item: [icon] value / label — every size its own */
+.mpop__fact { --fact-c: var(--text-primary); --fact-v: 18px; --fact-l: 12px; --fact-i: 30px; display: inline-flex; align-items: center; gap: 12px; min-width: 0; max-width: 100%; color: var(--text-primary); }
+.mpop__fact[data-vsize="s"] { --fact-v: 15px; }
+.mpop__fact[data-vsize="m"] { --fact-v: 18px; }
+.mpop__fact[data-vsize="l"] { --fact-v: clamp(24px, 5cqi, 34px); }
+.mpop__fact[data-vsize="xl"] { --fact-v: clamp(36px, 9cqi, 64px); }
+.mpop__fact[data-lsize="s"] { --fact-l: 12px; }
+.mpop__fact[data-lsize="m"] { --fact-l: 13.5px; }
+.mpop__fact[data-lsize="l"] { --fact-l: 16px; }
+.mpop__fact[data-isize="s"] { --fact-i: 20px; }
+.mpop__fact[data-isize="m"] { --fact-i: 30px; }
+.mpop__fact[data-isize="l"] { --fact-i: 40px; }
+.mpop__fact[data-isize="xl"] { --fact-i: 56px; }
+.mpop__fact-ic { flex: none; display: grid; place-items: center; width: min(var(--fact-i), 22cqi); height: min(var(--fact-i), 22cqi); color: var(--fact-c); }
+.mpop__fact-ic svg { width: 100%; height: 100%; }
+.mpop__fact-ic[data-iqi-bg] { width: calc(var(--fact-i) * 1.35); height: calc(var(--fact-i) * 1.35); }
+.mpop__fact-txt { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; text-align: left; }
+.mpop__fact[data-align="center"] .mpop__fact-txt { align-items: center; text-align: center; }
+.mpop__fact[data-align="end"] .mpop__fact-txt { align-items: flex-end; text-align: right; }
+.mpop__fact[data-label-pos="above"] .mpop__fact-txt { flex-direction: column-reverse; }
+.mpop__fact-v { max-width: 100%; font-size: min(var(--fact-v), 18cqi); font-weight: 700; line-height: 1.15; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mpop__fact[data-vsize="xl"] .mpop__fact-v, .mpop__fact[data-vsize="l"] .mpop__fact-v, .mpop__fact[data-big] .mpop__fact-v { letter-spacing: -.02em; line-height: 1.02; }
+.mpop__fact[data-value-tone="icon"] .mpop__fact-v { color: var(--fact-c); }
+.mpop__fact-l { max-width: 100%; margin-top: 2px; font-size: var(--fact-l); color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mpop__fact[data-label-pos="above"] .mpop__fact-l { margin: 0 0 2px; }
+.mpop__fact[data-icon-pos="top"] { flex-direction: column; gap: 6px; }
+.mpop__fact[data-icon-pos="top"][data-align="start"] { align-items: flex-start; }
+.mpop__fact[data-icon-pos="top"][data-align="end"] { align-items: flex-end; }
+.mpop__fact[data-style="card"] { padding: 12px 18px 12px 14px; border-radius: 18px; background: color-mix(in srgb, var(--surface-primary) 62%, transparent); box-shadow: inset 0 0 0 1px var(--border-subtle); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.mpop__fact[data-style="emphasis"] { gap: 4px 12px; }
+.mpop__fact[data-state="unavailable"] .mpop__fact-v, .mpop__fact[data-state="missing"] .mpop__fact-v { color: var(--text-muted); font-weight: 600; }
+/* over the picture: white type with a soft shadow (the card keeps its surface) */
+.mpop__info.is-over .mpop__fact:not([data-style="card"]) .mpop__fact-v { color: #fff; text-shadow: 0 2px 16px rgba(0, 0, 0, .55); }
+.mpop__info.is-over .mpop__fact:not([data-style="card"])[data-value-tone="icon"] .mpop__fact-v { color: var(--fact-c); }
+.mpop__info.is-over .mpop__fact:not([data-style="card"]) .mpop__fact-l { color: rgba(255, 255, 255, .8); text-shadow: 0 1px 8px rgba(0, 0, 0, .5); }
+@container (max-width: 520px) {
+  /* narrow: per row, the centre item on its own line, its left / right items below — the vertical order is kept */
+  .mpop__facts { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto minmax(var(--mpop-row, 0px), auto) auto minmax(var(--mpop-row, 0px), auto) auto minmax(var(--mpop-row, 0px), auto);
+    grid-template-areas: "top-center top-center" "top-left top-right" "center-center center-center" "center-left center-right" "bottom-center bottom-center" "bottom-left bottom-right"; }
+  .mpop__fact[data-style="card"] { padding: 10px 14px 10px 12px; gap: 10px; }
+}
+/* the header picture: over the top of the popup (hero) or the whole popup; its own treatment, then a shade into the surface */
+.mpop__hero { position: absolute; left: 0; right: 0; top: 0; z-index: 0; height: var(--mpop-hero, 300px); overflow: hidden; pointer-events: none; }
+.mpop__hero[data-hero="small"] { --mpop-hero: 180px; }
+.mpop__hero[data-hero="large"] { --mpop-hero: 400px; }
+.mpop__hero[data-hero="full"] { --mpop-hero: 100%; }
+.mpop__hero img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; display: block; }
+.mpop__hero[data-treatment="dark"] img { filter: brightness(.68); }
+.mpop__hero[data-treatment="dim"] img { opacity: .55; }
+.mpop__hero[data-treatment="soft"] img { filter: blur(5px) saturate(.9); transform: scale(1.06); }
+.mpop__shade { position: absolute; inset: 0; --a: .35; --b: .85;
+  background: linear-gradient(180deg, rgba(8, 8, 12, calc(var(--a) * .9)) 0%, rgba(8, 8, 12, calc(var(--a) * .4)) 35%, color-mix(in srgb, var(--surface-primary) calc(var(--b) * 100%), transparent) 100%); }
+.mpop__hero[data-overlay="light"] .mpop__shade { --a: .18; --b: .75; }
+.mpop__hero[data-overlay="strong"] .mpop__shade { --a: .6; --b: .95; }
+.mpop__hero[data-hero="full"] .mpop__shade { background: linear-gradient(180deg, rgba(8, 8, 12, calc(var(--a) * .9)), rgba(8, 8, 12, calc(.35 + var(--a) * .6)) 45%, color-mix(in srgb, var(--surface-primary) calc(var(--b) * 100%), transparent)); }
+.mpop__panel.has-hero > .mpop__body { position: relative; z-index: 1; }
+.mpop__icon { width: 22px; height: 22px; display: grid; color: var(--accent); }
+.mpop__icon svg { width: 100%; height: 100%; }
+.mpop__title { flex: 1; min-width: 0; margin: 0; font-size: 16px; font-weight: var(--iq-fw-title); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mpop__body { position: relative; flex: 1 1 auto; min-height: 0; padding: 16px; overflow: auto; overscroll-behavior: contain; }
+.mpop__body > .mf { height: auto; min-height: var(--mf-content-h, 0); }
+.mpop[data-size="fit"] .mpop__body > .mf { width: var(--mf-w); height: var(--mf-h); min-height: 0; }
+/* mobile: a sheet from the bottom */
+.mpop[data-bp="mobile"] { place-items: end stretch; padding: 0; }
+.mpop[data-bp="mobile"] .mpop__panel { border-radius: 24px 24px 0 0; }
+.mpop[data-bp="mobile"][data-size="full"] .mpop__panel { border-radius: 0; }
+/* mobile: the header keeps its buttons reachable and the title readable — medium buttons a little smaller, a long title on two lines */
+.mpop[data-bp="mobile"] .mpop__head.is-over, .ed-popstage[data-bp="mobile"] .mpop__head.is-over { padding: 16px 14px 0 16px; gap: 10px; }
+.mpop[data-bp="mobile"] .mpop__title, .ed-popstage[data-bp="mobile"] .mpop__title { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-height: 1.15; }
+.mpop[data-bp="mobile"] .mpop__info, .ed-popstage[data-bp="mobile"] .mpop__info { padding: 14px 16px 4px; }
+/* a narrow (mobile) header: configured buttons keep their look but never crowd out the title (at most 56 px; icons follow) */
+.mpop[data-bp="mobile"] .mpop__btn, .ed-popstage[data-bp="mobile"] .mpop__btn { width: min(var(--mpop-btn), 56px); height: min(var(--mpop-btn), 56px); }
+.mpop[data-bp="mobile"] .mpop__btn svg, .mpop[data-bp="mobile"] .mpop__btn-ic, .ed-popstage[data-bp="mobile"] .mpop__btn svg, .ed-popstage[data-bp="mobile"] .mpop__btn-ic { width: min(var(--mpop-btn-i), 28px); height: min(var(--mpop-btn-i), 28px); }
+.mpop[data-bp="mobile"] .mpop__head[data-title="n"] .mpop__title { font-size: min(var(--mpop-title, 16px), 30px); }

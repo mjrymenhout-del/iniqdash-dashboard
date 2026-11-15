@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "text",
+  "name": "Text / Label",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "text.js",
+  "style": "text.css",
+  "assets": "assets/",
+  "api": "MaisonText"
+}

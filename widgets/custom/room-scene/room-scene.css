@@ -1,0 +1,509 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Room / Scene — one DOM tree, four VARIANTS (data-variant), each with its own Micro · Compact · Normal · Large composition
+   (data-fit-arr, from the widget's OWN box — MaisonFit), dressed by semantic APPEARANCE choices (data-align, data-image, data-overlay,
+   data-info-style, data-scene-style, data-title — allow-listed values set by room-scene.js, never CSS from the configuration).
+     scene    "Hero"          the picture is the card (the approved reference; Large · Normal · Compact · Horizontal · Micro)
+     card     "Compact card"  a graphite card with the picture as a side panel
+     status   "Status"        a graphite card led by the owner's Information values; the picture only a faint backdrop
+     minimal  "Minimal"       a small round picture, the name, the first value — almost no chrome
+   The lit / off / unknown treatment of the picture (data-lit, the mapped lights' real states) works in every variant and always wins
+   over the image treatment (a treatment never brightens: OFF never looks lit).
+   Namespace: iq-room · container: iq-room · custom properties: --iq-room-*
+   ========================================================================== */
+.iq-room {
+  --iq-room-pad: clamp(12px, 3.2cqw, 32px);
+  /* layered, translucent surfaces from the theme tokens (softer than a black box): a scene tile and an Information chip over the picture */
+  --iq-room-tile-bg: linear-gradient(180deg, color-mix(in srgb, var(--surface-tertiary, #2a2b31) 58%, transparent), color-mix(in srgb, var(--surface-primary, #16161a) 66%, transparent));
+  --iq-room-tile-edge: rgba(255, 255, 255, .14);
+  --iq-room-glow: var(--light-warm, #ffb457);
+  --iq-room-muted: rgba(255, 255, 255, .72);
+  --iq-room-chip: color-mix(in srgb, var(--surface-primary, #16161a) 52%, transparent);   /* an Information pill / tile (Appearance styles) */
+  --iq-room-chip-edge: rgba(255, 255, 255, .1);
+  --iq-room-ts: 1;                                                    /* the title size choice (×) */
+  position: relative;
+  container: iq-room / size;
+  min-width: 0;
+  min-height: 80px;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 24px;
+  color: #fff;
+  font-family: var(--font);
+  background: var(--device-surface);
+  box-shadow: var(--device-shadow), inset 0 0 0 1px rgba(255, 255, 255, .08);
+}
+.iq-room [hidden] { display: none !important; }
+
+/* ---------------------------------------------------------------- picture */
+.iq-room__media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+.iq-room__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 55%; display: none; }
+.iq-room[data-has-image="true"] .iq-room__img { display: block; }
+.iq-room[data-has-image="true"] .iq-room__fallback { display: none; }
+/* no picture configured (or it failed): a deliberate warm room-light surface, never a blank rectangle */
+.iq-room__fallback { position: absolute; inset: 0; background:
+  radial-gradient(46% 40% at 50% 8%, rgba(255, 166, 74, .34), transparent 70%),
+  radial-gradient(60% 40% at 18% 78%, rgba(255, 140, 50, .16), transparent 72%),
+  linear-gradient(180deg, #2b1c12, #0f0a06); }
+/* the picture follows the MAPPED LIGHTS (data-lit, from their reported states only): lit → as it is; every light off → the same picture
+   desaturated and dimmed; not reported (loading / unavailable / unknown) → neutral and dimmed, never the lit look.
+   The owner's image treatment is a second, separate filter (never brighter, never more saturated) — the light state always shows.
+   Both empty (lit, Natural) → no filter at all; a treatment keeps an identity light filter so a lit ↔ off change still eases. */
+.iq-room { --iq-room-lit-fx: ; --iq-room-img-fx: ; }
+.iq-room:is([data-image="dark"], [data-image="soft"]) { --iq-room-lit-fx: grayscale(0) brightness(1) contrast(1); }
+.iq-room__img, .iq-room__fallback { filter: var(--iq-room-lit-fx) var(--iq-room-img-fx); transition: filter 420ms var(--ease, ease); }
+.iq-room[data-lit="false"] { --iq-room-lit-fx: grayscale(.9) brightness(.7) contrast(.95); }
+.iq-room[data-lit="unknown"] { --iq-room-lit-fx: grayscale(.55) brightness(.78) contrast(1); }
+@media (prefers-reduced-motion: reduce) { .iq-room__img, .iq-room__fallback { transition: none; } }
+.iq-room__shade { position: absolute; inset: 0; z-index: 1; pointer-events: none; background:
+  linear-gradient(180deg, rgba(8, 5, 3, .62) 0%, rgba(8, 5, 3, .18) 34%, rgba(8, 5, 3, 0) 52%),
+  linear-gradient(0deg, rgba(8, 5, 3, .8) 0%, rgba(8, 5, 3, .38) 34%, rgba(8, 5, 3, 0) 62%); }
+.iq-room__in { position: absolute; inset: 0; z-index: 2; box-sizing: border-box; padding: var(--iq-room-pad); display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr) auto; row-gap: 1.6cqw; }
+
+/* ---------------------------------------------------------------- head */
+.iq-room__head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; column-gap: 12px; min-width: 0; }
+.iq-room__id { min-width: 0; }
+.iq-room__name { margin: 0; font-size: calc(var(--iq-room-fs, 20px) * var(--iq-room-ts)); font-weight: var(--iq-fw-title); line-height: 1.04; letter-spacing: -.012em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 2px 14px rgba(0, 0, 0, .5); }
+/* the title's tight line box (1.04) is shorter than its glyphs: clip only SIDEWAYS (the ellipsis), never the descenders (g y p q j) —
+   the line box, its height and the title's position stay exactly as they were */
+.iq-room__name { overflow: clip visible; min-width: 0; }   /* (clip is not a scroll container: keep the title shrinkable in flex / grid) */
+.iq-room__badge { display: none; }
+.iq-room__badge svg { width: 100%; height: 100%; }
+.iq-room__corner { display: flex; align-items: center; gap: 10px; }
+.iq-room__devices {
+  all: unset; box-sizing: border-box; cursor: pointer; display: none; align-items: center; gap: 6px; height: clamp(36px, 5.4cqw, 52px); padding: 0 clamp(12px, 1.8cqw, 20px);
+  border-radius: 999px; background: var(--iq-room-tile-bg); box-shadow: inset 0 0 0 1px var(--iq-room-tile-edge); font-size: clamp(13px, 2cqw, 20px); font-weight: var(--iq-fw-control); color: #fff;
+}
+.iq-room__devices:focus-visible, .iq-room__go:focus-visible, .iq-room__scene:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.iq-room__chev { display: grid; width: 1.15em; height: 1.15em; }
+.iq-room__chev svg { width: 100%; height: 100%; }
+
+/* ---------------------------------------------------------------- Information (the owner's lines; hidden when none fits) */
+.iq-room__stats { display: flex; margin: 0; padding: 0; list-style: none; min-width: 0; }
+.iq-room__stat { display: flex; align-items: center; gap: .7em; min-width: 0; }
+.iq-room__sicon { flex: none; display: grid; width: 1.9em; height: 1.9em; }
+.iq-room__sicon svg { width: 100%; height: 100%; }
+.iq-room__sicon { color: rgba(255, 255, 255, .86); }                 /* an Information line's own colour is set inline (a token name) */
+.iq-room__stat--off .iq-room__sval { color: var(--iq-room-muted); font-weight: var(--iq-fw-subtitle); }   /* unavailable / not found: said, not hidden */
+.iq-room__stxt { display: flex; flex-direction: column; min-width: 0; line-height: 1.12; }
+.iq-room__sval { font-weight: var(--iq-fw-title); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-room__sval i { font-style: normal; font-weight: var(--iq-fw-subtitle); color: var(--iq-room-muted); }
+.iq-room__slab { color: var(--iq-room-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------------------------------------------------------------- scenes + chevron */
+.iq-room__head { grid-row: 1; }
+.iq-room__stats { grid-row: 2; }
+.iq-room__acts { grid-row: 4; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 1.6cqw; min-width: 0; }
+.iq-room__acts:has(.iq-room__go[hidden]) { grid-template-columns: minmax(0, 1fr); }
+.iq-room__acts > .iq-room__go { grid-column: -2; }                 /* stays at the end even when there is no scene row */
+.iq-room__scenes { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 1.6cqw; min-width: 0; }
+.iq-room__scene, .iq-room__go {
+  all: unset; box-sizing: border-box; cursor: pointer; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .45em;
+  border-radius: 20px; background: var(--iq-room-tile-bg); box-shadow: inset 0 0 0 1px var(--iq-room-tile-edge), inset 0 1px 0 rgba(255, 255, 255, .08), 0 8px 18px -10px rgba(0, 0, 0, .8);
+  color: #fff; -webkit-tap-highlight-color: transparent; transition: background var(--dur-medium) var(--ease), box-shadow var(--dur-medium) var(--ease), transform var(--dur-press) var(--ease);
+}
+.iq-room__scene:active:not(:disabled), .iq-room__go:active { transform: scale(.97); }
+.iq-room__scene:disabled { cursor: not-allowed; opacity: var(--unavailable-opacity, .5); }
+.iq-room__sc-i { display: grid; }
+.iq-room__sc-i svg { width: 100%; height: 100%; }
+.iq-room__sc-l { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: var(--iq-fw-control); color: rgba(255, 255, 255, .92); }
+.iq-room__scene[data-active="true"] {
+  background: linear-gradient(180deg, rgba(255, 122, 26, .26), rgba(255, 122, 26, .08));
+  box-shadow: inset 0 0 0 1.5px var(--accent), 0 0 22px rgba(255, 122, 26, .32), 0 8px 18px -10px rgba(0, 0, 0, .8);
+}
+.iq-room__scene[data-active="true"] .iq-room__sc-i { color: var(--iq-room-glow); filter: drop-shadow(0 0 8px rgba(255, 170, 70, .6)); }
+.iq-room__go .iq-room__chev { width: 1.6em; height: 1.6em; }
+/* more scenes than the card shows: the last tile is "+N" (opens the scene panel) — the same tile, a quieter face */
+.iq-room__scene--more { background: linear-gradient(180deg, rgba(36, 28, 22, .38), rgba(12, 9, 7, .5)); }
+.iq-room__sc-n { font-weight: var(--iq-fw-title); font-size: 1.25em; line-height: 1; font-variant-numeric: tabular-nums; color: rgba(255, 255, 255, .92); }
+.iq-room__scene--more .iq-room__sc-l { color: var(--iq-room-muted); }
+
+/* the scene panel: every scene of the room, over the card (the "+N" tile, or the scenes button of a card too small for a scene row) */
+.iq-room__panel { position: absolute; inset: 0; z-index: 4; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; padding: clamp(10px, 4cqmin, 20px);
+  background: linear-gradient(180deg, rgba(14, 10, 8, .9), rgba(10, 7, 5, .94)); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); color: #fff; }
+.iq-room__panel-h { display: flex; align-items: center; gap: 8px; }
+.iq-room__panel-t { margin-right: auto; font-size: clamp(13px, 4.5cqmin, 18px); font-weight: var(--iq-fw-title); }
+.iq-room__panel-x { all: unset; box-sizing: border-box; cursor: pointer; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 999px; font-size: 20px; line-height: 1;
+  background: rgba(255, 255, 255, .08); box-shadow: inset 0 0 0 1px var(--iq-room-tile-edge); }
+.iq-room__panel-x:focus-visible, .iq-room__mscenes:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.iq-room__panel-l { flex: 1 1 auto; min-height: 0; overflow: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); grid-auto-rows: 64px; gap: 8px; align-content: start; }
+.iq-room__panel .iq-room__scene { height: 64px; border-radius: 14px; font-size: 12px; }
+.iq-room__panel .iq-room__sc-i { width: 22px; height: 22px; }
+.iq-room__panel .iq-room__sc-l { display: block; }
+
+/* the scenes button: shown (by room-scene.js) when the card has scenes but no room for a scene row */
+.iq-room__mscenes { all: unset; box-sizing: border-box; cursor: pointer; display: grid; place-items: center; position: absolute; z-index: 3; top: clamp(6px, 6cqw, 12px); right: clamp(6px, 6cqw, 12px);
+  width: clamp(28px, 18cqw, 36px); height: clamp(28px, 18cqw, 36px); border-radius: 999px; color: #fff; background: rgba(14, 10, 8, .5); box-shadow: inset 0 0 0 1px var(--iq-room-tile-edge); }
+.iq-room__mscenes span { display: grid; width: 56%; height: 56%; }
+.iq-room__mscenes svg { width: 100%; height: 100%; }
+.iq-room[data-has-go="false"] .iq-room__go { display: none; }
+
+/* ================================================================ HERO (variant "scene") — the approved reference, as it always was.
+   Its own Information strip / scene tiles apply while the Appearance styles are "Automatic" (data-*-style="auto"). */
+.iq-room:where([data-variant="scene"])[data-fit-arr="normal"] { --iq-room-pad: clamp(14px, 4.2cqw, 24px); --iq-room-sc: clamp(62px, 18cqw, 92px); --iq-room-info-fs: clamp(11.5px, 3.4cqw, 16px); }
+.iq-room:where([data-variant="scene"])[data-fit-arr="large"] { --iq-room-pad: clamp(26px, 3.2cqw, 40px); --iq-room-sc: clamp(88px, 12cqw, 136px); --iq-room-info-fs: clamp(14px, 1.9cqw, 22px); }
+.iq-room:where([data-variant="scene"]):is([data-fit-arr="normal"], [data-fit-arr="large"]) .iq-room__name { --iq-room-fs: clamp(24px, 8.2cqw, 76px); }
+.iq-room:where([data-variant="scene"])[data-fit-arr="large"] .iq-room__name { --iq-room-fs: clamp(44px, 6.6cqw, 84px); }
+.iq-room:where([data-variant="scene"])[data-fit-arr="large"] .iq-room__devices { display: inline-flex; }
+.iq-room:where([data-variant="scene"])[data-fit-arr="normal"] .iq-room__go { width: clamp(34px, 9.4cqw, 48px); height: clamp(52px, 15cqw, 76px); border-radius: clamp(14px, 4cqw, 20px); font-size: clamp(12px, 3.2cqw, 16px); }
+.iq-room:where([data-variant="scene"])[data-fit-arr="normal"] .iq-room__acts { column-gap: 1.8cqw; }
+.iq-room:where([data-variant="scene"])[data-fit-arr="normal"] .iq-room__scenes { gap: 1.8cqw; }
+.iq-room:where([data-variant="scene"])[data-fit-arr="large"] .iq-room__go { width: clamp(50px, 7.2cqw, 92px); height: clamp(80px, 11cqw, 128px); border-radius: clamp(18px, 2.3cqw, 28px); font-size: clamp(16px, 2.2cqw, 26px); }
+.iq-room:where([data-variant="scene"])[data-fit-arr="large"] .iq-room__acts { column-gap: 2cqw; }
+.iq-room:where([data-variant="scene"])[data-fit-arr="large"] .iq-room__scenes { gap: 2cqw; }
+/* Hero scene tiles (Automatic) */
+.iq-room:where([data-variant="scene"][data-scene-style="auto"])[data-fit-arr="normal"] .iq-room__scene { height: var(--iq-room-sc); border-radius: clamp(14px, 4cqw, 20px); font-size: clamp(11.5px, 3.5cqw, 17px); }
+.iq-room:where([data-variant="scene"][data-scene-style="auto"])[data-fit-arr="normal"] .iq-room__sc-i { width: clamp(22px, 6.6cqw, 32px); height: clamp(22px, 6.6cqw, 32px); }
+.iq-room:where([data-variant="scene"][data-scene-style="auto"])[data-fit-arr="large"] .iq-room__scene { height: var(--iq-room-sc); font-size: clamp(15px, 2.2cqw, 25px); border-radius: clamp(18px, 2.3cqw, 28px); }
+.iq-room:where([data-variant="scene"][data-scene-style="auto"])[data-fit-arr="large"] .iq-room__sc-i { width: clamp(30px, 4cqw, 52px); height: clamp(30px, 4cqw, 52px); }
+.iq-room:where([data-variant="scene"][data-scene-style="auto"]):is([data-fit-arr="normal"], [data-fit-arr="large"]) .iq-room__sc-l { font-size: 1em; }
+/* one or two scenes: tiles of a sensible width, not stretched across the card */
+.iq-room:where([data-variant="scene"][data-scene-style="auto"]):is([data-scene-tiles="1"], [data-scene-tiles="2"]):is([data-fit-arr="normal"], [data-fit-arr="large"]) .iq-room__scenes { grid-auto-columns: minmax(0, clamp(120px, 22cqw, 200px)); justify-content: start; }
+/* Hero Information strip (Automatic): a translucent bar of the owner's first lines under the name */
+.iq-room:where([data-variant="scene"][data-info-style="auto"]):is([data-fit-arr="normal"], [data-fit-arr="large"]) .iq-room__stats { align-items: center; flex-wrap: nowrap; justify-self: start; max-width: 100%;
+  background: linear-gradient(90deg, rgba(12, 8, 5, .42), rgba(12, 8, 5, .16)); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .07); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); font-size: var(--iq-room-info-fs); }
+.iq-room:where([data-variant="scene"][data-info-style="auto"])[data-fit-arr="large"] .iq-room__stats { margin-top: 1.4cqw; padding: .8cqw 1.7cqw; border-radius: 20px; }
+.iq-room:where([data-variant="scene"][data-info-style="auto"])[data-fit-arr="large"] .iq-room__stat { padding: 0 1.9cqw; }
+.iq-room:where([data-variant="scene"][data-info-style="auto"])[data-fit-arr="normal"] .iq-room__stats { margin-top: .4em; padding: .45em .8em; border-radius: 14px; }
+.iq-room:where([data-variant="scene"][data-info-style="auto"])[data-fit-arr="normal"] .iq-room__stat { padding: 0 .8em; min-width: 0; }
+.iq-room:where([data-variant="scene"][data-info-style="auto"]):is([data-fit-arr="normal"], [data-fit-arr="large"]) .iq-room__stat:first-child { padding-left: 0; }
+.iq-room:where([data-variant="scene"][data-info-style="auto"]):is([data-fit-arr="normal"], [data-fit-arr="large"]) .iq-room__stat + .iq-room__stat { border-left: 1px solid rgba(255, 255, 255, .16); }
+.iq-room:where([data-variant="scene"][data-info-style="auto"])[data-fit-arr="normal"] .iq-room__sicon { width: 1.5em; height: 1.5em; }
+.iq-room:where([data-variant="scene"][data-info-style="auto"])[data-fit-arr="normal"] .iq-room__sval { font-size: 1.15em; }
+.iq-room:where([data-variant="scene"][data-info-style="auto"])[data-fit-arr="large"] .iq-room__sval { font-size: 1.45em; }
+
+/* HERO · COMPACT + HORIZONTAL: a dark card with the picture as a thumbnail */
+.iq-room:where([data-variant="scene"]):is([data-fit-arr="compact"], [data-fit-arr="horizontal"]) { --iq-room-pad: clamp(10px, 2.6cqw, 16px); --iq-room-thumb: clamp(92px, 30cqw, 220px); --iq-room-info-fs: 13px; background: linear-gradient(165deg, var(--surface-primary-top), var(--surface-primary) 60%, var(--surface-secondary)); }
+.iq-room:where([data-variant="scene"]):is([data-fit-arr="compact"], [data-fit-arr="horizontal"]) .iq-room__shade { display: none; }
+.iq-room:where([data-variant="scene"]):is([data-fit-arr="compact"], [data-fit-arr="horizontal"]) .iq-room__media { inset: var(--iq-room-pad) auto var(--iq-room-pad) var(--iq-room-pad); width: var(--iq-room-thumb); border-radius: clamp(14px, 3cqw, 20px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1); }
+.iq-room:where([data-variant="scene"]):is([data-fit-arr="compact"], [data-fit-arr="horizontal"]) .iq-room__in { padding: var(--iq-room-pad) var(--iq-room-pad) var(--iq-room-pad) calc(var(--iq-room-pad) + var(--iq-room-thumb) + clamp(12px, 3cqw, 22px)); grid-template-rows: auto minmax(0, 1fr) auto; row-gap: 0; }
+.iq-room:where([data-variant="scene"]):is([data-fit-arr="compact"], [data-fit-arr="horizontal"]) .iq-room__acts { grid-row: 3; position: static; display: block; align-self: end; }
+.iq-room:where([data-variant="scene"]):is([data-fit-arr="compact"], [data-fit-arr="horizontal"]) .iq-room__name { text-shadow: none; }
+.iq-room:where([data-variant="scene"]):is([data-fit-arr="compact"], [data-fit-arr="horizontal"]) .iq-room__go { position: absolute; top: var(--iq-room-pad); right: var(--iq-room-pad); width: clamp(34px, 8cqw, 46px); height: clamp(30px, 7cqw, 40px); border-radius: 14px; font-size: 14px; }
+.iq-room:where([data-variant="scene"]):is([data-fit-arr="compact"], [data-fit-arr="horizontal"]) .iq-room__head { padding-right: clamp(38px, 9cqw, 52px); }
+.iq-room:where([data-variant="scene"][data-scene-style="auto"]):is([data-fit-arr="compact"], [data-fit-arr="horizontal"]) .iq-room__sc-l { display: none; }
+.iq-room:where([data-variant="scene"])[data-fit-arr="compact"] { --iq-room-sc: clamp(38px, 11cqw, 52px); }
+.iq-room:where([data-variant="scene"])[data-fit-arr="compact"] .iq-room__name { --iq-room-fs: clamp(18px, 5.8cqw, 30px); }
+.iq-room:where([data-variant="scene"][data-scene-style="auto"])[data-fit-arr="compact"] .iq-room__scenes { display: flex; gap: clamp(6px, 1.8cqw, 10px); }
+.iq-room:where([data-variant="scene"][data-scene-style="auto"])[data-fit-arr="compact"] .iq-room__scene { flex: 1 1 0; max-width: 72px; height: var(--iq-room-sc); border-radius: 13px; }
+.iq-room:where([data-variant="scene"][data-scene-style="auto"])[data-fit-arr="compact"] .iq-room__sc-i { width: clamp(18px, 5cqw, 24px); height: clamp(18px, 5cqw, 24px); }
+.iq-room:where([data-variant="scene"])[data-fit-arr="horizontal"] { --iq-room-thumb: clamp(110px, calc(100cqh - 2 * var(--iq-room-pad)), 230px); --iq-room-sc: clamp(40px, 9cqw, 62px); }
+.iq-room:where([data-variant="scene"])[data-fit-arr="horizontal"] .iq-room__name { --iq-room-fs: clamp(22px, 5.2cqw, 40px); }
+.iq-room:where([data-variant="scene"][data-scene-style="auto"])[data-fit-arr="horizontal"] .iq-room__scenes { display: flex; justify-content: space-between; gap: 0; max-width: 560px; }
+.iq-room:where([data-variant="scene"][data-scene-style="auto"])[data-fit-arr="horizontal"] .iq-room__scene { flex: 1 1 0; height: var(--iq-room-sc); border-radius: 0; background: none; box-shadow: none; }
+.iq-room:where([data-variant="scene"][data-scene-style="auto"])[data-fit-arr="horizontal"] .iq-room__scene + .iq-room__scene { box-shadow: -1px 0 0 rgba(255, 255, 255, .1); }
+.iq-room:where([data-variant="scene"][data-scene-style="auto"])[data-fit-arr="horizontal"] .iq-room__sc-i { width: clamp(22px, 4.6cqw, 34px); height: clamp(22px, 4.6cqw, 34px); color: var(--iq-room-glow); }
+.iq-room:where([data-variant="scene"][data-scene-style="auto"])[data-fit-arr="horizontal"] .iq-room__scene[data-active="true"] { background: linear-gradient(180deg, rgba(255, 122, 26, .2), rgba(255, 122, 26, .06)); box-shadow: inset 0 0 0 1.5px var(--accent); border-radius: 14px; }
+.iq-room:where([data-variant="scene"][data-scene-style="auto"])[data-fit-arr="horizontal"] .iq-room__scene:is([data-icon="mdi:movie-open"], [data-icon="mdi:power"]) .iq-room__sc-i { color: #fff; }
+
+/* HERO · MICRO: the picture, a lit badge, the name (and the scenes button) */
+.iq-room:where([data-variant="scene"])[data-fit-arr="micro"] { --iq-room-pad: clamp(10px, 8cqw, 18px); border-radius: 20px; }
+.iq-room:where([data-variant="scene"])[data-fit-arr="micro"] .iq-room__in { grid-template-rows: minmax(0, 1fr) auto; }
+.iq-room:where([data-variant="scene"])[data-fit-arr="micro"] .iq-room__head { grid-row: 2; display: block; position: relative; }
+.iq-room:where([data-variant="scene"])[data-fit-arr="micro"] .iq-room__name { --iq-room-fs: clamp(14px, 12cqw, 28px); }
+.iq-room:where([data-variant="scene"])[data-fit-arr="micro"] :is(.iq-room__corner, .iq-room__stats, .iq-room__acts) { display: none; }
+.iq-room:where([data-variant="scene"])[data-fit-arr="micro"] .iq-room__badge { display: grid; position: absolute; left: 50%; bottom: calc(100% + clamp(8px, 12cqh, 30px)); width: clamp(26px, 17cqw, 40px); height: clamp(26px, 17cqw, 40px); transform: translateX(-50%); color: var(--iq-room-glow); filter: drop-shadow(0 0 12px rgba(255, 170, 70, .6)); }
+.iq-room:where([data-variant="scene"])[data-fit-arr="micro"][data-lit="false"] .iq-room__badge { color: rgba(255, 255, 255, .55); filter: none; }
+.iq-room:where([data-variant="scene"])[data-fit-arr="micro"][data-lit="none"] .iq-room__badge { display: none; }
+.iq-room:where([data-variant="scene"])[data-fit-arr="micro"] .iq-room__shade { background: linear-gradient(0deg, rgba(8, 5, 3, .82) 0%, rgba(8, 5, 3, .35) 42%, rgba(8, 5, 3, .1) 100%); }
+/* Hero alignment: the name and its Information */
+.iq-room:where([data-variant="scene"])[data-align="center"] .iq-room__id { text-align: center; }
+.iq-room:where([data-variant="scene"])[data-align="right"] .iq-room__id { text-align: right; }
+.iq-room:where([data-variant="scene"]):is([data-fit-arr="normal"], [data-fit-arr="large"])[data-align="center"] .iq-room__stats { justify-self: center; justify-content: center; }
+.iq-room:where([data-variant="scene"]):is([data-fit-arr="normal"], [data-fit-arr="large"])[data-align="right"] .iq-room__stats { justify-self: end; justify-content: flex-end; }
+/* Hero overlay strength (the gradients that keep the type readable over the picture) */
+.iq-room:where([data-variant="scene"])[data-overlay="light"] .iq-room__shade { opacity: .55; }
+.iq-room:where([data-variant="scene"])[data-overlay="strong"] .iq-room__shade { box-shadow: inset 0 0 0 100vmax rgba(8, 5, 3, .3); }
+
+/* ================================================================ CARD · STATUS · MINIMAL: the graphite family (shared surface,
+   lit badge next to the name, scene tiles and the chevron in the corner) */
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"]) {
+  --iq-room-pad: clamp(12px, 3.6cqw, 24px);
+  --iq-room-muted: var(--text-muted); --iq-room-chip: var(--surface-tertiary); --iq-room-chip-edge: var(--border-subtle);
+  --iq-room-info-fs: clamp(12px, 3.2cqw, 15px);
+  background: linear-gradient(165deg, var(--surface-primary-top), var(--surface-primary) 60%, var(--surface-secondary)); color: var(--text-primary);
+}
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"]) .iq-room__shade { display: none; }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"]) .iq-room__in { row-gap: clamp(6px, 3cqh, 14px); }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"]) .iq-room__name { text-shadow: none; }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"]) .iq-room__id { display: flex; align-items: center; gap: .4em; }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"]) .iq-room__sicon { color: var(--text-secondary); }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"]) .iq-room__devices { display: none; }
+/* the lit badge: the mapped lights' state as a small bulb next to the name (warm: lit · grey: off · faint: not reported · none: no lights) */
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"]) .iq-room__badge { display: grid; flex: none; width: clamp(15px, 4.2cqw, 22px); height: clamp(15px, 4.2cqw, 22px); color: var(--iq-room-glow); filter: drop-shadow(0 0 6px rgba(255, 170, 70, .55)); transition: color 420ms var(--ease, ease); }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"])[data-lit="false"] .iq-room__badge { color: var(--text-muted); filter: none; }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"])[data-lit="unknown"] .iq-room__badge { color: var(--text-muted); opacity: .45; filter: none; }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"])[data-lit="none"] .iq-room__badge { display: none; }
+/* scene tiles, the chevron, the scenes button: graphite surfaces */
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"]) :is(.iq-room__scenes .iq-room__scene, .iq-room__go) { background: var(--surface-tertiary); box-shadow: inset 0 0 0 1px var(--border-subtle), inset 0 1px 0 var(--edge-highlight); color: var(--text-primary); }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"]) .iq-room__scenes .iq-room__sc-l { color: var(--text-secondary); }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"]) .iq-room__scenes .iq-room__scene[data-active="true"] { background: linear-gradient(180deg, rgba(255, 122, 26, .22), rgba(255, 122, 26, .07)); box-shadow: inset 0 0 0 1.5px var(--accent), 0 0 18px rgba(255, 122, 26, .25); }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"]) .iq-room__scenes .iq-room__scene[data-active="true"] .iq-room__sc-l { color: var(--text-primary); }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"]) .iq-room__scenes .iq-room__scene--more { background: var(--surface-secondary); }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"]) .iq-room__scenes .iq-room__sc-n { color: var(--text-primary); }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"]) .iq-room__acts { display: block; }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"]) .iq-room__go { position: absolute; top: var(--iq-room-pad); right: var(--iq-room-pad); width: clamp(30px, 8cqw, 42px); height: clamp(30px, 8cqw, 42px); border-radius: 12px; font-size: 13px; }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"])[data-has-go="true"]:not([data-fit-arr="micro"]) .iq-room__head { padding-right: clamp(38px, 10cqw, 52px); }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"]) .iq-room__mscenes { top: auto; bottom: var(--iq-room-pad); right: var(--iq-room-pad); width: 34px; height: 34px; color: var(--text-primary); background: var(--surface-tertiary); box-shadow: inset 0 0 0 1px var(--border-subtle); }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"])[data-fit-arr="micro"] .iq-room__acts { display: none; }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"])[data-align="center"] :is(.iq-room__id, .iq-room__stats) { justify-content: center; text-align: center; }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"])[data-align="right"] :is(.iq-room__id, .iq-room__stats) { justify-content: flex-end; text-align: right; }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"])[data-align="center"] .iq-room__scenes { justify-content: center; }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"])[data-align="right"] .iq-room__scenes { justify-content: flex-end; }
+
+/* ================================================================ COMPACT CARD (variant "card"): the picture as a full-height side panel,
+   the name, the owner's first values and quick scenes beside it. Content alignment Right mirrors it (picture on the right). */
+.iq-room[data-variant="card"] { --iq-room-side: clamp(96px, 36cqw, 340px); }
+.iq-room[data-variant="card"] .iq-room__media { inset: 0 auto 0 0; width: var(--iq-room-side); }
+.iq-room[data-variant="card"] .iq-room__media::after { content: ""; position: absolute; inset: 0; box-shadow: inset -1px 0 0 rgba(255, 255, 255, .08); }
+.iq-room[data-variant="card"] .iq-room__in { padding-left: calc(var(--iq-room-side) + var(--iq-room-pad)); grid-template-rows: auto auto minmax(0, 1fr) auto; }
+.iq-room[data-variant="card"][data-align="right"] .iq-room__media { inset: 0 0 0 auto; }
+.iq-room[data-variant="card"][data-align="right"] .iq-room__in { padding-left: var(--iq-room-pad); padding-right: calc(var(--iq-room-side) + var(--iq-room-pad)); }
+.iq-room[data-variant="card"][data-align="right"][data-has-go="true"] .iq-room__head { padding-right: 0; padding-left: clamp(38px, 10cqw, 52px); }
+.iq-room[data-variant="card"][data-align="right"] .iq-room__go { left: var(--iq-room-pad); right: auto; }
+.iq-room[data-variant="card"][data-fit-arr="compact"] { --iq-room-pad: clamp(10px, 3cqw, 16px); --iq-room-side: clamp(96px, 34cqw, 180px); --iq-room-sc: 40px; --iq-room-info-fs: 12.5px; }
+.iq-room[data-variant="card"][data-fit-arr="compact"] .iq-room__name { --iq-room-fs: clamp(16px, 5cqw, 22px); }
+.iq-room[data-variant="card"][data-fit-arr="compact"] .iq-room__in { row-gap: 6px; }
+.iq-room[data-variant="card"][data-fit-arr="normal"] { --iq-room-pad: clamp(14px, 4cqw, 20px); --iq-room-side: clamp(120px, 36cqw, 200px); --iq-room-sc: clamp(54px, 14cqh, 68px); --iq-room-info-fs: clamp(12.5px, 3.3cqw, 15px); }
+.iq-room[data-variant="card"][data-fit-arr="normal"] .iq-room__name { --iq-room-fs: clamp(19px, 5.6cqw, 28px); }
+.iq-room[data-variant="card"][data-fit-arr="large"] { --iq-room-pad: clamp(20px, 3cqw, 32px); --iq-room-side: clamp(220px, 38cqw, 420px); --iq-room-sc: clamp(70px, 15cqh, 100px); --iq-room-info-fs: clamp(14px, 1.8cqw, 18px); }
+.iq-room[data-variant="card"]:is([data-fit-arr="normal"], [data-fit-arr="large"]) .iq-room__in { grid-template-rows: minmax(0, 1fr) auto auto auto minmax(0, 1fr); row-gap: 0; }
+.iq-room[data-variant="card"]:is([data-fit-arr="normal"], [data-fit-arr="large"]) .iq-room__head { grid-row: 2; }
+.iq-room[data-variant="card"]:is([data-fit-arr="normal"], [data-fit-arr="large"]) .iq-room__stats { grid-row: 3; margin-top: clamp(8px, 3cqh, 16px); }
+.iq-room[data-variant="card"]:is([data-fit-arr="normal"], [data-fit-arr="large"]) .iq-room__acts { grid-row: 4; margin-top: clamp(14px, 5cqh, 28px); }
+.iq-room[data-variant="card"][data-fit-arr="large"] .iq-room__name { --iq-room-fs: clamp(26px, 4.2cqw, 44px); }
+/* Micro: the picture as a top band, the name and the first value below it */
+.iq-room[data-variant="card"][data-fit-arr="micro"] { --iq-room-pad: clamp(10px, 7cqw, 14px); --iq-room-band: 50cqh; --iq-room-info-fs: 12px; border-radius: 20px; }
+.iq-room[data-variant="card"][data-fit-arr="micro"] .iq-room__media { inset: 0 0 auto 0; width: auto; height: var(--iq-room-band); }
+.iq-room[data-variant="card"][data-fit-arr="micro"] .iq-room__in { padding: calc(var(--iq-room-band) + 8px) var(--iq-room-pad) var(--iq-room-pad); grid-template-rows: auto auto; row-gap: 4px; align-content: start; }
+.iq-room[data-variant="card"][data-fit-arr="micro"] .iq-room__name { --iq-room-fs: clamp(14px, 10cqw, 20px); }
+.iq-room[data-variant="card"][data-fit-arr="micro"] .iq-room__mscenes { top: clamp(6px, 5cqw, 10px); bottom: auto; right: clamp(6px, 5cqw, 10px); width: 30px; height: 30px; color: #fff; background: rgba(14, 10, 8, .55); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); }
+
+/* ================================================================ STATUS: the owner's Information leads (large values), the picture is
+   only a faint backdrop (still lit / off), scenes below */
+.iq-room[data-variant="status"] .iq-room__media { inset: 0; opacity: .26; -webkit-mask-image: linear-gradient(200deg, #000 0%, rgba(0, 0, 0, .55) 40%, transparent 78%); mask-image: linear-gradient(200deg, #000 0%, rgba(0, 0, 0, .55) 40%, transparent 78%); }
+.iq-room[data-variant="status"][data-lit="true"] .iq-room__media { opacity: .3; }
+.iq-room[data-variant="status"] .iq-room__in { grid-template-rows: auto auto minmax(0, 1fr) auto; }
+.iq-room[data-variant="status"] .iq-room__sval { color: var(--text-primary); }
+.iq-room[data-variant="status"][data-fit-arr="micro"] { --iq-room-pad: clamp(10px, 8cqw, 16px); --iq-room-info-fs: clamp(12px, 9cqw, 16px); border-radius: 20px; }
+.iq-room[data-variant="status"][data-fit-arr="micro"] .iq-room__name { --iq-room-fs: clamp(13px, 9cqw, 18px); }
+.iq-room[data-variant="status"][data-fit-arr="micro"] .iq-room__in { grid-template-rows: auto minmax(0, 1fr) auto; }
+.iq-room[data-variant="status"][data-fit-arr="micro"] .iq-room__stats { grid-row: 3; }
+.iq-room[data-variant="status"][data-fit-arr="micro"] .iq-room__sval { font-size: 2em; letter-spacing: -.02em; }
+.iq-room[data-variant="status"][data-fit-arr="micro"] .iq-room__sicon { display: none; }
+.iq-room[data-variant="status"][data-fit-arr="micro"] .iq-room__mscenes { top: clamp(8px, 7cqw, 14px); bottom: auto; width: 28px; height: 28px; }
+.iq-room[data-variant="status"][data-fit-arr="micro"] .iq-room__head { padding-right: 34px; }
+.iq-room[data-variant="status"][data-fit-arr="compact"] { --iq-room-pad: clamp(12px, 3.4cqw, 18px); --iq-room-sc: 38px; --iq-room-info-fs: clamp(12px, 3.2cqw, 14px); }
+.iq-room[data-variant="status"][data-fit-arr="compact"] .iq-room__name { --iq-room-fs: clamp(15px, 4.6cqw, 20px); }
+.iq-room[data-variant="status"][data-fit-arr="compact"] .iq-room__in { row-gap: 8px; }
+.iq-room[data-variant="status"][data-fit-arr="compact"] .iq-room__sval { font-size: 1.55em; }
+.iq-room[data-variant="status"][data-fit-arr="normal"] { --iq-room-pad: clamp(14px, 4cqw, 22px); --iq-room-sc: clamp(56px, 15cqh, 76px); --iq-room-info-fs: clamp(12.5px, 3.4cqw, 15px); }
+.iq-room[data-variant="status"][data-fit-arr="normal"] .iq-room__name { --iq-room-fs: clamp(17px, 5cqw, 24px); }
+.iq-room[data-variant="status"][data-fit-arr="normal"] .iq-room__sval { font-size: 1.7em; }
+.iq-room[data-variant="status"][data-fit-arr="large"] { --iq-room-pad: clamp(20px, 3cqw, 32px); --iq-room-sc: clamp(70px, 15cqh, 104px); --iq-room-info-fs: clamp(14px, 1.9cqw, 18px); }
+.iq-room[data-variant="status"][data-fit-arr="large"] .iq-room__name { --iq-room-fs: clamp(22px, 3.4cqw, 34px); }
+.iq-room[data-variant="status"][data-fit-arr="large"] .iq-room__sval { font-size: 2.3em; }
+.iq-room[data-variant="status"][data-fit-arr="large"][data-info-style="tiles"] .iq-room__stat { padding: 1.1em 1.2em; border-radius: 20px; }
+.iq-room[data-variant="status"][data-fit-arr="large"] .iq-room__in { row-gap: clamp(14px, 3.4cqh, 24px); }
+
+/* ================================================================ MINIMAL: a round picture beside the name and the first value(s), the
+   scenes as quiet icon buttons under them — one compact group, centred in the card (never spread over it). The group's height is known
+   (the picture + the scene row when there is one: data-scene-row), so the picture and the text are placed together. */
+.iq-room[data-variant="minimal"] {
+  --iq-room-av: clamp(48px, 40cqh, 84px); --iq-room-sc: 36px; --iq-room-info-fs: clamp(12px, 3.2cqw, 15px);
+  --iq-room-sc-row: 0px; --iq-room-grp: calc(var(--iq-room-av) + var(--iq-room-sc-row));
+  --iq-room-top: max(var(--iq-room-pad), calc((100cqh - var(--iq-room-grp)) / 2));
+}
+.iq-room[data-variant="minimal"][data-scene-row="true"] { --iq-room-sc-row: calc(var(--iq-room-sc) + clamp(10px, 4cqh, 18px)); }
+.iq-room[data-variant="minimal"] .iq-room__media { inset: var(--iq-room-top) auto auto var(--iq-room-pad); width: var(--iq-room-av); height: var(--iq-room-av); border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12), 0 6px 18px -8px rgba(0, 0, 0, .7); }
+.iq-room[data-variant="minimal"] .iq-room__sicon { width: 1.35em; height: 1.35em; }
+.iq-room[data-variant="minimal"] .iq-room__sval { font-weight: var(--iq-fw-control); }
+.iq-room[data-variant="minimal"]:not([data-fit-arr="micro"]) .iq-room__in { inset: var(--iq-room-top) 0 auto 0; height: var(--iq-room-grp); padding-top: 0; padding-bottom: 0;
+  padding-left: calc(var(--iq-room-pad) + var(--iq-room-av) + clamp(12px, 3cqw, 22px)); grid-template-rows: minmax(0, 1fr) auto auto minmax(0, 1fr) auto; row-gap: 0; }
+.iq-room[data-variant="minimal"]:not([data-fit-arr="micro"]) .iq-room__head { grid-row: 2; }
+.iq-room[data-variant="minimal"]:not([data-fit-arr="micro"]) .iq-room__stats { grid-row: 3; margin-top: .3em; }
+.iq-room[data-variant="minimal"]:not([data-fit-arr="micro"]) .iq-room__acts { grid-row: 5; align-self: end; }
+.iq-room[data-variant="minimal"]:not([data-fit-arr="micro"]) :is(.iq-room__go, .iq-room__mscenes) { top: calc(var(--iq-room-av) / 2 - 17px); bottom: auto; }
+.iq-room[data-variant="minimal"]:not([data-fit-arr="micro"])[data-has-go="true"] .iq-room__mscenes { right: calc(var(--iq-room-pad) + 46px); }
+.iq-room[data-variant="minimal"] .iq-room__name { --iq-room-fs: clamp(16px, 5cqw, 24px); }
+.iq-room[data-variant="minimal"][data-align="right"] .iq-room__media { left: auto; right: var(--iq-room-pad); }
+.iq-room[data-variant="minimal"][data-align="right"]:not([data-fit-arr="micro"]) .iq-room__in { padding-left: var(--iq-room-pad); padding-right: calc(var(--iq-room-pad) + var(--iq-room-av) + clamp(12px, 3cqw, 22px)); }
+.iq-room[data-variant="minimal"][data-align="right"] .iq-room__go { right: auto; left: var(--iq-room-pad); }
+.iq-room[data-variant="minimal"][data-align="right"][data-has-go="true"]:not([data-fit-arr="micro"]) .iq-room__head { padding-right: 0; padding-left: clamp(38px, 10cqw, 52px); }
+/* Minimal · Centre: the picture above the name, everything centred as one column */
+.iq-room[data-variant="minimal"][data-align="center"] .iq-room__media { left: 50%; transform: translateX(-50%); }
+.iq-room[data-variant="minimal"][data-align="center"]:not([data-fit-arr="micro"]) { --iq-room-grp: calc(var(--iq-room-av) + 8px + 3.4em + var(--iq-room-sc-row)); }
+.iq-room[data-variant="minimal"][data-align="center"]:not([data-fit-arr="micro"]) .iq-room__in { height: auto; bottom: var(--iq-room-pad); padding-left: var(--iq-room-pad); padding-right: var(--iq-room-pad); padding-top: calc(var(--iq-room-av) + 8px); grid-template-rows: auto auto minmax(0, 1fr) auto; }
+.iq-room[data-variant="minimal"][data-align="center"]:not([data-fit-arr="micro"]) .iq-room__head { grid-row: 1; }
+.iq-room[data-variant="minimal"][data-align="center"]:not([data-fit-arr="micro"]) .iq-room__stats { grid-row: 2; }
+.iq-room[data-variant="minimal"][data-align="center"]:not([data-fit-arr="micro"]) .iq-room__acts { grid-row: 4; align-self: start; margin-top: clamp(10px, 4cqh, 18px); }
+.iq-room[data-variant="minimal"][data-align="center"][data-has-go="true"] .iq-room__head { padding-left: 0; padding-right: 0; }
+.iq-room[data-variant="minimal"][data-fit-arr="normal"] { --iq-room-sc: 40px; }
+.iq-room[data-variant="minimal"][data-fit-arr="normal"] .iq-room__name { --iq-room-fs: clamp(18px, 5.4cqw, 26px); }
+.iq-room[data-variant="minimal"][data-fit-arr="large"] { --iq-room-pad: clamp(22px, 3.4cqw, 36px); --iq-room-av: clamp(84px, 18cqmin, 112px); --iq-room-sc: 48px; --iq-room-info-fs: clamp(14px, 1.8cqw, 18px); }
+.iq-room[data-variant="minimal"][data-fit-arr="large"] .iq-room__name { --iq-room-fs: clamp(26px, 3.8cqw, 40px); }
+/* Minimal · Micro: picture, name, value, centred */
+.iq-room[data-variant="minimal"][data-fit-arr="micro"] { --iq-room-pad: clamp(10px, 7cqw, 14px); --iq-room-av: clamp(34px, 30cqmin, 64px); --iq-room-info-fs: 12px; border-radius: 20px; }
+.iq-room[data-variant="minimal"][data-fit-arr="micro"] .iq-room__media { top: var(--iq-room-pad); left: 50%; transform: translateX(-50%); }
+.iq-room[data-variant="minimal"][data-fit-arr="micro"] .iq-room__head { padding-top: 0; }
+.iq-room[data-variant="minimal"][data-fit-arr="micro"] .iq-room__in { padding-left: var(--iq-room-pad); padding-right: var(--iq-room-pad); padding-top: calc(var(--iq-room-pad) + var(--iq-room-av) + 6px); grid-template-rows: auto auto; align-content: start; text-align: center; }
+.iq-room[data-variant="minimal"][data-fit-arr="micro"] .iq-room__head { grid-row: 1; }
+.iq-room[data-variant="minimal"][data-fit-arr="micro"] .iq-room__stats { grid-row: 2; }
+.iq-room[data-variant="minimal"][data-fit-arr="micro"] :is(.iq-room__id, .iq-room__stats) { justify-content: center; }
+.iq-room[data-variant="minimal"][data-fit-arr="micro"] .iq-room__name { --iq-room-fs: clamp(13px, 10cqw, 18px); }
+.iq-room[data-variant="minimal"][data-fit-arr="micro"] .iq-room__mscenes { top: clamp(6px, 5cqw, 10px); bottom: auto; width: 28px; height: 28px; }
+
+/* ================================================================ APPEARANCE — the owner's semantic choices (room-scene.js resolves
+   "Automatic" to each variant's own look per size; only allow-listed values reach these attributes) */
+/* title size */
+.iq-room[data-title="small"] { --iq-room-ts: .78; }
+.iq-room[data-title="medium"] { --iq-room-ts: .9; }
+.iq-room[data-title="large"] { --iq-room-ts: 1.2; }
+/* image treatment: a separate, never-brightening filter on the picture (the lit / off filter stays on top of it) */
+.iq-room[data-image="dark"] { --iq-room-img-fx: brightness(.62); }
+.iq-room[data-image="soft"] { --iq-room-img-fx: blur(4px) saturate(.88); }
+.iq-room[data-image="soft"] :is(.iq-room__img, .iq-room__fallback) { transform: scale(1.06); }
+.iq-room[data-image="dim"] .iq-room__media { opacity: .5; }
+.iq-room[data-variant="status"][data-image] .iq-room__media { opacity: .26; }        /* Status: its own faint backdrop, no treatment */
+
+/* Information style: pills · clean · tiles (each variant's Automatic resolves to one of these, except the Hero's own strip) */
+.iq-room:not([data-info-style="auto"]) .iq-room__stats { flex-wrap: wrap; align-items: center; gap: .5em .6em; font-size: var(--iq-room-info-fs, 14px); }
+.iq-room[data-info-style="pills"] .iq-room__stat { padding: .38em .85em .38em .55em; border-radius: 999px; background: var(--iq-room-chip); box-shadow: inset 0 0 0 1px var(--iq-room-chip-edge); gap: .45em; }
+.iq-room[data-info-style="pills"] .iq-room__stxt { flex-direction: row; align-items: baseline; gap: .4em; }
+.iq-room[data-info-style="pills"] .iq-room__sicon { width: 1.3em; height: 1.3em; }
+.iq-room[data-info-style="pills"] .iq-room__slab { font-size: .9em; }
+.iq-room[data-info-style="clean"] .iq-room__stats { gap: .45em 1.3em; }
+.iq-room[data-info-style="clean"] .iq-room__stat { gap: .5em; }
+.iq-room[data-info-style="clean"] .iq-room__sicon { width: 1.5em; height: 1.5em; }
+.iq-room[data-info-style="clean"] .iq-room__sval { font-size: 1.12em; }
+.iq-room[data-info-style="clean"] .iq-room__slab { font-size: .86em; }
+.iq-room[data-info-style="tiles"] .iq-room__stats { display: grid; grid-template-columns: repeat(var(--iq-room-info-cols, 2), minmax(0, 1fr)); gap: clamp(6px, 1.6cqw, 10px); justify-self: stretch; }
+.iq-room[data-info-style="tiles"] .iq-room__stat { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "i l" "v v"; align-items: center; column-gap: .4em; row-gap: .2em;
+  padding: .7em .85em .75em; border-radius: 16px; background: var(--iq-room-chip); box-shadow: inset 0 0 0 1px var(--iq-room-chip-edge), inset 0 1px 0 var(--edge-highlight, rgba(255, 255, 255, .05)); }
+.iq-room[data-info-style="tiles"] .iq-room__stat:not(:has(.iq-room__sicon)) { grid-template-areas: "l l" "v v"; }
+.iq-room:where([data-variant="scene"])[data-info-style="tiles"] .iq-room__stat { -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.iq-room[data-info-style="tiles"] .iq-room__stxt { display: contents; }
+.iq-room[data-info-style="tiles"] .iq-room__sicon { grid-area: i; width: 1.25em; height: 1.25em; }
+.iq-room[data-info-style="tiles"] .iq-room__slab { grid-area: l; font-size: .86em; }
+.iq-room[data-info-style="tiles"] .iq-room__sval { grid-area: v; font-size: 1.45em; line-height: 1.1; }
+.iq-room[data-info-style="tiles"][data-align="center"] .iq-room__stat { justify-content: center; text-align: center; grid-template-columns: auto auto; }
+.iq-room[data-info-style="tiles"][data-align="right"] .iq-room__stat { justify-content: end; text-align: right; grid-template-columns: auto auto; }
+
+/* Scene style: buttons (icon + label tiles) · icons (round icon buttons) · compact (small label chips) */
+.iq-room:not([data-scene-style="auto"]) .iq-room__scenes { display: flex; flex-wrap: nowrap; gap: clamp(6px, 1.6cqw, 10px); }
+.iq-room[data-scene-style="buttons"] .iq-room__scenes .iq-room__scene { flex: 1 1 0; max-width: 150px; height: var(--iq-room-sc, 64px); border-radius: clamp(12px, 3.4cqw, 18px); font-size: clamp(11px, 2.9cqw, 15px); }
+.iq-room[data-scene-style="buttons"] .iq-room__scenes .iq-room__sc-i { width: calc(var(--iq-room-sc, 64px) * .36); height: calc(var(--iq-room-sc, 64px) * .36); }
+.iq-room[data-scene-style="icons"] .iq-room__scenes .iq-room__scene { flex: none; width: var(--iq-room-sc, 44px); height: var(--iq-room-sc, 44px); border-radius: 999px; padding: 0; }
+.iq-room[data-scene-style="icons"] .iq-room__scenes .iq-room__sc-l { display: none; }
+.iq-room[data-scene-style="icons"] .iq-room__scenes .iq-room__sc-i { width: 46%; height: 46%; }
+.iq-room[data-scene-style="icons"] .iq-room__scenes .iq-room__sc-n { font-size: 1.05em; }
+.iq-room[data-scene-style="compact"] .iq-room__scenes { flex-wrap: wrap; overflow: hidden; max-height: calc(2 * 34px + clamp(6px, 1.6cqw, 10px)); }
+.iq-room[data-scene-style="compact"] .iq-room__scenes .iq-room__scene { flex: none; flex-direction: row; gap: .4em; height: 34px; max-width: 100%; padding: 0 .95em 0 .7em; border-radius: 999px; font-size: 13px; }
+.iq-room[data-scene-style="compact"] .iq-room__scenes .iq-room__sc-i { width: 18px; height: 18px; }
+.iq-room[data-scene-style="compact"] .iq-room__scenes .iq-room__sc-n { font-size: 1em; }
+.iq-room[data-scene-style="compact"] .iq-room__scenes .iq-room__scene--icon { padding: 0 .7em; }
+/* Minimal's icon buttons carry almost no chrome */
+.iq-room[data-variant="minimal"][data-scene-style="icons"] .iq-room__scenes .iq-room__scene:not([data-active="true"]) { background: transparent; box-shadow: inset 0 0 0 1px var(--border-subtle); }
+
+/* the warm-light glyphs are filled and warm (as in the approved design); the others stay line icons */
+.iq-room__scene[data-icon="mdi:lightbulb"] .iq-room__sc-i, .iq-room__scene[data-icon="mdi:lightbulb-on"] .iq-room__sc-i { color: var(--iq-room-glow); }
+.iq-room__scene[data-icon="mdi:lamp"] .iq-room__sc-i { color: var(--accent); }
+
+/* ================================================================ VISUAL SOURCE (the shared Image / Artwork picker): data-visual =
+   image · icon (no picture: the owner's fallback icon, the shared MDI icon with its token colour and the shared icon animation) · none
+   (no picture, no icon: the variant closes up — no empty frame). The picker decides WHAT; each variant decides HOW. */
+.iq-room__vicon { display: none; position: absolute; left: 50%; top: 50%; z-index: 1; width: var(--iq-room-vi, min(30cqw, 38cqh)); aspect-ratio: 1; transform: translate(-50%, -50%); place-items: center;
+  color: rgba(255, 255, 255, .78); transition: color 420ms var(--ease, ease); }
+/* its surface (none · subtle · accent) is the shared one (components/icons/icons.css [data-iqi-bg]); the shadow is on the glyph only */
+.iq-room__vicon > svg { filter: drop-shadow(0 6px 18px rgba(0, 0, 0, .45)); }
+.iq-room[data-visual="icon"] .iq-room__vicon { display: grid; }
+.iq-room[data-visual="icon"][data-lit="false"] .iq-room__vicon, .iq-room[data-visual="icon"][data-lit="unknown"] .iq-room__vicon { opacity: .6; }
+.iq-room:is([data-variant="card"], [data-variant="status"], [data-variant="minimal"])[data-visual="icon"] .iq-room__vicon:not([style*="color"]) { color: var(--text-secondary); }
+/* Hero: the icon in the free middle of the card (or in its thumbnail); the Micro bulb badge gives way to it */
+.iq-room:where([data-variant="scene"])[data-visual="icon"]:is([data-fit-arr="normal"], [data-fit-arr="large"]) .iq-room__vicon { top: 46%; --iq-room-vi: min(24cqw, 30cqh); }
+.iq-room:where([data-variant="scene"])[data-visual="icon"]:is([data-fit-arr="compact"], [data-fit-arr="horizontal"]) .iq-room__vicon { --iq-room-vi: calc(var(--iq-room-thumb) * .48); }
+.iq-room:where([data-variant="scene"])[data-visual="icon"][data-fit-arr="micro"] .iq-room__vicon { top: 38%; --iq-room-vi: min(34cqw, 34cqh); }
+.iq-room:where([data-variant="scene"])[data-visual="icon"][data-fit-arr="micro"] .iq-room__badge { display: none; }
+/* Compact card: the icon centred in the side panel (or the Micro band) */
+.iq-room[data-variant="card"][data-visual="icon"] .iq-room__vicon { --iq-room-vi: calc(var(--iq-room-side) * .5); }
+.iq-room[data-variant="card"][data-visual="icon"][data-fit-arr="micro"] .iq-room__vicon { --iq-room-vi: calc(var(--iq-room-band) * .56); }
+.iq-room[data-variant="card"][data-visual="icon"] .iq-room__fallback { background: none; }
+/* Status: a faint icon in the backdrop's corner */
+.iq-room[data-variant="status"][data-visual="icon"] .iq-room__vicon { left: 80%; top: 42%; --iq-room-vi: min(34cqw, 56cqh); }
+.iq-room[data-variant="status"][data-visual="icon"] .iq-room__fallback { display: none; }
+/* Minimal: the icon in the round avatar */
+.iq-room[data-variant="minimal"][data-visual="icon"] .iq-room__vicon { --iq-room-vi: var(--iq-room-av); }
+.iq-room[data-variant="minimal"][data-visual="icon"] .iq-room__fallback { background: none; }
+.iq-room[data-variant="minimal"][data-visual="icon"] .iq-room__media { box-shadow: none; border-radius: 0; overflow: visible; }
+/* none: no frame left behind */
+.iq-room[data-variant="card"][data-visual="none"] { --iq-room-side: 0px; --iq-room-band: 0px; }
+.iq-room[data-variant="card"][data-visual="none"] .iq-room__media { display: none; }
+.iq-room[data-variant="card"][data-visual="none"][data-fit-arr="micro"] .iq-room__in { padding-top: var(--iq-room-pad); }
+.iq-room[data-variant="status"][data-visual="none"] .iq-room__media { display: none; }
+.iq-room[data-variant="minimal"][data-visual="none"] .iq-room__media { display: none; }
+.iq-room[data-variant="minimal"][data-visual="none"]:not([data-fit-arr="micro"]) { --iq-room-av: 56px; }
+.iq-room[data-variant="minimal"][data-visual="none"]:not([data-fit-arr="micro"]) .iq-room__in { padding-left: var(--iq-room-pad); padding-right: var(--iq-room-pad); }
+.iq-room[data-variant="minimal"][data-visual="none"][data-fit-arr="micro"] .iq-room__in { padding-top: var(--iq-room-pad); align-content: center; }
+.iq-room[data-variant="minimal"][data-visual="none"][data-align="center"]:not([data-fit-arr="micro"]) .iq-room__in { padding-top: 0; }
+@media (prefers-reduced-motion: reduce) { .iq-room__vicon { transition: none; } }
+.iq-room:where([data-variant="scene"])[data-visual="none"]:is([data-fit-arr="compact"], [data-fit-arr="horizontal"]) .iq-room__media { display: none; }
+.iq-room:where([data-variant="scene"])[data-visual="none"]:is([data-fit-arr="compact"], [data-fit-arr="horizontal"]) .iq-room__in { padding-left: var(--iq-room-pad); }
+/* an Information line's own sizes (px, the shared Slider + Number in its editor) — over the card's automatic ones; absent: unchanged */
+.iq-room .iq-room__stats .iq-room__stat[data-isz] .iq-room__sicon { width: var(--iq-ri-i); height: var(--iq-ri-i); }
+.iq-room .iq-room__stats .iq-room__stat[data-vsz] .iq-room__sval { font-size: var(--iq-ri-v); }
+.iq-room .iq-room__stats .iq-room__stat[data-lsz] .iq-room__slab { font-size: var(--iq-ri-l); }
+
+/* ==========================================================================
+   A SCENE BUTTON'S OWN APPEARANCE (set per scene in its editor — room-scene.js sceneLook): colour (--sc-c: a token or a validated
+   #rrggbb), icon colour (--sc-ic), button size (--sc-size), icon size (--sc-isize), style (filled · soft · outline · bare) and shape
+   (rounded · circle · pill). Absent: the theme's scene button for the variant and its MaisonFit size, unchanged. The selectors are
+   deliberately specific (.iq-room ×4) so a scene's own choice wins over every variant / size rule — never !important.
+   ========================================================================== */
+.iq-room.iq-room.iq-room.iq-room .iq-room__scene[data-sc-style] { --sc-c-on: #fff; }
+.iq-room.iq-room.iq-room.iq-room .iq-room__scene[data-sc-style="filled"] { color: var(--sc-c-on); background: var(--sc-c, var(--accent)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16), 0 8px 22px -12px var(--sc-c, var(--accent)); }
+.iq-room.iq-room.iq-room.iq-room .iq-room__scene[data-sc-style="filled"] .iq-room__sc-l { color: var(--sc-c-on); }
+.iq-room.iq-room.iq-room.iq-room .iq-room__scene[data-sc-style="soft"] { color: var(--sc-c, var(--accent)); background: color-mix(in srgb, var(--sc-c, var(--accent)) 20%, var(--surface-tertiary, rgba(20, 20, 24, .6))); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sc-c, var(--accent)) 34%, transparent); }
+.iq-room.iq-room.iq-room.iq-room .iq-room__scene[data-sc-style="outline"] { color: var(--sc-c, var(--text-primary)); background: color-mix(in srgb, var(--surface-primary, #16161a) 30%, transparent); box-shadow: inset 0 0 0 1.5px var(--sc-c, var(--border-primary)); }
+.iq-room.iq-room.iq-room.iq-room .iq-room__scene[data-sc-style="bare"] { background: transparent; box-shadow: none; }
+.iq-room.iq-room.iq-room.iq-room .iq-room__scene:is([data-sc-style="soft"], [data-sc-style="outline"], [data-sc-style="bare"]) .iq-room__sc-l { color: var(--text-primary); }
+.iq-room.iq-room.iq-room.iq-room .iq-room__scene[data-sc-ic] .iq-room__sc-i { color: var(--sc-ic); filter: none; }
+.iq-room.iq-room.iq-room.iq-room .iq-room__scene[data-sc-style][data-active="true"] { box-shadow: inset 0 0 0 2px var(--text-primary), 0 0 18px -4px var(--sc-c, var(--accent)); }
+/* shape: rounded (the theme's radius) · pill · circle (icon only, as wide as tall) */
+.iq-room.iq-room.iq-room.iq-room .iq-room__scene[data-sc-shape="pill"] { border-radius: 999px; }
+.iq-room.iq-room.iq-room.iq-room .iq-room__scene[data-sc-shape="circle"] { border-radius: 50%; aspect-ratio: 1; width: auto; flex: 0 0 auto; justify-self: center; align-self: center; padding: 0; }
+.iq-room.iq-room.iq-room.iq-room .iq-room__scene[data-sc-shape="circle"] .iq-room__sc-l { display: none; }
+/* sizes: the scene's own button height (circle: diameter) and icon size; a compact card caps them so the row stays usable */
+.iq-room.iq-room.iq-room.iq-room .iq-room__scenes .iq-room__scene[data-sc-size] { height: var(--sc-size); min-height: 0; }
+.iq-room.iq-room.iq-room.iq-room .iq-room__scenes .iq-room__scene[data-sc-shape="circle"][data-sc-size] { width: var(--sc-size); flex: none; }
+.iq-room.iq-room.iq-room.iq-room .iq-room__scene[data-sc-isize] .iq-room__sc-i { width: var(--sc-isize); height: var(--sc-isize); }
+.iq-room.iq-room.iq-room.iq-room[data-fit-arr="compact"] .iq-room__scenes .iq-room__scene[data-sc-size] { height: min(var(--sc-size), 52px); }
+.iq-room.iq-room.iq-room.iq-room[data-fit-arr="compact"] .iq-room__scenes .iq-room__scene[data-sc-shape="circle"][data-sc-size] { width: min(var(--sc-size), 52px); }
+.iq-room.iq-room.iq-room.iq-room[data-fit-arr="compact"] .iq-room__scene[data-sc-isize] .iq-room__sc-i { width: min(var(--sc-isize), 26px); height: min(var(--sc-isize), 26px); }
+/* the scene panel (Micro and "+N") keeps each scene's colour and style — not its size */
+.iq-room.iq-room.iq-room.iq-room .iq-room__panel .iq-room__scene[data-sc-size] { height: 64px; }
+/* the scene ROW (Room Appearance): alignment (else the content alignment) and gap */
+.iq-room[style*="--iq-room-sc-gap"] .iq-room__scenes { gap: var(--iq-room-sc-gap); }
+.iq-room[data-sc-align] .iq-room__scenes { display: flex; flex-wrap: nowrap; }
+.iq-room[data-sc-align] .iq-room__scenes .iq-room__scene { flex: 0 1 clamp(64px, 22cqw, 150px); }
+.iq-room[data-sc-align] .iq-room__scenes .iq-room__scene--icon { flex-basis: clamp(48px, 13cqw, 72px); }
+.iq-room[data-sc-align="left"] .iq-room__scenes { justify-content: flex-start; }
+.iq-room[data-sc-align="center"] .iq-room__scenes { justify-content: center; }
+.iq-room[data-sc-align="right"] .iq-room__scenes { justify-content: flex-end; }
+/* an Information icon with its own background (subtle · accent): a little larger box, the glyph inside it */
+/* an Information icon WITH a background: the icon element keeps the glyph size (the configured Icon size, else the card's own) and
+   the surface grows AROUND it (padding, content-box) — the glyph fills it, never the shared 56 % of a fixed box */
+.iq-room .iq-room__stats .iq-room__stat[data-ibg] .iq-room__sicon[data-iqi-bg] { box-sizing: content-box; padding: .3em; }
+.iq-room .iq-room__stats .iq-room__stat[data-ibg] .iq-room__sicon[data-iqi-bg] > svg { width: 100%; height: 100%; }
+/* the Icons scene presentation (round icon buttons): a scene's own size is its diameter (a compact card caps it) */
+.iq-room.iq-room.iq-room.iq-room[data-scene-style="icons"] .iq-room__scenes .iq-room__scene[data-sc-size] { width: var(--sc-size); height: var(--sc-size); }
+.iq-room.iq-room.iq-room.iq-room[data-scene-style="icons"]:is([data-fit-arr="compact"], [data-fit-arr="micro"]) .iq-room__scenes .iq-room__scene[data-sc-size] { width: min(var(--sc-size), 48px); height: min(var(--sc-size), 48px); }
+/* an Information line's own sizes are honoured where the card has room (Normal / Large); a Micro / Compact card caps them so the line
+   stays inside the card (the owner's size returns as soon as the card is larger) */
+.iq-room:is([data-fit-arr="micro"], [data-fit-arr="compact"]) .iq-room__stats .iq-room__stat[data-isz] .iq-room__sicon { width: min(var(--iq-ri-i), 1.6em); height: min(var(--iq-ri-i), 1.6em); }
+.iq-room:is([data-fit-arr="micro"], [data-fit-arr="compact"]) .iq-room__stats .iq-room__stat[data-vsz] .iq-room__sval { font-size: min(var(--iq-ri-v), 1.25em); }
+.iq-room:is([data-fit-arr="micro"], [data-fit-arr="compact"]) .iq-room__stats .iq-room__stat[data-lsz] .iq-room__slab { font-size: min(var(--iq-ri-l), .95em); }
+/* the Hero's theme scene tiles are glass over the picture (a soft blur behind them) */
+.iq-room[data-variant="scene"] .iq-room__scenes .iq-room__scene:not([data-sc-style]) { -webkit-backdrop-filter: blur(10px) saturate(1.1); backdrop-filter: blur(10px) saturate(1.1); }

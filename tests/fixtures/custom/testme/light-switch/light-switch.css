@@ -1,0 +1,127 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Light Switch — CUSTOM widget package styles.
+   ISOLATION: every selector starts with [data-widget="custom.light-switch"] (set on the widget's root).
+   No global selectors, no @keyframes / @property / @font-face; shared tokens are only read.
+   Configurable values arrive as custom properties on the root (set by light-switch.js from the configuration):
+     --ls-on-bg / --ls-off-bg  backgrounds · --ls-on-op / --ls-off-op  image opacity (0–1) · --ls-on-glow / --ls-off-glow
+     --ls-img-size (% of the card height) · --ls-img-x / --ls-img-y (% of the card) · --ls-icon · --ls-toggle (scale)
+     --ls-state-fs / --ls-name-fs / --ls-sec-fs · --ls-radius
+   Sizes are design values at the reference size, scaled by --fit (MaisonFit: the card's own layout size).
+   Arrangements: full · compact (no secondary line) · mini (toggle, icon, state, name; no artwork)
+   ========================================================================== */
+[data-widget="custom.light-switch"] {
+  --ls-bg: var(--ls-off-bg, #2a2c32);
+  --ls-op: var(--ls-off-op, .55);
+  --ls-glow: var(--ls-off-glow, .12);
+  --fit-ref-w: 190; --fit-ref-h: 160; --fit-min: .62px; --fit-max: 1.9px;
+  position: relative;
+  container: ls / size;
+  min-width: 0; min-height: 64px;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: var(--ls-radius, 26px);
+  color: #fff;
+  font-family: var(--font, system-ui, sans-serif);
+  background:
+    radial-gradient(120% 90% at 0% 0%, rgba(255, 255, 255, .06), transparent 55%),
+    linear-gradient(160deg, color-mix(in srgb, var(--ls-bg) 88%, #fff) 0%, var(--ls-bg) 52%, color-mix(in srgb, var(--ls-bg) 82%, #000) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), inset 0 0 0 1px rgba(255, 255, 255, .05), 0 16px 32px -18px rgba(0, 0, 0, .85);
+  transition: background .35s ease;
+}
+[data-widget="custom.light-switch"][data-state="on"] { --ls-bg: var(--ls-on-bg, #f7bd2e); --ls-op: var(--ls-on-op, 1); --ls-glow: var(--ls-on-glow, .8); }
+[data-widget="custom.light-switch"][data-state="unavailable"] { --ls-bg: #26282d; --ls-op: .22; --ls-glow: 0; color: #9aa0ab; }
+
+/* the lamp artwork: positioned by X / Y (% of the card), sized by % of the card height; may run off the edge like the reference */
+[data-widget="custom.light-switch"] .ls__art {
+  position: absolute; z-index: 1; pointer-events: none;
+  left: calc(var(--ls-img-x, 60) * 1%); top: calc(var(--ls-img-y, 36) * 1%);
+  height: calc(var(--ls-img-size, 60) * 1cqh); aspect-ratio: 200 / 220;
+}
+[data-widget="custom.light-switch"] .ls__img { display: block; width: 100%; height: 100%; object-fit: contain; opacity: var(--ls-op); transition: opacity .35s ease, filter .35s ease; user-select: none; }
+[data-widget="custom.light-switch"][data-fit="cover"] .ls__img { object-fit: cover; }
+[data-widget="custom.light-switch"] .ls__img[hidden] { display: none; }
+/* one image for both states: OFF is the same picture, darker */
+[data-widget="custom.light-switch"][data-same="true"]:not([data-state="on"]) .ls__img { filter: brightness(.45) saturate(.6); }
+[data-widget="custom.light-switch"][data-state="unavailable"] .ls__img { filter: grayscale(1) brightness(.6); }
+/* a dedicated "unavailable" image is shown as it is (not greyed out, full opacity) */
+[data-widget="custom.light-switch"][data-state="unavailable"][data-na-image="true"] { --ls-op: 1; }
+[data-widget="custom.light-switch"][data-state="unavailable"][data-na-image="true"] .ls__img { filter: none; }
+/* the glow: warm light around the lamp's opening (follows the artwork's position and size) */
+[data-widget="custom.light-switch"] .ls__glow {
+  position: absolute; z-index: 0; pointer-events: none;
+  left: calc(var(--ls-img-x, 60) * 1% + var(--ls-img-size, 60) * 1cqh * .455 - var(--ls-img-size, 60) * 1cqh * 1.05);
+  top: calc(var(--ls-img-y, 36) * 1% + var(--ls-img-size, 60) * 1cqh * .62 - var(--ls-img-size, 60) * 1cqh * 1.05);
+  width: calc(var(--ls-img-size, 60) * 1cqh * 2.1); aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 255, 250, 1), rgba(255, 250, 225, .85) 22%, rgba(255, 236, 170, .45) 48%, rgba(255, 220, 120, .12) 74%, transparent);
+  opacity: var(--ls-glow);
+  transition: opacity .35s ease;
+}
+[data-widget="custom.light-switch"]:not([data-state="on"]) .ls__glow { background: radial-gradient(closest-side, rgba(255, 255, 255, .5), rgba(255, 255, 255, .12) 50%, transparent); }
+
+/* state label (top left) */
+[data-widget="custom.light-switch"] .ls__state {
+  position: absolute; z-index: 3; left: calc(14 * var(--fit)); top: calc(13 * var(--fit));
+  font-size: calc(var(--ls-state-fs, 10) * var(--fit)); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; line-height: 1.2;
+  color: rgba(255, 255, 255, .55);
+}
+[data-widget="custom.light-switch"][data-state="on"] .ls__state { color: #fff; }
+
+/* toggle (top right): rounded track, circular thumb */
+[data-widget="custom.light-switch"] .ls__toggle {
+  position: absolute; z-index: 4; right: calc(12 * var(--fit)); top: calc(10 * var(--fit));
+  width: calc(34 * var(--ls-toggle, 1) * var(--fit)); height: calc(19 * var(--ls-toggle, 1) * var(--fit));
+  padding: 0; border: 0; border-radius: 999px; cursor: pointer;
+  background: rgba(10, 11, 14, .55);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, .6), inset 0 0 0 1px rgba(255, 255, 255, .06);
+  transition: background .3s ease, opacity .2s ease;
+}
+[data-widget="custom.light-switch"] .ls__thumb {
+  position: absolute; top: 12%; left: 7%; height: 76%; aspect-ratio: 1; border-radius: 50%;
+  background: linear-gradient(180deg, #5b5e66, #3c3f46); box-shadow: 0 1px 3px rgba(0, 0, 0, .55);
+  transition: left .3s ease, background .3s ease;
+}
+[data-widget="custom.light-switch"][data-state="on"] .ls__toggle { background: rgba(255, 255, 255, .55); box-shadow: inset 0 1px 2px rgba(0, 0, 0, .12), 0 0 12px rgba(255, 255, 255, .35); }
+[data-widget="custom.light-switch"][data-state="on"] .ls__thumb { left: 51%; background: #fff; box-shadow: 0 1px 4px rgba(120, 80, 0, .45); }
+[data-widget="custom.light-switch"] .ls__toggle:disabled { cursor: not-allowed; opacity: .35; }
+[data-widget="custom.light-switch"][data-busy="true"] .ls__toggle { opacity: .7; cursor: progress; }
+[data-widget="custom.light-switch"] .ls__toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* icon in a circular halo (centre of the card, above the name) */
+[data-widget="custom.light-switch"] .ls__halo {
+  position: absolute; z-index: 3; left: 44%; top: 46%; transform: translate(-50%, -100%);
+  width: calc(var(--ls-icon, 22) * 1.95 * var(--fit)); aspect-ratio: 1; border-radius: 50%;
+  display: grid; place-items: center;
+  background: rgba(14, 15, 18, .78);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 4px 10px rgba(0, 0, 0, .35);
+  transition: background .35s ease, box-shadow .35s ease;
+}
+[data-widget="custom.light-switch"] .ls__icon { display: grid; width: calc(var(--ls-icon, 22) * var(--fit)); height: calc(var(--ls-icon, 22) * var(--fit)); color: #ffc93c; }
+[data-widget="custom.light-switch"] .ls__icon svg { width: 100%; height: 100%; }
+[data-widget="custom.light-switch"][data-state="on"] .ls__halo { background: rgba(255, 255, 255, .26); box-shadow: 0 0 0 calc(5 * var(--fit)) rgba(255, 255, 255, .1), 0 0 calc(22 * var(--fit)) rgba(255, 255, 255, .55); }
+[data-widget="custom.light-switch"][data-state="on"] .ls__icon { color: #fff; }
+[data-widget="custom.light-switch"][data-state="unavailable"] .ls__icon { color: #6c717c; }
+
+/* name + secondary line (lower centre) */
+[data-widget="custom.light-switch"] .ls__text {
+  position: absolute; z-index: 3; left: 44%; top: 52%; transform: translateX(-50%);
+  display: grid; justify-items: center; row-gap: calc(1 * var(--fit)); width: max-content; max-width: 76%; text-align: center;
+}
+[data-widget="custom.light-switch"] .ls__name { font-size: calc(var(--ls-name-fs, 16) * var(--fit)); font-weight: 700; line-height: 1.15; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+[data-widget="custom.light-switch"] .ls__sec { font-size: calc(var(--ls-sec-fs, 11) * var(--fit)); font-weight: 500; line-height: 1.2; color: #8fb2ff; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+[data-widget="custom.light-switch"][data-state="on"] .ls__sec { color: rgba(255, 255, 255, .92); }
+[data-widget="custom.light-switch"][data-state="unavailable"] .ls__sec { color: #7e838f; }
+[data-widget="custom.light-switch"] .ls__sec:empty { display: none; }
+
+/* compact: no secondary line */
+[data-widget="custom.light-switch"][data-fit-arr="compact"] .ls__sec { display: none; }
+/* mini: toggle, icon, state and name; the artwork and glow go */
+[data-widget="custom.light-switch"][data-fit-arr="mini"] .ls__art,
+[data-widget="custom.light-switch"][data-fit-arr="mini"] .ls__glow,
+[data-widget="custom.light-switch"][data-fit-arr="mini"] .ls__sec { display: none; }
+[data-widget="custom.light-switch"][data-fit-arr="mini"] .ls__halo { left: calc(12 * var(--fit)); top: auto; bottom: calc(10 * var(--fit)); transform: none; width: calc(var(--ls-icon, 22) * 1.5 * var(--fit)); }
+[data-widget="custom.light-switch"][data-fit-arr="mini"] .ls__text { left: calc(12 * var(--fit) + var(--ls-icon, 22) * 1.5 * var(--fit) + 8px); top: auto; bottom: calc(10 * var(--fit)); transform: none; justify-items: start; max-width: 55%; min-height: calc(var(--ls-icon, 22) * 1.5 * var(--fit)); align-content: center; }

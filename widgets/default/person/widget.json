@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "person",
+  "name": "Person",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "person.js",
+  "style": "person.css",
+  "assets": "assets/",
+  "api": "MaisonPerson"
+}

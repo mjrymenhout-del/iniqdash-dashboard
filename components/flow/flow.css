@@ -1,0 +1,42 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* IniqFlow — the universal flow connector (components/flow/flow.js). CSS-only motion; paused off screen; none with reduced motion. */
+:where(.iqf__track) { fill: none; stroke-linejoin: round; transition: opacity .3s ease; }
+:where(.iqf__flow) { fill: none; stroke: var(--iqf-c, var(--accent)); opacity: var(--iqf-o, 1); stroke-linecap: round; filter: var(--iqf-glow, none); }
+:where(.iqf[data-anim="dashes"]) .iqf__flow { stroke-linecap: butt; }
+:where(.iqf__arrow) { stroke: var(--iqf-c, var(--accent)); stroke-width: 2px; stroke-linecap: round; stroke-linejoin: round; opacity: var(--iqf-o, 1); filter: var(--iqf-glow, none);
+  offset-rotate: auto; offset-distance: 0%; animation: iqf-move var(--iqf-dur, 2s) linear infinite; }
+:where(.iqf__mark) { stroke: var(--iqf-c, var(--accent)); stroke-width: 2px; stroke-linecap: round; stroke-linejoin: round; display: none; }
+
+/* moving: dots / dashes travel by their dash pattern, the pulse by its one bright stretch, arrows along the motion path */
+.iqf[data-anim="dots"] .iqf__flow, .iqf[data-anim="dashes"] .iqf__flow { animation: iqf-dash var(--iqf-dur, 1s) linear infinite; }
+.iqf[data-anim="pulse"] .iqf__flow { animation: iqf-pulse var(--iqf-dur, 2s) linear infinite; }
+.iqf[data-anim="none"] .iqf__flow, .iqf[data-anim="arrows"] .iqf__flow { display: none; }
+.iqf[data-dir="reverse"] :is(.iqf__flow, .iqf__arrow) { animation-direction: reverse; }
+.iqf[data-dir="reverse"] .iqf__arrow { offset-rotate: auto 180deg; }
+@keyframes iqf-dash { from { stroke-dashoffset: 0; } to { stroke-dashoffset: calc(-1 * var(--iqf-step, 18px)); } }
+@keyframes iqf-pulse { from { stroke-dashoffset: var(--iqf-pl, 10); } to { stroke-dashoffset: -100; } }
+@keyframes iqf-move { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+
+/* no flow (idle): nothing moves; the line stays (still), dims or hides — as the reading says */
+.iqf:is([data-state="idle"], [data-state="unavailable"]) :is(.iqf__flow, .iqf__arrows) { display: none; }
+.iqf[data-state="idle"][data-zero="dim"] .iqf__track { opacity: .35 !important; }
+.iqf[data-state="idle"][data-zero="hide"] { display: none; }
+/* unavailable: a dashed (or dim / hidden) line — never a pretend flow */
+.iqf[data-state="unavailable"][data-unavailable="dashed"] .iqf__track { stroke-dasharray: 4 5 !important; opacity: .5 !important; }
+.iqf[data-state="unavailable"][data-unavailable="dim"] .iqf__track { opacity: .3 !important; }
+.iqf[data-state="unavailable"][data-unavailable="hide"] { display: none; }
+
+/* the static direction chevron: always when asked; 'auto' — when nothing moves (no animation chosen) */
+.iqf[data-state="flow"][data-mark="always"] .iqf__mark, .iqf[data-state="flow"][data-mark="auto"][data-anim="none"] .iqf__mark { display: inline; }
+
+/* off screen (the host svg is not visible): paused */
+[data-iqf-off] .iqf :is(.iqf__flow, .iqf__arrow) { animation-play-state: paused; }
+/* reduced motion: nothing moves — the direction chevron says which way */
+@media (prefers-reduced-motion: reduce) {
+  .iqf :is(.iqf__flow, .iqf__arrow) { animation: none !important; }
+  .iqf[data-state="flow"]:not([data-mark="never"]) .iqf__mark { display: inline; }
+  .iqf[data-anim="arrows"] .iqf__arrows, .iqf[data-anim="pulse"] .iqf__flow { display: none; }
+}

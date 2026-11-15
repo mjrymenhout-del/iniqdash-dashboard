@@ -1,0 +1,4 @@
+{
+  "about": "The widget packages that ship WITH IniqDash (shown as built-in, in the gallery's IniqDash collection). Release-owned: a package cannot add itself here.",
+  "packages": ["custom.room-scene"]
+}

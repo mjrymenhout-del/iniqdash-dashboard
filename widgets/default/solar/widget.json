@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "solar",
+  "name": "Solar",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "solar.js",
+  "style": "solar.css",
+  "assets": "assets/",
+  "api": "MaisonSolar"
+}

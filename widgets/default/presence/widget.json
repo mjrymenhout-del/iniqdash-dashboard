@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "presence",
+  "name": "Who's home",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "presence.js",
+  "style": "presence.css",
+  "assets": "assets/",
+  "api": "MaisonPresence"
+}

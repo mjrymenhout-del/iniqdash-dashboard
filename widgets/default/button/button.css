@@ -1,0 +1,95 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Button Widget V1 (current development theme; shared tokens). Container "bw" = the widget's own box.
+   ========================================================================== */
+.bw { container: bw / size; position: relative; display: grid; place-items: center; min-width: 0; min-height: 0; font-family: var(--font); }
+.bw__b {
+  position: relative; width: 100%; height: 100%; min-width: 0; min-height: 40px; padding: 10px 14px; border: 0;
+  display: flex; align-items: center; justify-content: center; gap: 10px; overflow: hidden;
+  color: var(--button-fg, var(--text-primary)); font: inherit; text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  border-radius: var(--radius-device);
+  background: linear-gradient(165deg, var(--button-bg, var(--surface-primary-top)), var(--button-bg, var(--surface-primary)) 55%, var(--button-bg, var(--surface-secondary))) center / cover no-repeat;
+  box-shadow: var(--shadow-primary), inset 0 0 0 1px var(--border-subtle);
+  transition: transform var(--dur-press) var(--ease), box-shadow var(--dur-fast) var(--ease);
+}
+.bw__b:hover { box-shadow: var(--shadow-primary), inset 0 0 0 1px var(--accent-line); }
+.bw__b:active, .bw.is-pressed .bw__b { transform: scale(.97); }
+.bw__b:focus-visible { outline: var(--focus-ring); outline-offset: 3px; }
+.bw__b:disabled { cursor: default; }
+.bw__b.is-static:hover { box-shadow: var(--shadow-primary), inset 0 0 0 1px var(--border-subtle); }
+.bw[data-available="false"] .bw__b { opacity: var(--disabled-opacity); cursor: not-allowed; }
+.bw[data-on="true"] .bw__b { box-shadow: var(--shadow-primary), inset 0 0 0 1.5px var(--accent-line); background-image: linear-gradient(165deg, #3a2f1c, #2a2418 60%, var(--surface-secondary)); }
+.bw[data-on="true"] .bw__icon { color: var(--accent); background: var(--accent-soft); }
+
+/* shapes */
+.bw[data-shape="square"] .bw__b, .bw[data-shape="round"] .bw__b { width: auto; height: auto; aspect-ratio: 1; max-width: 100%; max-height: 100%; min-height: 0; width: min(100cqw, 100cqh); height: min(100cqw, 100cqh); padding: 8px; }
+.bw[data-shape="round"] .bw__b { border-radius: 50%; }
+.bw[data-shape="pill"] .bw__b { border-radius: 999px; padding-inline: 20px; }
+
+/* parts */
+.bw__icon { flex: none; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; color: var(--text-secondary); background: var(--control-well); }
+.bw__icon svg { width: 21px; height: 21px; }
+.bw__img { flex: none; width: 100%; max-height: 60%; min-height: 0; object-fit: cover; border-radius: 12px; }
+.bw__txt { display: flex; flex-direction: column; min-width: 0; gap: 2px; }
+.bw__text { font-size: var(--fs-title-secondary, 14px); font-weight: var(--iq-fw-title); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bw__sec { font-size: var(--fs-status, 12px); color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bw__value { font-size: clamp(22px, 26cqmin, 44px); font-weight: var(--iq-fw-display); line-height: 1; letter-spacing: -.02em; }
+.bw__value small { margin-left: 3px; font-size: .45em; font-weight: var(--iq-fw-display); color: var(--text-muted); }
+
+/* layouts */
+.bw[data-layout="icon-top"] .bw__b, .bw[data-layout="image-top"] .bw__b, .bw[data-layout="value"] .bw__b { flex-direction: column; gap: 8px; }
+.bw[data-layout="icon-left"] .bw__b { justify-content: flex-start; text-align: left; }
+.bw[data-layout="icon-right"] .bw__b { flex-direction: row-reverse; justify-content: flex-start; text-align: right; }
+.bw[data-layout="icon-right"] .bw__txt { flex: 1; align-items: flex-end; }
+.bw[data-layout="icon-left"] .bw__txt { flex: 1; align-items: flex-start; }
+.bw[data-layout="image-top"] .bw__b { padding: 8px 8px 10px; justify-content: flex-start; }
+.bw[data-layout="background"] .bw__b { align-items: flex-end; justify-content: flex-start; text-align: left; }
+.bw[data-layout="background"] .bw__sec { color: var(--text-secondary); }
+.bw[data-layout="icon-only"] .bw__b { padding: 6px; }
+
+/* own-width responsiveness */
+@container bw (max-width: 159px) {
+  .bw__sec { display: none; }
+  .bw__icon { width: 32px; height: 32px; border-radius: 10px; }
+  .bw__b { gap: 6px; padding-inline: 10px; }
+}
+@container bw (max-width: 109px) {
+  .bw[data-layout="icon-left"] .bw__txt, .bw[data-layout="icon-right"] .bw__txt { display: none; }
+  .bw[data-layout="icon-left"] .bw__b, .bw[data-layout="icon-right"] .bw__b { justify-content: center; }
+}
+@container bw (max-height: 70px) {
+  .bw[data-layout="icon-top"] .bw__icon, .bw[data-layout="image-top"] .bw__img { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .bw__b { transition: none; } .bw.is-pressed .bw__b, .bw__b:active { transform: none; } }
+@container bw (max-height: 56px) {
+  .bw__icon { width: 28px; height: 28px; border-radius: 9px; background: transparent; }
+  .bw__icon svg { width: 18px; height: 18px; }
+  .bw__b { padding-block: 4px; }
+}
+
+/* own size, both axes: a larger button keeps its layout but its icon and label grow with its
+   shorter side (so a big tile is not a small icon + caption in a large empty plate) */
+@container bw (min-width: 160px) and (min-height: 140px) {
+  .bw__icon { width: clamp(40px, 24cqmin, 88px); height: clamp(40px, 24cqmin, 88px); border-radius: clamp(12px, 6cqmin, 22px); }
+  .bw__icon svg { width: 52%; height: 52%; }
+  .bw__text { font-size: clamp(14px, 6.5cqmin, 22px); }
+  .bw__sec { font-size: clamp(12px, 4.6cqmin, 15px); }
+  .bw__b { gap: clamp(10px, 4cqmin, 18px); padding-inline: clamp(14px, 6cqmin, 28px); }
+}
+
+/* fine-tune 1 — navigation / room cards: a button that opens a page or a popup has identity — an accent-tinted icon well, a clear title,
+   a quiet summary and a chevron that says "opens something" (never on a plain action) */
+.bw[data-action="navigate"] .bw__icon, .bw[data-action="popup"] .bw__icon { width: 44px; height: 44px; border-radius: var(--radius-md); color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent-line); }
+.bw[data-action="navigate"] .bw__icon svg, .bw[data-action="popup"] .bw__icon svg { width: 23px; height: 23px; }
+.bw[data-layout="icon-left"] .bw__text { font-size: 15.5px; font-weight: var(--iq-fw-title); }
+.bw[data-layout="icon-left"] .bw__sec { font-size: 12.5px; color: var(--text-secondary); }
+.bw[data-layout="icon-left"]:is([data-action="navigate"], [data-action="popup"]) .bw__b { padding-right: 38px; gap: 14px; }
+.bw[data-layout="icon-left"]:is([data-action="navigate"], [data-action="popup"]) .bw__b::after {
+  content: ""; position: absolute; right: 14px; top: 50%; width: 8px; height: 8px; margin-top: -5px; border: solid var(--text-muted); border-width: 0 2px 2px 0; transform: rotate(-45deg); transition: transform var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.bw[data-layout="icon-left"]:is([data-action="navigate"], [data-action="popup"]) .bw__b:hover::after { border-color: var(--accent); transform: translateX(3px) rotate(-45deg); }
+@container bw (max-height: 64px) { .bw[data-layout="icon-left"] .bw__sec { display: none; } .bw__icon { width: 36px; height: 36px; } }
+@container bw (max-width: 150px) { .bw[data-layout="icon-left"] .bw__b::after { display: none; } .bw[data-layout="icon-left"] .bw__b { padding-right: 12px; } }

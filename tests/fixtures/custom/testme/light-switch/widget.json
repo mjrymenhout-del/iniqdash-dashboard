@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "id": "custom.light-switch",
+  "name": "Light Switch",
+  "source": "custom",
+  "version": "1.0.0",
+  "entry": "light-switch.js",
+  "style": "light-switch.css",
+  "assets": "assets/",
+  "api": "IniqLightSwitch",
+  "ha": {
+    "domains": ["light"],
+    "actions": ["turn_on", "turn_off"]
+  }
+}

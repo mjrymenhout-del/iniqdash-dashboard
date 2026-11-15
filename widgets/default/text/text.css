@@ -1,0 +1,69 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Text / Label Widget V1. Sizes are relative to the widget's own box (MaisonFit --fit):
+   a label in a small box gets small text, never clipped text from a big one.
+   ========================================================================== */
+.tx {
+  position: relative;
+  container: tx / size;
+  --fit-ref-w: 260; --fit-ref-h: 90; --fit-min: .55px; --fit-max: 2.2px;
+  --tx-size: 22;
+  min-width: 0; min-height: 30px;
+  overflow: hidden;
+  border-radius: var(--radius-device);
+  color: var(--text-primary);
+  font-family: var(--font);
+}
+.tx[data-size="s"] { --tx-size: 15; }
+.tx[data-size="l"] { --tx-size: 30; }
+.tx[data-size="xl"] { --tx-size: 42; }
+.tx[data-surface="true"] {
+  background: radial-gradient(120% 90% at 100% 0%, rgba(255, 255, 255, .03), transparent 60%), linear-gradient(165deg, var(--surface-primary-top) 0%, var(--surface-primary) 58%, var(--surface-secondary) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .055), inset 0 0 0 1px rgba(255, 255, 255, .03), 0 12px 26px -16px rgba(0, 0, 0, .75);
+}
+.tx__in { height: 100%; display: flex; flex-direction: column; justify-content: center; gap: calc(3 * var(--fit)); padding: 0 calc(6 * var(--fit)); min-width: 0; }
+.tx[data-surface="true"] .tx__in { padding: 0 clamp(10px, calc(16 * var(--fit)), 26px); }
+.tx[data-align="center"] .tx__in { align-items: center; text-align: center; }
+.tx[data-align="right"] .tx__in { align-items: flex-end; text-align: right; }
+.tx__p, .tx__s { margin: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; overflow-wrap: anywhere; }
+.tx__p { font-size: max(11px, calc(var(--tx-size) * var(--fit))); line-height: 1.15; font-weight: 500;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.tx__s { font-size: max(11px, calc(var(--tx-size) * .55 * var(--fit))); line-height: 1.25; color: var(--text-secondary); white-space: nowrap; }
+.tx[data-emphasis="strong"] .tx__p { font-weight: 650; letter-spacing: -.2px; }
+.tx[data-emphasis="muted"] .tx__p { color: var(--text-secondary); font-weight: 500; }
+.tx[data-tone="unavailable"] .tx__s, .tx[data-tone="unavailable"] .tx__p { color: var(--text-muted); }
+/* a one-row label: one line, the secondary text beside the primary */
+.tx[data-fit-arr="line"] .tx__in { flex-direction: row; align-items: baseline; justify-content: flex-start; gap: calc(10 * var(--fit)); }
+.tx[data-fit-arr="line"][data-align="center"] .tx__in { justify-content: center; }
+.tx[data-fit-arr="line"][data-align="right"] .tx__in { justify-content: flex-end; }
+.tx[data-fit-arr="line"] .tx__p { -webkit-line-clamp: 1; white-space: nowrap; flex: 0 1 auto; display: block; }
+
+/* own size: a very narrow one-line label keeps the primary text — the secondary line gives way first */
+@container tx (max-width: 150px) { .tx[data-fit-arr="line"] .tx__s { display: none; } }
+
+/* ================================================================ variant: Heading (shared variant system)
+   The same text, presented as a dashboard section heading: a heading scale (one step up from the text sizes), heavier,
+   with a short accent rule above it; the secondary text becomes a quiet subtitle. Still sized by its own box (--fit). */
+.tx[data-variant="heading"] { --tx-size: 30; }
+.tx[data-variant="heading"][data-size="s"] { --tx-size: 21; }
+.tx[data-variant="heading"][data-size="l"] { --tx-size: 40; }
+.tx[data-variant="heading"][data-size="xl"] { --tx-size: 54; }
+.tx[data-variant="heading"] .tx__in { gap: calc(5 * var(--fit)); }
+.tx[data-variant="heading"] .tx__p { font-weight: 700; letter-spacing: -.02em; line-height: 1.08; }
+.tx[data-variant="heading"][data-emphasis="normal"] .tx__p { font-weight: 600; }
+.tx[data-variant="heading"] .tx__in::before {             /* the accent rule above the title, aligned like the text */
+  content: ""; flex: none; width: max(18px, calc(28 * var(--fit))); height: max(2px, calc(3 * var(--fit)));
+  margin-bottom: calc(4 * var(--fit)); border-radius: 2px; background: var(--accent); opacity: .85;
+}
+.tx[data-variant="heading"][data-emphasis="muted"] .tx__in::before { background: var(--text-muted); }
+.tx[data-variant="heading"] .tx__s { font-size: max(11px, calc(var(--tx-size) * .42 * var(--fit))); color: var(--text-muted); letter-spacing: .01em; }
+/* one row (a very short box): the rule becomes a short bar before the title */
+.tx[data-variant="heading"][data-fit-arr="line"] .tx__in { align-items: center; }
+.tx[data-variant="heading"][data-fit-arr="line"] .tx__in::before { width: max(2px, calc(3 * var(--fit))); height: 1.1em; margin: 0; align-self: center; font-size: max(11px, calc(var(--tx-size) * var(--fit))); }
+/* a one-row label: room for ascenders (a clipped capital M read as "ʍ") */
+.tx[data-fit-arr="line"] .tx__p { line-height: 1.4; }
+/* no card: no rounded corner either — in a short label the corner radius clipped the first letter ("ʟiving room") */
+.tx:not([data-surface="true"]) { border-radius: 0; }

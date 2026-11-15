@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "homebattery",
+  "name": "Home battery",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "homebattery.js",
+  "style": "homebattery.css",
+  "assets": "assets/",
+  "api": "MaisonHomeBattery"
+}

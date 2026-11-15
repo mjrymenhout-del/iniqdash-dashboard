@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "activity",
+  "name": "Live Activity",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "activity.js",
+  "style": "activity.css",
+  "assets": "assets/",
+  "api": "MaisonActivity"
+}

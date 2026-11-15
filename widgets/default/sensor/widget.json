@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "sensor",
+  "name": "Sensor",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "sensor.js",
+  "style": "sensor.css",
+  "assets": "assets/",
+  "api": "MaisonSensor"
+}

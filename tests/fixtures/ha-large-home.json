@@ -1,0 +1,3576 @@
+{
+"ok": true,
+"configured": true,
+"connected": true,
+"error": null,
+"entities": [
+{
+"id": "light.salon_0",
+"domain": "light",
+"name": "Lumière principale du salon avec un nom extrêmement long qui dépasse toutes les limites raisonnables",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": "Salon",
+"areaId": "salon"
+},
+{
+"id": "light.salon_1",
+"domain": "light",
+"name": "Lampe",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Salon",
+"areaId": "salon"
+},
+{
+"id": "light.salon_2",
+"domain": "light",
+"name": "Plafonnier Salon",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Salon",
+"areaId": "salon"
+},
+{
+"id": "climate.salon",
+"domain": "climate",
+"name": "Thermostat Salon",
+"state": "heat",
+"unit": null,
+"dc": null,
+"area": "Salon",
+"areaId": "salon"
+},
+{
+"id": "sensor.salon_temperature",
+"domain": "sensor",
+"name": "Température Salon",
+"state": "20.3",
+"unit": "°C",
+"dc": "temperature",
+"area": "Salon",
+"areaId": "salon"
+},
+{
+"id": "sensor.salon_humidity",
+"domain": "sensor",
+"name": "Humidité Salon",
+"state": "41",
+"unit": "%",
+"dc": "humidity",
+"area": "Salon",
+"areaId": "salon"
+},
+{
+"id": "sensor.salon_illuminance_0",
+"domain": "sensor",
+"name": "Salon illuminance 1",
+"state": "299",
+"unit": "lx",
+"dc": "illuminance",
+"area": "Salon",
+"areaId": "salon"
+},
+{
+"id": "sensor.salon_battery_1",
+"domain": "sensor",
+"name": "Salon battery 2",
+"state": "296",
+"unit": "%",
+"dc": "battery",
+"area": "Salon",
+"areaId": "salon"
+},
+{
+"id": "sensor.salon_voltage_2",
+"domain": "sensor",
+"name": "Salon voltage 3",
+"state": "204",
+"unit": "V",
+"dc": "voltage",
+"area": "Salon",
+"areaId": "salon"
+},
+{
+"id": "binary_sensor.salon_door",
+"domain": "binary_sensor",
+"name": "Porte Salon",
+"state": "on",
+"unit": null,
+"dc": "door",
+"area": "Salon",
+"areaId": "salon"
+},
+{
+"id": "binary_sensor.salon_motion",
+"domain": "binary_sensor",
+"name": "Mouvement Salon",
+"state": "on",
+"unit": null,
+"dc": "motion",
+"area": "Salon",
+"areaId": "salon"
+},
+{
+"id": "media_player.salon",
+"domain": "media_player",
+"name": "Enceinte Salon",
+"state": "playing",
+"unit": null,
+"dc": null,
+"area": "Salon",
+"areaId": "salon"
+},
+{
+"id": "switch.salon_plug_0",
+"domain": "switch",
+"name": "Prise Salon 1",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": "Salon",
+"areaId": "salon"
+},
+{
+"id": "switch.salon_plug_1",
+"domain": "switch",
+"name": "Prise Salon 2",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Salon",
+"areaId": "salon"
+},
+{
+"id": "fan.salon",
+"domain": "fan",
+"name": "Ventilateur plafond salon",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Salon",
+"areaId": "salon"
+},
+{
+"id": "cover.salon",
+"domain": "cover",
+"name": "Volets salon",
+"state": "open",
+"unit": null,
+"dc": "shutter",
+"area": "Salon",
+"areaId": "salon"
+},
+{
+"id": "light.cuisine_0",
+"domain": "light",
+"name": "Spots",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "light.cuisine_1",
+"domain": "light",
+"name": "Plafonnier",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "light.cuisine_2",
+"domain": "light",
+"name": "Plafonnier",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "light.cuisine_3",
+"domain": "light",
+"name": "Ruban LED Cuisine",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "climate.cuisine",
+"domain": "climate",
+"name": "Thermostat Cuisine",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "sensor.cuisine_temperature",
+"domain": "sensor",
+"name": "Température Cuisine",
+"state": "19.8",
+"unit": "°C",
+"dc": "temperature",
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "sensor.cuisine_humidity",
+"domain": "sensor",
+"name": "Humidité Cuisine",
+"state": "67",
+"unit": "%",
+"dc": "humidity",
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "sensor.cuisine_power_0",
+"domain": "sensor",
+"name": "Cuisine power 1",
+"state": "128",
+"unit": "W",
+"dc": "power",
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "sensor.cuisine_temperature_1",
+"domain": "sensor",
+"name": "Cuisine temperature 2",
+"state": "93",
+"unit": "°C",
+"dc": "temperature",
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "sensor.cuisine_signal_strength_2",
+"domain": "sensor",
+"name": "Cuisine signal strength 3",
+"state": "125",
+"unit": "dBm",
+"dc": "signal_strength",
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "sensor.cuisine_battery_3",
+"domain": "sensor",
+"name": "Cuisine battery 4",
+"state": "295",
+"unit": "%",
+"dc": "battery",
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "sensor.cuisine_power_4",
+"domain": "sensor",
+"name": "Cuisine power 5",
+"state": "269",
+"unit": "W",
+"dc": "power",
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "sensor.cuisine_energy_5",
+"domain": "sensor",
+"name": "Cuisine energy 6",
+"state": "176",
+"unit": "kWh",
+"dc": "energy",
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "sensor.cuisine_signal_strength_6",
+"domain": "sensor",
+"name": "Cuisine signal strength 7",
+"state": "230",
+"unit": "dBm",
+"dc": "signal_strength",
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "binary_sensor.cuisine_door",
+"domain": "binary_sensor",
+"name": "Porte Cuisine",
+"state": "off",
+"unit": null,
+"dc": "door",
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "binary_sensor.cuisine_motion",
+"domain": "binary_sensor",
+"name": "Mouvement Cuisine",
+"state": "on",
+"unit": null,
+"dc": "motion",
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "media_player.cuisine",
+"domain": "media_player",
+"name": "Enceinte Cuisine",
+"state": "playing",
+"unit": null,
+"dc": null,
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "switch.cuisine_plug_0",
+"domain": "switch",
+"name": "Prise Cuisine 1",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "switch.cuisine_plug_1",
+"domain": "switch",
+"name": "Prise Cuisine 2",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": "Cuisine",
+"areaId": "cuisine"
+},
+{
+"id": "light.salle_a_manger_0",
+"domain": "light",
+"name": "Spots",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": "Salle à manger",
+"areaId": "salle_a_manger"
+},
+{
+"id": "light.salle_a_manger_1",
+"domain": "light",
+"name": "Lampadaire",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Salle à manger",
+"areaId": "salle_a_manger"
+},
+{
+"id": "light.salle_a_manger_2",
+"domain": "light",
+"name": "Lampe",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Salle à manger",
+"areaId": "salle_a_manger"
+},
+{
+"id": "climate.salle_a_manger",
+"domain": "climate",
+"name": "Thermostat Salle à manger",
+"state": "heat",
+"unit": null,
+"dc": null,
+"area": "Salle à manger",
+"areaId": "salle_a_manger"
+},
+{
+"id": "sensor.salle_a_manger_temperature",
+"domain": "sensor",
+"name": "Température Salle à manger",
+"state": "22.0",
+"unit": "°C",
+"dc": "temperature",
+"area": "Salle à manger",
+"areaId": "salle_a_manger"
+},
+{
+"id": "sensor.salle_a_manger_humidity",
+"domain": "sensor",
+"name": "Humidité Salle à manger",
+"state": "55",
+"unit": "%",
+"dc": "humidity",
+"area": "Salle à manger",
+"areaId": "salle_a_manger"
+},
+{
+"id": "sensor.salle_a_manger_signal_strength_0",
+"domain": "sensor",
+"name": "Salle à manger signal strength 1",
+"state": "34",
+"unit": "dBm",
+"dc": "signal_strength",
+"area": "Salle à manger",
+"areaId": "salle_a_manger"
+},
+{
+"id": "sensor.salle_a_manger_battery_1",
+"domain": "sensor",
+"name": "Salle à manger battery 2",
+"state": "159",
+"unit": "%",
+"dc": "battery",
+"area": "Salle à manger",
+"areaId": "salle_a_manger"
+},
+{
+"id": "sensor.salle_a_manger_signal_strength_2",
+"domain": "sensor",
+"name": "Salle à manger signal strength 3",
+"state": "296",
+"unit": "dBm",
+"dc": "signal_strength",
+"area": "Salle à manger",
+"areaId": "salle_a_manger"
+},
+{
+"id": "sensor.salle_a_manger_signal_strength_3",
+"domain": "sensor",
+"name": "Salle à manger signal strength 4",
+"state": "229",
+"unit": "dBm",
+"dc": "signal_strength",
+"area": "Salle à manger",
+"areaId": "salle_a_manger"
+},
+{
+"id": "sensor.salle_a_manger_power_4",
+"domain": "sensor",
+"name": "Salle à manger power 5",
+"state": "198",
+"unit": "W",
+"dc": "power",
+"area": "Salle à manger",
+"areaId": "salle_a_manger"
+},
+{
+"id": "sensor.salle_a_manger_signal_strength_5",
+"domain": "sensor",
+"name": "Salle à manger signal strength 6",
+"state": "178",
+"unit": "dBm",
+"dc": "signal_strength",
+"area": "Salle à manger",
+"areaId": "salle_a_manger"
+},
+{
+"id": "sensor.salle_a_manger_battery_6",
+"domain": "sensor",
+"name": "Salle à manger battery 7",
+"state": "237",
+"unit": "%",
+"dc": "battery",
+"area": "Salle à manger",
+"areaId": "salle_a_manger"
+},
+{
+"id": "sensor.salle_a_manger_power_7",
+"domain": "sensor",
+"name": "Salle à manger power 8",
+"state": "87",
+"unit": "W",
+"dc": "power",
+"area": "Salle à manger",
+"areaId": "salle_a_manger"
+},
+{
+"id": "sensor.salle_a_manger_voltage_8",
+"domain": "sensor",
+"name": "Salle à manger voltage 9",
+"state": "60",
+"unit": "V",
+"dc": "voltage",
+"area": "Salle à manger",
+"areaId": "salle_a_manger"
+},
+{
+"id": "light.chambre_parents_0",
+"domain": "light",
+"name": "Plafonnier Chambre parents",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Chambre parents",
+"areaId": "chambre_parents"
+},
+{
+"id": "light.chambre_parents_1",
+"domain": "light",
+"name": "Applique Chambre parents",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": "Chambre parents",
+"areaId": "chambre_parents"
+},
+{
+"id": "light.chambre_parents_2",
+"domain": "light",
+"name": "Spots Chambre parents",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Chambre parents",
+"areaId": "chambre_parents"
+},
+{
+"id": "light.chambre_parents_3",
+"domain": "light",
+"name": "Lampadaire Chambre parents",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Chambre parents",
+"areaId": "chambre_parents"
+},
+{
+"id": "climate.chambre_parents",
+"domain": "climate",
+"name": "Thermostat Chambre parents",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Chambre parents",
+"areaId": "chambre_parents"
+},
+{
+"id": "sensor.chambre_parents_temperature",
+"domain": "sensor",
+"name": "Température Chambre parents",
+"state": "21.1",
+"unit": "°C",
+"dc": "temperature",
+"area": "Chambre parents",
+"areaId": "chambre_parents"
+},
+{
+"id": "sensor.chambre_parents_humidity",
+"domain": "sensor",
+"name": "Humidité Chambre parents",
+"state": "62",
+"unit": "%",
+"dc": "humidity",
+"area": "Chambre parents",
+"areaId": "chambre_parents"
+},
+{
+"id": "sensor.chambre_parents_illuminance_0",
+"domain": "sensor",
+"name": "Chambre parents illuminance 1",
+"state": "43",
+"unit": "lx",
+"dc": "illuminance",
+"area": "Chambre parents",
+"areaId": "chambre_parents"
+},
+{
+"id": "sensor.chambre_parents_illuminance_1",
+"domain": "sensor",
+"name": "Chambre parents illuminance 2",
+"state": "78",
+"unit": "lx",
+"dc": "illuminance",
+"area": "Chambre parents",
+"areaId": "chambre_parents"
+},
+{
+"id": "sensor.chambre_parents_illuminance_2",
+"domain": "sensor",
+"name": "Chambre parents illuminance 3",
+"state": "120",
+"unit": "lx",
+"dc": "illuminance",
+"area": "Chambre parents",
+"areaId": "chambre_parents"
+},
+{
+"id": "sensor.chambre_parents_battery_3",
+"domain": "sensor",
+"name": "Chambre parents battery 4",
+"state": "249",
+"unit": "%",
+"dc": "battery",
+"area": "Chambre parents",
+"areaId": "chambre_parents"
+},
+{
+"id": "sensor.chambre_parents_temperature_4",
+"domain": "sensor",
+"name": "Chambre parents temperature 5",
+"state": "94",
+"unit": "°C",
+"dc": "temperature",
+"area": "Chambre parents",
+"areaId": "chambre_parents"
+},
+{
+"id": "binary_sensor.chambre_parents_door",
+"domain": "binary_sensor",
+"name": "Porte Chambre parents",
+"state": "off",
+"unit": null,
+"dc": "door",
+"area": "Chambre parents",
+"areaId": "chambre_parents"
+},
+{
+"id": "binary_sensor.chambre_parents_motion",
+"domain": "binary_sensor",
+"name": "Mouvement Chambre parents",
+"state": "off",
+"unit": null,
+"dc": "motion",
+"area": "Chambre parents",
+"areaId": "chambre_parents"
+},
+{
+"id": "media_player.chambre_parents",
+"domain": "media_player",
+"name": "Enceinte Chambre parents",
+"state": "playing",
+"unit": null,
+"dc": null,
+"area": "Chambre parents",
+"areaId": "chambre_parents"
+},
+{
+"id": "humidifier.chambre",
+"domain": "humidifier",
+"name": "Humidificateur chambre",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": "Chambre parents",
+"areaId": "chambre_parents"
+},
+{
+"id": "light.chambre_enfants_0",
+"domain": "light",
+"name": "Applique",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Chambre des enfants — étage",
+"areaId": "chambre_enfants"
+},
+{
+"id": "light.chambre_enfants_1",
+"domain": "light",
+"name": "Spots",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": "Chambre des enfants — étage",
+"areaId": "chambre_enfants"
+},
+{
+"id": "climate.chambre_enfants",
+"domain": "climate",
+"name": "Thermostat Chambre des enfants — étage",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Chambre des enfants — étage",
+"areaId": "chambre_enfants"
+},
+{
+"id": "sensor.chambre_enfants_temperature",
+"domain": "sensor",
+"name": "Température Chambre des enfants — étage",
+"state": "22.4",
+"unit": "°C",
+"dc": "temperature",
+"area": "Chambre des enfants — étage",
+"areaId": "chambre_enfants"
+},
+{
+"id": "sensor.chambre_enfants_humidity",
+"domain": "sensor",
+"name": "Humidité Chambre des enfants — étage",
+"state": "63",
+"unit": "%",
+"dc": "humidity",
+"area": "Chambre des enfants — étage",
+"areaId": "chambre_enfants"
+},
+{
+"id": "sensor.chambre_enfants_energy_0",
+"domain": "sensor",
+"name": "Chambre des enfants — étage energy 1",
+"state": "202",
+"unit": "kWh",
+"dc": "energy",
+"area": "Chambre des enfants — étage",
+"areaId": "chambre_enfants"
+},
+{
+"id": "sensor.chambre_enfants_battery_1",
+"domain": "sensor",
+"name": "Chambre des enfants — étage battery 2",
+"state": "247",
+"unit": "%",
+"dc": "battery",
+"area": "Chambre des enfants — étage",
+"areaId": "chambre_enfants"
+},
+{
+"id": "sensor.chambre_enfants_signal_strength_2",
+"domain": "sensor",
+"name": "Chambre des enfants — étage signal strength 3",
+"state": "206",
+"unit": "dBm",
+"dc": "signal_strength",
+"area": "Chambre des enfants — étage",
+"areaId": "chambre_enfants"
+},
+{
+"id": "sensor.chambre_enfants_battery_3",
+"domain": "sensor",
+"name": "Chambre des enfants — étage battery 4",
+"state": "98",
+"unit": "%",
+"dc": "battery",
+"area": "Chambre des enfants — étage",
+"areaId": "chambre_enfants"
+},
+{
+"id": "sensor.chambre_enfants_battery_4",
+"domain": "sensor",
+"name": "Chambre des enfants — étage battery 5",
+"state": "107",
+"unit": "%",
+"dc": "battery",
+"area": "Chambre des enfants — étage",
+"areaId": "chambre_enfants"
+},
+{
+"id": "sensor.chambre_enfants_energy_5",
+"domain": "sensor",
+"name": "Chambre des enfants — étage energy 6",
+"state": "84",
+"unit": "kWh",
+"dc": "energy",
+"area": "Chambre des enfants — étage",
+"areaId": "chambre_enfants"
+},
+{
+"id": "sensor.chambre_enfants_battery_6",
+"domain": "sensor",
+"name": "Chambre des enfants — étage battery 7",
+"state": "175",
+"unit": "%",
+"dc": "battery",
+"area": "Chambre des enfants — étage",
+"areaId": "chambre_enfants"
+},
+{
+"id": "sensor.chambre_enfants_voltage_7",
+"domain": "sensor",
+"name": "Chambre des enfants — étage voltage 8",
+"state": "27",
+"unit": "V",
+"dc": "voltage",
+"area": "Chambre des enfants — étage",
+"areaId": "chambre_enfants"
+},
+{
+"id": "light.chambre_amis_0",
+"domain": "light",
+"name": "Plafonnier",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Chambre d'amis",
+"areaId": "chambre_amis"
+},
+{
+"id": "climate.chambre_amis",
+"domain": "climate",
+"name": "Thermostat Chambre d'amis",
+"state": "heat",
+"unit": null,
+"dc": null,
+"area": "Chambre d'amis",
+"areaId": "chambre_amis"
+},
+{
+"id": "sensor.chambre_amis_temperature",
+"domain": "sensor",
+"name": "Température Chambre d'amis",
+"state": "17.2",
+"unit": "°C",
+"dc": "temperature",
+"area": "Chambre d'amis",
+"areaId": "chambre_amis"
+},
+{
+"id": "sensor.chambre_amis_humidity",
+"domain": "sensor",
+"name": "Humidité Chambre d'amis",
+"state": "51",
+"unit": "%",
+"dc": "humidity",
+"area": "Chambre d'amis",
+"areaId": "chambre_amis"
+},
+{
+"id": "sensor.chambre_amis_illuminance_0",
+"domain": "sensor",
+"name": "Chambre d'amis illuminance 1",
+"state": "130",
+"unit": "lx",
+"dc": "illuminance",
+"area": "Chambre d'amis",
+"areaId": "chambre_amis"
+},
+{
+"id": "sensor.chambre_amis_power_1",
+"domain": "sensor",
+"name": "Chambre d'amis power 2",
+"state": "187",
+"unit": "W",
+"dc": "power",
+"area": "Chambre d'amis",
+"areaId": "chambre_amis"
+},
+{
+"id": "sensor.chambre_amis_energy_2",
+"domain": "sensor",
+"name": "Chambre d'amis energy 3",
+"state": "63",
+"unit": "kWh",
+"dc": "energy",
+"area": "Chambre d'amis",
+"areaId": "chambre_amis"
+},
+{
+"id": "sensor.chambre_amis_battery_3",
+"domain": "sensor",
+"name": "Chambre d'amis battery 4",
+"state": "250",
+"unit": "%",
+"dc": "battery",
+"area": "Chambre d'amis",
+"areaId": "chambre_amis"
+},
+{
+"id": "sensor.chambre_amis_energy_4",
+"domain": "sensor",
+"name": "Chambre d'amis energy 5",
+"state": "246",
+"unit": "kWh",
+"dc": "energy",
+"area": "Chambre d'amis",
+"areaId": "chambre_amis"
+},
+{
+"id": "sensor.chambre_amis_energy_5",
+"domain": "sensor",
+"name": "Chambre d'amis energy 6",
+"state": "160",
+"unit": "kWh",
+"dc": "energy",
+"area": "Chambre d'amis",
+"areaId": "chambre_amis"
+},
+{
+"id": "sensor.chambre_amis_battery_6",
+"domain": "sensor",
+"name": "Chambre d'amis battery 7",
+"state": "74",
+"unit": "%",
+"dc": "battery",
+"area": "Chambre d'amis",
+"areaId": "chambre_amis"
+},
+{
+"id": "sensor.chambre_amis_battery_7",
+"domain": "sensor",
+"name": "Chambre d'amis battery 8",
+"state": "176",
+"unit": "%",
+"dc": "battery",
+"area": "Chambre d'amis",
+"areaId": "chambre_amis"
+},
+{
+"id": "light.salle_de_bain_0",
+"domain": "light",
+"name": "Lampe Salle de bain",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": "Salle de bain",
+"areaId": "salle_de_bain"
+},
+{
+"id": "light.salle_de_bain_1",
+"domain": "light",
+"name": "Spots",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Salle de bain",
+"areaId": "salle_de_bain"
+},
+{
+"id": "light.salle_de_bain_2",
+"domain": "light",
+"name": "Suspension",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Salle de bain",
+"areaId": "salle_de_bain"
+},
+{
+"id": "light.salle_de_bain_3",
+"domain": "light",
+"name": "Suspension",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Salle de bain",
+"areaId": "salle_de_bain"
+},
+{
+"id": "light.salle_de_bain_4",
+"domain": "light",
+"name": "Ruban LED Salle de bain",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Salle de bain",
+"areaId": "salle_de_bain"
+},
+{
+"id": "light.salle_de_bain_5",
+"domain": "light",
+"name": "Ruban LED",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Salle de bain",
+"areaId": "salle_de_bain"
+},
+{
+"id": "climate.salle_de_bain",
+"domain": "climate",
+"name": "Thermostat Salle de bain",
+"state": "heat",
+"unit": null,
+"dc": null,
+"area": "Salle de bain",
+"areaId": "salle_de_bain"
+},
+{
+"id": "sensor.salle_de_bain_temperature",
+"domain": "sensor",
+"name": "Température Salle de bain",
+"state": "21.9",
+"unit": "°C",
+"dc": "temperature",
+"area": "Salle de bain",
+"areaId": "salle_de_bain"
+},
+{
+"id": "sensor.salle_de_bain_humidity",
+"domain": "sensor",
+"name": "Humidité Salle de bain",
+"state": "50",
+"unit": "%",
+"dc": "humidity",
+"area": "Salle de bain",
+"areaId": "salle_de_bain"
+},
+{
+"id": "sensor.salle_de_bain_temperature_0",
+"domain": "sensor",
+"name": "Salle de bain temperature 1",
+"state": "206",
+"unit": "°C",
+"dc": "temperature",
+"area": "Salle de bain",
+"areaId": "salle_de_bain"
+},
+{
+"id": "sensor.salle_de_bain_signal_strength_1",
+"domain": "sensor",
+"name": "Salle de bain signal strength 2",
+"state": "117",
+"unit": "dBm",
+"dc": "signal_strength",
+"area": "Salle de bain",
+"areaId": "salle_de_bain"
+},
+{
+"id": "sensor.salle_de_bain_illuminance_2",
+"domain": "sensor",
+"name": "Salle de bain illuminance 3",
+"state": "266",
+"unit": "lx",
+"dc": "illuminance",
+"area": "Salle de bain",
+"areaId": "salle_de_bain"
+},
+{
+"id": "sensor.salle_de_bain_energy_3",
+"domain": "sensor",
+"name": "Salle de bain energy 4",
+"state": "183",
+"unit": "kWh",
+"dc": "energy",
+"area": "Salle de bain",
+"areaId": "salle_de_bain"
+},
+{
+"id": "sensor.salle_de_bain_signal_strength_4",
+"domain": "sensor",
+"name": "Salle de bain signal strength 5",
+"state": "15",
+"unit": "dBm",
+"dc": "signal_strength",
+"area": "Salle de bain",
+"areaId": "salle_de_bain"
+},
+{
+"id": "light.salle_d_eau_0",
+"domain": "light",
+"name": "Lampadaire Salle d'eau",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Salle d'eau",
+"areaId": "salle_d_eau"
+},
+{
+"id": "climate.salle_d_eau",
+"domain": "climate",
+"name": "Thermostat Salle d'eau",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Salle d'eau",
+"areaId": "salle_d_eau"
+},
+{
+"id": "sensor.salle_d_eau_temperature",
+"domain": "sensor",
+"name": "Température Salle d'eau",
+"state": "21.9",
+"unit": "°C",
+"dc": "temperature",
+"area": "Salle d'eau",
+"areaId": "salle_d_eau"
+},
+{
+"id": "sensor.salle_d_eau_humidity",
+"domain": "sensor",
+"name": "Humidité Salle d'eau",
+"state": "60",
+"unit": "%",
+"dc": "humidity",
+"area": "Salle d'eau",
+"areaId": "salle_d_eau"
+},
+{
+"id": "sensor.salle_d_eau_battery_0",
+"domain": "sensor",
+"name": "Salle d'eau battery 1",
+"state": "113",
+"unit": "%",
+"dc": "battery",
+"area": "Salle d'eau",
+"areaId": "salle_d_eau"
+},
+{
+"id": "sensor.salle_d_eau_battery_1",
+"domain": "sensor",
+"name": "Salle d'eau battery 2",
+"state": "117",
+"unit": "%",
+"dc": "battery",
+"area": "Salle d'eau",
+"areaId": "salle_d_eau"
+},
+{
+"id": "sensor.salle_d_eau_energy_2",
+"domain": "sensor",
+"name": "Salle d'eau energy 3",
+"state": "101",
+"unit": "kWh",
+"dc": "energy",
+"area": "Salle d'eau",
+"areaId": "salle_d_eau"
+},
+{
+"id": "sensor.salle_d_eau_power_3",
+"domain": "sensor",
+"name": "Salle d'eau power 4",
+"state": "105",
+"unit": "W",
+"dc": "power",
+"area": "Salle d'eau",
+"areaId": "salle_d_eau"
+},
+{
+"id": "sensor.salle_d_eau_energy_4",
+"domain": "sensor",
+"name": "Salle d'eau energy 5",
+"state": "1",
+"unit": "kWh",
+"dc": "energy",
+"area": "Salle d'eau",
+"areaId": "salle_d_eau"
+},
+{
+"id": "sensor.salle_d_eau_energy_5",
+"domain": "sensor",
+"name": "Salle d'eau energy 6",
+"state": "177",
+"unit": "kWh",
+"dc": "energy",
+"area": "Salle d'eau",
+"areaId": "salle_d_eau"
+},
+{
+"id": "sensor.salle_d_eau_temperature_6",
+"domain": "sensor",
+"name": "Salle d'eau temperature 7",
+"state": "44",
+"unit": "°C",
+"dc": "temperature",
+"area": "Salle d'eau",
+"areaId": "salle_d_eau"
+},
+{
+"id": "light.wc_0",
+"domain": "light",
+"name": "Lampadaire",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "WC",
+"areaId": "wc"
+},
+{
+"id": "sensor.wc_illuminance_0",
+"domain": "sensor",
+"name": "WC illuminance 1",
+"state": "223",
+"unit": "lx",
+"dc": "illuminance",
+"area": "WC",
+"areaId": "wc"
+},
+{
+"id": "sensor.wc_temperature_1",
+"domain": "sensor",
+"name": "WC temperature 2",
+"state": "171",
+"unit": "°C",
+"dc": "temperature",
+"area": "WC",
+"areaId": "wc"
+},
+{
+"id": "sensor.wc_battery_2",
+"domain": "sensor",
+"name": "WC battery 3",
+"state": "203",
+"unit": "%",
+"dc": "battery",
+"area": "WC",
+"areaId": "wc"
+},
+{
+"id": "sensor.wc_energy_3",
+"domain": "sensor",
+"name": "WC energy 4",
+"state": "206",
+"unit": "kWh",
+"dc": "energy",
+"area": "WC",
+"areaId": "wc"
+},
+{
+"id": "sensor.wc_signal_strength_4",
+"domain": "sensor",
+"name": "WC signal strength 5",
+"state": "44",
+"unit": "dBm",
+"dc": "signal_strength",
+"area": "WC",
+"areaId": "wc"
+},
+{
+"id": "sensor.wc_signal_strength_5",
+"domain": "sensor",
+"name": "WC signal strength 6",
+"state": "82",
+"unit": "dBm",
+"dc": "signal_strength",
+"area": "WC",
+"areaId": "wc"
+},
+{
+"id": "sensor.wc_illuminance_6",
+"domain": "sensor",
+"name": "WC illuminance 7",
+"state": "66",
+"unit": "lx",
+"dc": "illuminance",
+"area": "WC",
+"areaId": "wc"
+},
+{
+"id": "sensor.wc_battery_7",
+"domain": "sensor",
+"name": "WC battery 8",
+"state": "78",
+"unit": "%",
+"dc": "battery",
+"area": "WC",
+"areaId": "wc"
+},
+{
+"id": "sensor.wc_voltage_8",
+"domain": "sensor",
+"name": "WC voltage 9",
+"state": "239",
+"unit": "V",
+"dc": "voltage",
+"area": "WC",
+"areaId": "wc"
+},
+{
+"id": "light.bureau_0",
+"domain": "light",
+"name": "Spots",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Bureau",
+"areaId": "bureau"
+},
+{
+"id": "light.bureau_1",
+"domain": "light",
+"name": "Suspension",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Bureau",
+"areaId": "bureau"
+},
+{
+"id": "light.bureau_2",
+"domain": "light",
+"name": "Plafonnier Bureau",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": "Bureau",
+"areaId": "bureau"
+},
+{
+"id": "light.bureau_3",
+"domain": "light",
+"name": "Ruban LED",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Bureau",
+"areaId": "bureau"
+},
+{
+"id": "light.bureau_4",
+"domain": "light",
+"name": "Lampadaire",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Bureau",
+"areaId": "bureau"
+},
+{
+"id": "light.bureau_5",
+"domain": "light",
+"name": "Lampe",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Bureau",
+"areaId": "bureau"
+},
+{
+"id": "climate.bureau",
+"domain": "climate",
+"name": "Thermostat Bureau",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Bureau",
+"areaId": "bureau"
+},
+{
+"id": "sensor.bureau_temperature",
+"domain": "sensor",
+"name": "Température Bureau",
+"state": "20.3",
+"unit": "°C",
+"dc": "temperature",
+"area": "Bureau",
+"areaId": "bureau"
+},
+{
+"id": "sensor.bureau_humidity",
+"domain": "sensor",
+"name": "Humidité Bureau",
+"state": "46",
+"unit": "%",
+"dc": "humidity",
+"area": "Bureau",
+"areaId": "bureau"
+},
+{
+"id": "sensor.bureau_signal_strength_0",
+"domain": "sensor",
+"name": "Bureau signal strength 1",
+"state": "182",
+"unit": "dBm",
+"dc": "signal_strength",
+"area": "Bureau",
+"areaId": "bureau"
+},
+{
+"id": "sensor.bureau_energy_1",
+"domain": "sensor",
+"name": "Bureau energy 2",
+"state": "299",
+"unit": "kWh",
+"dc": "energy",
+"area": "Bureau",
+"areaId": "bureau"
+},
+{
+"id": "media_player.bureau",
+"domain": "media_player",
+"name": "Enceinte Bureau",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Bureau",
+"areaId": "bureau"
+},
+{
+"id": "switch.bureau_plug_0",
+"domain": "switch",
+"name": "Prise Bureau 1",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Bureau",
+"areaId": "bureau"
+},
+{
+"id": "switch.bureau_plug_1",
+"domain": "switch",
+"name": "Prise Bureau 2",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": "Bureau",
+"areaId": "bureau"
+},
+{
+"id": "light.cave_0",
+"domain": "light",
+"name": "Spots",
+"state": "unavailable",
+"unit": null,
+"dc": null,
+"area": "Cave",
+"areaId": "cave"
+},
+{
+"id": "light.cave_1",
+"domain": "light",
+"name": "Lampadaire Cave",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Cave",
+"areaId": "cave"
+},
+{
+"id": "light.cave_2",
+"domain": "light",
+"name": "Spots Cave",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": "Cave",
+"areaId": "cave"
+},
+{
+"id": "light.cave_3",
+"domain": "light",
+"name": "Ruban LED Cave",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Cave",
+"areaId": "cave"
+},
+{
+"id": "light.cave_4",
+"domain": "light",
+"name": "Lampadaire",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": "Cave",
+"areaId": "cave"
+},
+{
+"id": "sensor.cave_illuminance_0",
+"domain": "sensor",
+"name": "Cave illuminance 1",
+"state": "142",
+"unit": "lx",
+"dc": "illuminance",
+"area": "Cave",
+"areaId": "cave"
+},
+{
+"id": "sensor.cave_battery_1",
+"domain": "sensor",
+"name": "Cave battery 2",
+"state": "51",
+"unit": "%",
+"dc": "battery",
+"area": "Cave",
+"areaId": "cave"
+},
+{
+"id": "sensor.cave_voltage_2",
+"domain": "sensor",
+"name": "Cave voltage 3",
+"state": "232",
+"unit": "V",
+"dc": "voltage",
+"area": "Cave",
+"areaId": "cave"
+},
+{
+"id": "sensor.cave_voltage_3",
+"domain": "sensor",
+"name": "Cave voltage 4",
+"state": "15",
+"unit": "V",
+"dc": "voltage",
+"area": "Cave",
+"areaId": "cave"
+},
+{
+"id": "sensor.cave_temperature_4",
+"domain": "sensor",
+"name": "Cave temperature 5",
+"state": "33",
+"unit": "°C",
+"dc": "temperature",
+"area": "Cave",
+"areaId": "cave"
+},
+{
+"id": "binary_sensor.cave_door",
+"domain": "binary_sensor",
+"name": "Porte Cave",
+"state": "off",
+"unit": null,
+"dc": "door",
+"area": "Cave",
+"areaId": "cave"
+},
+{
+"id": "binary_sensor.cave_motion",
+"domain": "binary_sensor",
+"name": "Mouvement Cave",
+"state": "off",
+"unit": null,
+"dc": "motion",
+"area": "Cave",
+"areaId": "cave"
+},
+{
+"id": "light.garage_0",
+"domain": "light",
+"name": "Ruban LED",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Garage",
+"areaId": "garage"
+},
+{
+"id": "light.garage_1",
+"domain": "light",
+"name": "Applique",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Garage",
+"areaId": "garage"
+},
+{
+"id": "light.garage_2",
+"domain": "light",
+"name": "Suspension",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Garage",
+"areaId": "garage"
+},
+{
+"id": "light.garage_3",
+"domain": "light",
+"name": "Ruban LED",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Garage",
+"areaId": "garage"
+},
+{
+"id": "light.garage_4",
+"domain": "light",
+"name": "Spots Garage",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Garage",
+"areaId": "garage"
+},
+{
+"id": "sensor.garage_signal_strength_0",
+"domain": "sensor",
+"name": "Garage signal strength 1",
+"state": "124",
+"unit": "dBm",
+"dc": "signal_strength",
+"area": "Garage",
+"areaId": "garage"
+},
+{
+"id": "sensor.garage_energy_1",
+"domain": "sensor",
+"name": "Garage energy 2",
+"state": "38",
+"unit": "kWh",
+"dc": "energy",
+"area": "Garage",
+"areaId": "garage"
+},
+{
+"id": "sensor.garage_illuminance_2",
+"domain": "sensor",
+"name": "Garage illuminance 3",
+"state": "156",
+"unit": "lx",
+"dc": "illuminance",
+"area": "Garage",
+"areaId": "garage"
+},
+{
+"id": "binary_sensor.garage_door",
+"domain": "binary_sensor",
+"name": "Porte Garage",
+"state": "on",
+"unit": null,
+"dc": "door",
+"area": "Garage",
+"areaId": "garage"
+},
+{
+"id": "binary_sensor.garage_motion",
+"domain": "binary_sensor",
+"name": "Mouvement Garage",
+"state": "on",
+"unit": null,
+"dc": "motion",
+"area": "Garage",
+"areaId": "garage"
+},
+{
+"id": "switch.garage_plug_0",
+"domain": "switch",
+"name": "Prise Garage 1",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Garage",
+"areaId": "garage"
+},
+{
+"id": "switch.garage_plug_1",
+"domain": "switch",
+"name": "Prise Garage 2",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": "Garage",
+"areaId": "garage"
+},
+{
+"id": "light.buanderie_0",
+"domain": "light",
+"name": "Spots",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "light.buanderie_1",
+"domain": "light",
+"name": "Applique",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "light.buanderie_2",
+"domain": "light",
+"name": "Spots",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "climate.buanderie",
+"domain": "climate",
+"name": "Thermostat Buanderie",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "sensor.buanderie_temperature",
+"domain": "sensor",
+"name": "Température Buanderie",
+"state": "19.5",
+"unit": "°C",
+"dc": "temperature",
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "sensor.buanderie_humidity",
+"domain": "sensor",
+"name": "Humidité Buanderie",
+"state": "60",
+"unit": "%",
+"dc": "humidity",
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "sensor.buanderie_battery_0",
+"domain": "sensor",
+"name": "Buanderie battery 1",
+"state": "188",
+"unit": "%",
+"dc": "battery",
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "sensor.buanderie_battery_1",
+"domain": "sensor",
+"name": "Buanderie battery 2",
+"state": "174",
+"unit": "%",
+"dc": "battery",
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "sensor.buanderie_voltage_2",
+"domain": "sensor",
+"name": "Buanderie voltage 3",
+"state": "235",
+"unit": "V",
+"dc": "voltage",
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "sensor.buanderie_energy_3",
+"domain": "sensor",
+"name": "Buanderie energy 4",
+"state": "10",
+"unit": "kWh",
+"dc": "energy",
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "sensor.buanderie_energy_4",
+"domain": "sensor",
+"name": "Buanderie energy 5",
+"state": "170",
+"unit": "kWh",
+"dc": "energy",
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "sensor.buanderie_voltage_5",
+"domain": "sensor",
+"name": "Buanderie voltage 6",
+"state": "152",
+"unit": "V",
+"dc": "voltage",
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "sensor.buanderie_voltage_6",
+"domain": "sensor",
+"name": "Buanderie voltage 7",
+"state": "33",
+"unit": "V",
+"dc": "voltage",
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "binary_sensor.buanderie_door",
+"domain": "binary_sensor",
+"name": "Porte Buanderie",
+"state": "on",
+"unit": null,
+"dc": "door",
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "binary_sensor.buanderie_motion",
+"domain": "binary_sensor",
+"name": "Mouvement Buanderie",
+"state": "on",
+"unit": null,
+"dc": "motion",
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "switch.buanderie_plug_0",
+"domain": "switch",
+"name": "Prise Buanderie 1",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "switch.buanderie_plug_1",
+"domain": "switch",
+"name": "Prise Buanderie 2",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "sensor.lave_linge_state",
+"domain": "sensor",
+"name": "Lave-linge",
+"state": "Running",
+"unit": null,
+"dc": null,
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "binary_sensor.buanderie_leak",
+"domain": "binary_sensor",
+"name": "Fuite buanderie",
+"state": "off",
+"unit": null,
+"dc": "moisture",
+"area": "Buanderie",
+"areaId": "buanderie"
+},
+{
+"id": "light.entree_0",
+"domain": "light",
+"name": "Lampe Entrée",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Entrée",
+"areaId": "entree"
+},
+{
+"id": "light.entree_1",
+"domain": "light",
+"name": "Lampadaire Entrée",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Entrée",
+"areaId": "entree"
+},
+{
+"id": "light.entree_2",
+"domain": "light",
+"name": "Applique Entrée",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Entrée",
+"areaId": "entree"
+},
+{
+"id": "sensor.entree_battery_0",
+"domain": "sensor",
+"name": "Entrée battery 1",
+"state": "143",
+"unit": "%",
+"dc": "battery",
+"area": "Entrée",
+"areaId": "entree"
+},
+{
+"id": "sensor.entree_battery_1",
+"domain": "sensor",
+"name": "Entrée battery 2",
+"state": "94",
+"unit": "%",
+"dc": "battery",
+"area": "Entrée",
+"areaId": "entree"
+},
+{
+"id": "sensor.entree_energy_2",
+"domain": "sensor",
+"name": "Entrée energy 3",
+"state": "38",
+"unit": "kWh",
+"dc": "energy",
+"area": "Entrée",
+"areaId": "entree"
+},
+{
+"id": "sensor.entree_power_3",
+"domain": "sensor",
+"name": "Entrée power 4",
+"state": "9",
+"unit": "W",
+"dc": "power",
+"area": "Entrée",
+"areaId": "entree"
+},
+{
+"id": "sensor.entree_signal_strength_4",
+"domain": "sensor",
+"name": "Entrée signal strength 5",
+"state": "46",
+"unit": "dBm",
+"dc": "signal_strength",
+"area": "Entrée",
+"areaId": "entree"
+},
+{
+"id": "sensor.entree_temperature_5",
+"domain": "sensor",
+"name": "Entrée temperature 6",
+"state": "134",
+"unit": "°C",
+"dc": "temperature",
+"area": "Entrée",
+"areaId": "entree"
+},
+{
+"id": "sensor.entree_battery_6",
+"domain": "sensor",
+"name": "Entrée battery 7",
+"state": "114",
+"unit": "%",
+"dc": "battery",
+"area": "Entrée",
+"areaId": "entree"
+},
+{
+"id": "binary_sensor.entree_door",
+"domain": "binary_sensor",
+"name": "Porte Entrée",
+"state": "on",
+"unit": null,
+"dc": "door",
+"area": "Entrée",
+"areaId": "entree"
+},
+{
+"id": "binary_sensor.entree_motion",
+"domain": "binary_sensor",
+"name": "Mouvement Entrée",
+"state": "off",
+"unit": null,
+"dc": "motion",
+"area": "Entrée",
+"areaId": "entree"
+},
+{
+"id": "lock.porte_entree",
+"domain": "lock",
+"name": "Serrure porte d'entrée",
+"state": "locked",
+"unit": null,
+"dc": null,
+"area": "Entrée",
+"areaId": "entree"
+},
+{
+"id": "camera.entree",
+"domain": "camera",
+"name": "Caméra entrée",
+"state": "idle",
+"unit": null,
+"dc": null,
+"area": "Entrée",
+"areaId": "entree"
+},
+{
+"id": "light.couloir_0",
+"domain": "light",
+"name": "Applique Couloir",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Couloir",
+"areaId": "couloir"
+},
+{
+"id": "sensor.couloir_voltage_0",
+"domain": "sensor",
+"name": "Couloir voltage 1",
+"state": "67",
+"unit": "V",
+"dc": "voltage",
+"area": "Couloir",
+"areaId": "couloir"
+},
+{
+"id": "sensor.couloir_battery_1",
+"domain": "sensor",
+"name": "Couloir battery 2",
+"state": "270",
+"unit": "%",
+"dc": "battery",
+"area": "Couloir",
+"areaId": "couloir"
+},
+{
+"id": "sensor.couloir_signal_strength_2",
+"domain": "sensor",
+"name": "Couloir signal strength 3",
+"state": "123",
+"unit": "dBm",
+"dc": "signal_strength",
+"area": "Couloir",
+"areaId": "couloir"
+},
+{
+"id": "sensor.couloir_battery_3",
+"domain": "sensor",
+"name": "Couloir battery 4",
+"state": "83",
+"unit": "%",
+"dc": "battery",
+"area": "Couloir",
+"areaId": "couloir"
+},
+{
+"id": "sensor.couloir_power_4",
+"domain": "sensor",
+"name": "Couloir power 5",
+"state": "26",
+"unit": "W",
+"dc": "power",
+"area": "Couloir",
+"areaId": "couloir"
+},
+{
+"id": "sensor.couloir_illuminance_5",
+"domain": "sensor",
+"name": "Couloir illuminance 6",
+"state": "104",
+"unit": "lx",
+"dc": "illuminance",
+"area": "Couloir",
+"areaId": "couloir"
+},
+{
+"id": "light.jardin_0",
+"domain": "light",
+"name": "Suspension Jardin",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Jardin",
+"areaId": "jardin"
+},
+{
+"id": "light.jardin_1",
+"domain": "light",
+"name": "Applique",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Jardin",
+"areaId": "jardin"
+},
+{
+"id": "light.jardin_2",
+"domain": "light",
+"name": "Lampadaire Jardin",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": "Jardin",
+"areaId": "jardin"
+},
+{
+"id": "sensor.jardin_signal_strength_0",
+"domain": "sensor",
+"name": "Jardin signal strength 1",
+"state": "259",
+"unit": "dBm",
+"dc": "signal_strength",
+"area": "Jardin",
+"areaId": "jardin"
+},
+{
+"id": "sensor.jardin_voltage_1",
+"domain": "sensor",
+"name": "Jardin voltage 2",
+"state": "98",
+"unit": "V",
+"dc": "voltage",
+"area": "Jardin",
+"areaId": "jardin"
+},
+{
+"id": "binary_sensor.jardin_door",
+"domain": "binary_sensor",
+"name": "Porte Jardin",
+"state": "off",
+"unit": null,
+"dc": "door",
+"area": "Jardin",
+"areaId": "jardin"
+},
+{
+"id": "binary_sensor.jardin_motion",
+"domain": "binary_sensor",
+"name": "Mouvement Jardin",
+"state": "off",
+"unit": null,
+"dc": "motion",
+"area": "Jardin",
+"areaId": "jardin"
+},
+{
+"id": "camera.jardin",
+"domain": "camera",
+"name": "Caméra jardin",
+"state": "idle",
+"unit": null,
+"dc": null,
+"area": "Jardin",
+"areaId": "jardin"
+},
+{
+"id": "vacuum.tondeuse",
+"domain": "vacuum",
+"name": "Tondeuse robot",
+"state": "docked",
+"unit": null,
+"dc": null,
+"area": "Jardin",
+"areaId": "jardin"
+},
+{
+"id": "light.terrasse_0",
+"domain": "light",
+"name": "Applique Terrasse piscine",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Terrasse piscine",
+"areaId": "terrasse"
+},
+{
+"id": "light.terrasse_1",
+"domain": "light",
+"name": "Suspension Terrasse piscine",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": "Terrasse piscine",
+"areaId": "terrasse"
+},
+{
+"id": "sensor.terrasse_signal_strength_0",
+"domain": "sensor",
+"name": "Terrasse piscine signal strength 1",
+"state": "111",
+"unit": "dBm",
+"dc": "signal_strength",
+"area": "Terrasse piscine",
+"areaId": "terrasse"
+},
+{
+"id": "sensor.terrasse_illuminance_1",
+"domain": "sensor",
+"name": "Terrasse piscine illuminance 2",
+"state": "176",
+"unit": "lx",
+"dc": "illuminance",
+"area": "Terrasse piscine",
+"areaId": "terrasse"
+},
+{
+"id": "sensor.terrasse_illuminance_2",
+"domain": "sensor",
+"name": "Terrasse piscine illuminance 3",
+"state": "72",
+"unit": "lx",
+"dc": "illuminance",
+"area": "Terrasse piscine",
+"areaId": "terrasse"
+},
+{
+"id": "sensor.terrasse_energy_3",
+"domain": "sensor",
+"name": "Terrasse piscine energy 4",
+"state": "178",
+"unit": "kWh",
+"dc": "energy",
+"area": "Terrasse piscine",
+"areaId": "terrasse"
+},
+{
+"id": "sensor.terrasse_battery_4",
+"domain": "sensor",
+"name": "Terrasse piscine battery 5",
+"state": "67",
+"unit": "%",
+"dc": "battery",
+"area": "Terrasse piscine",
+"areaId": "terrasse"
+},
+{
+"id": "sensor.terrasse_battery_5",
+"domain": "sensor",
+"name": "Terrasse piscine battery 6",
+"state": "37",
+"unit": "%",
+"dc": "battery",
+"area": "Terrasse piscine",
+"areaId": "terrasse"
+},
+{
+"id": "binary_sensor.terrasse_door",
+"domain": "binary_sensor",
+"name": "Porte Terrasse piscine",
+"state": "off",
+"unit": null,
+"dc": "door",
+"area": "Terrasse piscine",
+"areaId": "terrasse"
+},
+{
+"id": "binary_sensor.terrasse_motion",
+"domain": "binary_sensor",
+"name": "Mouvement Terrasse piscine",
+"state": "off",
+"unit": null,
+"dc": "motion",
+"area": "Terrasse piscine",
+"areaId": "terrasse"
+},
+{
+"id": "light.grenier_0",
+"domain": "light",
+"name": "Applique Grenier",
+"state": "unavailable",
+"unit": null,
+"dc": null,
+"area": "Grenier",
+"areaId": "grenier"
+},
+{
+"id": "sensor.grenier_voltage_0",
+"domain": "sensor",
+"name": "Grenier voltage 1",
+"state": "125",
+"unit": "V",
+"dc": "voltage",
+"area": "Grenier",
+"areaId": "grenier"
+},
+{
+"id": "sensor.grenier_signal_strength_1",
+"domain": "sensor",
+"name": "Grenier signal strength 2",
+"state": "151",
+"unit": "dBm",
+"dc": "signal_strength",
+"area": "Grenier",
+"areaId": "grenier"
+},
+{
+"id": "sensor.grenier_battery_2",
+"domain": "sensor",
+"name": "Grenier battery 3",
+"state": "236",
+"unit": "%",
+"dc": "battery",
+"area": "Grenier",
+"areaId": "grenier"
+},
+{
+"id": "sensor.grenier_illuminance_3",
+"domain": "sensor",
+"name": "Grenier illuminance 4",
+"state": "81",
+"unit": "lx",
+"dc": "illuminance",
+"area": "Grenier",
+"areaId": "grenier"
+},
+{
+"id": "sensor.grenier_power_4",
+"domain": "sensor",
+"name": "Grenier power 5",
+"state": "229",
+"unit": "W",
+"dc": "power",
+"area": "Grenier",
+"areaId": "grenier"
+},
+{
+"id": "sensor.grenier_battery_5",
+"domain": "sensor",
+"name": "Grenier battery 6",
+"state": "135",
+"unit": "%",
+"dc": "battery",
+"area": "Grenier",
+"areaId": "grenier"
+},
+{
+"id": "sensor.local_technique_uptime",
+"domain": "sensor",
+"name": "Local technique uptime",
+"state": "12",
+"unit": "d",
+"dc": null,
+"area": "Local technique (vide)",
+"areaId": "local_technique"
+},
+{
+"id": "alarm_control_panel.maison",
+"domain": "alarm_control_panel",
+"name": "Alarme maison",
+"state": "disarmed",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "person.marc",
+"domain": "person",
+"name": "Marc",
+"state": "not_home",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "person.lea",
+"domain": "person",
+"name": "Léa",
+"state": "not_home",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "person.noor",
+"domain": "person",
+"name": "Noor",
+"state": "not_home",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "person.tom",
+"domain": "person",
+"name": "Tom",
+"state": "home",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "weather.maison",
+"domain": "weather",
+"name": "Maison",
+"state": "cloudy",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sun.sun",
+"domain": "sun",
+"name": "Sun",
+"state": "above_horizon",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "calendar.famille",
+"domain": "calendar",
+"name": "Famille",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "calendar.poubelles",
+"domain": "calendar",
+"name": "Poubelles",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "calendar.travail",
+"domain": "calendar",
+"name": "Travail",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "calendar.anniversaires",
+"domain": "calendar",
+"name": "Anniversaires",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "calendar.vacances_scolaires",
+"domain": "calendar",
+"name": "Vacances Scolaires",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.p1_power",
+"domain": "sensor",
+"name": "P1 net power",
+"state": "779",
+"unit": "W",
+"dc": "power",
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.solar_power",
+"domain": "sensor",
+"name": "Solar power",
+"state": "1300",
+"unit": "W",
+"dc": "power",
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.house_consumption",
+"domain": "sensor",
+"name": "House consumption",
+"state": "521",
+"unit": "W",
+"dc": "power",
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.p1_energy_import",
+"domain": "sensor",
+"name": "P1 energy import",
+"state": "5.47",
+"unit": "kWh",
+"dc": "energy",
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.p1_energy_export",
+"domain": "sensor",
+"name": "P1 energy export",
+"state": "0.45",
+"unit": "kWh",
+"dc": "energy",
+"area": null,
+"areaId": null
+},
+{
+"id": "scene.scene_0",
+"domain": "scene",
+"name": "Soirée cinéma",
+"state": "scening",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "scene.scene_1",
+"domain": "scene",
+"name": "Tout éteindre",
+"state": "scening",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "scene.scene_2",
+"domain": "scene",
+"name": "Bonne nuit",
+"state": "scening",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "scene.scene_3",
+"domain": "scene",
+"name": "Réveil",
+"state": "scening",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "scene.scene_4",
+"domain": "scene",
+"name": "Dîner",
+"state": "scening",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "scene.scene_5",
+"domain": "scene",
+"name": "Absence",
+"state": "scening",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_0",
+"domain": "light",
+"name": "Lampe sans pièce 1",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_1",
+"domain": "light",
+"name": "Lampe sans pièce 2",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_2",
+"domain": "light",
+"name": "Lampe sans pièce 3",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_3",
+"domain": "light",
+"name": "Lampe sans pièce 4",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_4",
+"domain": "light",
+"name": "Lampe sans pièce 5",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_5",
+"domain": "light",
+"name": "Lampe sans pièce 6",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_6",
+"domain": "light",
+"name": "Lampe sans pièce 7",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_7",
+"domain": "light",
+"name": "Lampe sans pièce 8",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_8",
+"domain": "light",
+"name": "Lampe sans pièce 9",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_9",
+"domain": "light",
+"name": "Lampe sans pièce 10",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_10",
+"domain": "light",
+"name": "Lampe sans pièce 11",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_11",
+"domain": "light",
+"name": "Lampe sans pièce 12",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_12",
+"domain": "light",
+"name": "Lampe sans pièce 13",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_13",
+"domain": "light",
+"name": "Lampe sans pièce 14",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_14",
+"domain": "light",
+"name": "Lampe sans pièce 15",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_15",
+"domain": "light",
+"name": "Lampe sans pièce 16",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_16",
+"domain": "light",
+"name": "Lampe sans pièce 17",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_17",
+"domain": "light",
+"name": "Lampe sans pièce 18",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_18",
+"domain": "light",
+"name": "Lampe sans pièce 19",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_19",
+"domain": "light",
+"name": "Lampe sans pièce 20",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_20",
+"domain": "light",
+"name": "Lampe sans pièce 21",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_21",
+"domain": "light",
+"name": "Lampe sans pièce 22",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_22",
+"domain": "light",
+"name": "Lampe sans pièce 23",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_23",
+"domain": "light",
+"name": "Lampe sans pièce 24",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "light.loose_24",
+"domain": "light",
+"name": "Lampe sans pièce 25",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_0_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 1 link quality",
+"state": "28",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_1_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 2 link quality",
+"state": "245",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_2_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 3 link quality",
+"state": "99",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_3_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 4 link quality",
+"state": "75",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_4_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 5 link quality",
+"state": "111",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_5_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 6 link quality",
+"state": "66",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_6_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 7 link quality",
+"state": "20",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_7_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 8 link quality",
+"state": "105",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_8_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 9 link quality",
+"state": "117",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_9_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 10 link quality",
+"state": "41",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_10_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 11 link quality",
+"state": "141",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_11_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 12 link quality",
+"state": "91",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_12_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 13 link quality",
+"state": "148",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_13_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 14 link quality",
+"state": "187",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_14_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 15 link quality",
+"state": "71",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_15_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 16 link quality",
+"state": "83",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_16_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 17 link quality",
+"state": "149",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_17_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 18 link quality",
+"state": "218",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_18_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 19 link quality",
+"state": "21",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_19_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 20 link quality",
+"state": "43",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_20_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 21 link quality",
+"state": "87",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_21_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 22 link quality",
+"state": "229",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_22_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 23 link quality",
+"state": "42",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_23_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 24 link quality",
+"state": "56",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_24_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 25 link quality",
+"state": "122",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_25_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 26 link quality",
+"state": "170",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_26_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 27 link quality",
+"state": "30",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_27_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 28 link quality",
+"state": "120",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_28_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 29 link quality",
+"state": "25",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_29_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 30 link quality",
+"state": "96",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_30_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 31 link quality",
+"state": "97",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_31_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 32 link quality",
+"state": "181",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_32_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 33 link quality",
+"state": "79",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_33_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 34 link quality",
+"state": "41",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_34_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 35 link quality",
+"state": "169",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_35_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 36 link quality",
+"state": "155",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_36_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 37 link quality",
+"state": "238",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_37_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 38 link quality",
+"state": "212",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_38_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 39 link quality",
+"state": "59",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "sensor.zigbee_39_linkquality",
+"domain": "sensor",
+"name": "Zigbee device 40 link quality",
+"state": "188",
+"unit": "lqi",
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_0",
+"domain": "update",
+"name": "Firmware device 1",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_1",
+"domain": "update",
+"name": "Firmware device 2",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_2",
+"domain": "update",
+"name": "Firmware device 3",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_3",
+"domain": "update",
+"name": "Firmware device 4",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_4",
+"domain": "update",
+"name": "Firmware device 5",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_5",
+"domain": "update",
+"name": "Firmware device 6",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_6",
+"domain": "update",
+"name": "Firmware device 7",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_7",
+"domain": "update",
+"name": "Firmware device 8",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_8",
+"domain": "update",
+"name": "Firmware device 9",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_9",
+"domain": "update",
+"name": "Firmware device 10",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_10",
+"domain": "update",
+"name": "Firmware device 11",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_11",
+"domain": "update",
+"name": "Firmware device 12",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_12",
+"domain": "update",
+"name": "Firmware device 13",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_13",
+"domain": "update",
+"name": "Firmware device 14",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_14",
+"domain": "update",
+"name": "Firmware device 15",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_15",
+"domain": "update",
+"name": "Firmware device 16",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_16",
+"domain": "update",
+"name": "Firmware device 17",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_17",
+"domain": "update",
+"name": "Firmware device 18",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_18",
+"domain": "update",
+"name": "Firmware device 19",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_19",
+"domain": "update",
+"name": "Firmware device 20",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_20",
+"domain": "update",
+"name": "Firmware device 21",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_21",
+"domain": "update",
+"name": "Firmware device 22",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_22",
+"domain": "update",
+"name": "Firmware device 23",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_23",
+"domain": "update",
+"name": "Firmware device 24",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_24",
+"domain": "update",
+"name": "Firmware device 25",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_25",
+"domain": "update",
+"name": "Firmware device 26",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_26",
+"domain": "update",
+"name": "Firmware device 27",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_27",
+"domain": "update",
+"name": "Firmware device 28",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_28",
+"domain": "update",
+"name": "Firmware device 29",
+"state": "on",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+},
+{
+"id": "update.device_29",
+"domain": "update",
+"name": "Firmware device 30",
+"state": "off",
+"unit": null,
+"dc": null,
+"area": null,
+"areaId": null
+}
+],
+"areas": [
+{
+"id": "salon",
+"name": "Salon"
+},
+{
+"id": "cuisine",
+"name": "Cuisine"
+},
+{
+"id": "salle_a_manger",
+"name": "Salle à manger"
+},
+{
+"id": "chambre_parents",
+"name": "Chambre parents"
+},
+{
+"id": "chambre_enfants",
+"name": "Chambre des enfants — étage"
+},
+{
+"id": "chambre_amis",
+"name": "Chambre d'amis"
+},
+{
+"id": "salle_de_bain",
+"name": "Salle de bain"
+},
+{
+"id": "salle_d_eau",
+"name": "Salle d'eau"
+},
+{
+"id": "wc",
+"name": "WC"
+},
+{
+"id": "bureau",
+"name": "Bureau"
+},
+{
+"id": "cave",
+"name": "Cave"
+},
+{
+"id": "garage",
+"name": "Garage"
+},
+{
+"id": "buanderie",
+"name": "Buanderie"
+},
+{
+"id": "entree",
+"name": "Entrée"
+},
+{
+"id": "couloir",
+"name": "Couloir"
+},
+{
+"id": "jardin",
+"name": "Jardin"
+},
+{
+"id": "terrasse",
+"name": "Terrasse piscine"
+},
+{
+"id": "grenier",
+"name": "Grenier"
+},
+{
+"id": "local_technique",
+"name": "Local technique (vide)"
+}
+]
+}

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360">
+  <!-- original IniqDash artwork (MPL-2.0): a night-time garden as a camera would see it -->
+  <defs>
+    <linearGradient id="g-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16202e"/><stop offset="1" stop-color="#34404f"/></linearGradient>
+    <linearGradient id="g-lawn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c3929"/><stop offset="1" stop-color="#161d15"/></linearGradient>
+    <radialGradient id="g-lamp" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffd98f" stop-opacity=".55"/><stop offset="1" stop-color="#ffd98f" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#g-sky)"/>
+  <path d="M0 210 Q 160 180 320 205 T 640 196 V360 H0Z" fill="url(#g-lawn)"/>
+  <rect x="40" y="150" width="560" height="10" fill="#4a3d2f"/>
+  <g fill="#4a3d2f"><rect x="60" y="130" width="8" height="80"/><rect x="200" y="130" width="8" height="80"/><rect x="340" y="130" width="8" height="80"/><rect x="480" y="130" width="8" height="80"/></g>
+  <circle cx="520" cy="240" r="70" fill="url(#g-lamp)"/>
+  <rect x="516" y="236" width="8" height="70" fill="#20262c"/><circle cx="520" cy="236" r="9" fill="#ffe0a3"/>
+  <ellipse cx="170" cy="250" rx="70" ry="38" fill="#1f2b1e"/><ellipse cx="250" cy="262" rx="50" ry="28" fill="#243323"/>
+  <path d="M300 360 L 340 230 L 380 230 L 420 360 Z" fill="#3a3530" opacity=".7"/>
+</svg>

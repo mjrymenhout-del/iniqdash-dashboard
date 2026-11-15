@@ -1,0 +1,169 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Radial Action Menu V1 — widget-specific CSS only (shared tokens; current development theme).
+
+   Tile (container "rm" = the widget's own box; .rm__in is laid out by it):
+     tiny      < 120px wide or < 110px tall   the centre control only
+     compact   the centre control + name
+     wide      ≥ 340px wide                   control beside the name + action count (a strip too)
+     large     ≥ 340 × 240, not a strip         control centred, name + count under it (larger)
+   Ring (overlay, outside the grid): sector buttons + a centre close control.
+     states: normal · hover · focus · pressed · disabled · active (toggle on) · armed (confirm) · done
+   ========================================================================== */
+
+.rm {
+  position: relative;
+  container: rm / size;
+  min-width: 0;
+  min-height: 88px;
+  overflow: hidden;
+  border-radius: var(--radius-device);
+  font-family: var(--font);
+  color: var(--text-primary);
+  background: linear-gradient(165deg, var(--surface-primary-top), var(--surface-primary) 55%, var(--surface-secondary));
+  box-shadow: var(--shadow-primary), inset 0 0 0 1px var(--border-subtle);
+}
+.rm__in {                               /* the layout box (a container cannot query itself) */
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+}
+.rm__centre {
+  flex: none;
+  width: clamp(48px, 44cqmin, 84px);
+  aspect-ratio: 1;
+  border: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  background: var(--control-raised);
+  box-shadow: 0 6px 16px -6px rgba(0, 0, 0, .7), inset 0 1px 0 rgba(255, 255, 255, .08), 0 0 0 1px var(--border-primary);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-press) var(--ease), box-shadow var(--dur-fast) var(--ease);
+}
+.rm__centre-ic { width: 46%; height: 46%; display: grid; }
+.rm__centre-ic svg { width: 100%; height: 100%; }
+.rm__centre:hover { box-shadow: 0 6px 16px -6px rgba(0, 0, 0, .7), inset 0 1px 0 rgba(255, 255, 255, .1), 0 0 0 1px var(--accent-line); }
+.rm__centre:active { transform: scale(.95); }
+.rm__centre:focus-visible { outline: var(--focus-ring); outline-offset: 3px; }
+.rm__centre:disabled { cursor: not-allowed; opacity: var(--disabled-opacity); }
+.rm[data-open="true"] .rm__centre { visibility: hidden; }          /* the overlay's centre sits exactly here */
+.rm[data-open="true"] .rm__id { visibility: hidden; }              /* only the ring speaks while open */
+.rm__id { display: flex; flex-direction: column; align-items: center; min-width: 0; max-width: 100%; text-align: center; }
+.rm__name { max-width: 100%; font-size: var(--fs-title-secondary); font-weight: var(--iq-fw-title); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rm__meta { font-size: var(--fs-status); color: var(--text-muted); }
+.rm[data-available="false"] .rm__meta { color: var(--text-muted); }
+
+@container rm (max-width: 119px) { .rm__id { display: none; } }
+@container rm (max-height: 109px) { .rm__id { display: none; } }
+@container rm (min-width: 340px) and (min-height: 80px) {
+  .rm__in { flex-direction: row; justify-content: flex-start; gap: 14px; padding: 12px 18px; }
+  .rm__centre { width: clamp(52px, 60cqh, 84px); }
+  .rm__id { display: flex; align-items: flex-start; text-align: left; }   /* a long strip keeps its name */
+}
+/* large / tall, not a strip: the control stays centred (where the ring opens), name under it, larger.
+   The control keeps the ring's centre size (≤ 84px, radial.js): only the label grows. */
+@container rm (min-width: 340px) and (min-height: 240px) and (max-aspect-ratio: 2 / 1) {
+  .rm__in { flex-direction: column; justify-content: center; gap: 12px; }
+  .rm__centre { width: 84px; }
+  .rm__id { align-items: center; text-align: center; }
+  .rm__name { font-size: clamp(14px, 4.6cqmin, 20px); }
+}
+
+/* ---------------------------------------------------------------- the open ring (overlay layer) */
+.rm-overlay { position: fixed; inset: 0; z-index: 1000; pointer-events: none; font-family: var(--font); }
+.rm-backdrop { position: absolute; inset: 0; pointer-events: auto; background: rgba(8, 9, 12, .18); opacity: 0; transition: opacity var(--dur-fast) var(--ease); }
+.rm-ring {
+  position: fixed;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  filter: drop-shadow(0 18px 30px rgba(0, 0, 0, .6));
+}
+.rm-ring > * { transition: opacity var(--dur-fast) var(--ease), scale var(--dur-fast) var(--ease); opacity: 0; scale: .72; }
+.rm-overlay.is-in .rm-backdrop { opacity: 1; }
+.rm-overlay.is-in .rm-ring > * { opacity: 1; scale: 1; }
+
+.rm-seg {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  pointer-events: auto;
+  color: var(--text-secondary);
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  font: inherit;
+}
+.rm-seg__shape { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.rm-seg__shape path {
+  fill: var(--surface-primary);
+  stroke: var(--border-primary);
+  stroke-width: 2;
+  transition: fill var(--dur-fast) var(--ease), stroke var(--dur-fast) var(--ease);
+}
+.rm-seg__ic { position: absolute; width: 24px; height: 24px; margin: -12px 0 0 -12px; display: grid; pointer-events: none; }
+.rm-seg__ic svg { width: 100%; height: 100%; }
+.rm-seg__label {
+  position: absolute; transform: translate(-50%, -50%); pointer-events: none;
+  font-size: 11px; font-weight: var(--iq-fw-subtitle); line-height: 1.15; text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rm-ring[data-tier="wide"] .rm-seg__ic { width: 26px; height: 26px; margin: -13px 0 0 -13px; }
+.rm-ring[data-tier="wide"] .rm-seg__label { font-size: 12px; }
+
+.rm-seg:hover .rm-seg__shape path { fill: var(--surface-tertiary); }
+.rm-seg:hover { color: var(--text-primary); }
+.rm-seg:active .rm-seg__shape path { fill: var(--control-well); }
+.rm-seg:focus { outline: 0; }
+.rm-seg:focus-visible .rm-seg__shape path { stroke: var(--accent); stroke-width: 5; }
+.rm-seg:focus-visible { color: var(--text-primary); }
+.rm-seg.is-active { color: var(--accent); }
+.rm-seg.is-active .rm-seg__shape path { fill: #2f2a20; stroke: var(--accent-line); }
+.rm-seg.is-armed { color: var(--warning); }
+.rm-seg.is-armed .rm-seg__shape path { fill: #3a2c17; stroke: var(--warning); stroke-width: 5; animation: rm-arm 1s var(--ease) infinite alternate; }
+.rm-seg.is-done .rm-seg__shape path { fill: rgba(95, 217, 138, .22); stroke: var(--success); }
+.rm-seg.is-disabled { cursor: not-allowed; color: var(--text-muted); }
+.rm-seg.is-disabled .rm-seg__ic, .rm-seg.is-disabled .rm-seg__label { opacity: var(--disabled-opacity); }
+.rm-seg.is-disabled:hover .rm-seg__shape path { fill: var(--surface-primary); }
+@keyframes rm-arm { from { stroke-opacity: 1; } to { stroke-opacity: .35; } }
+
+.rm-ring__centre {
+  position: absolute; left: 50%; top: 50%; translate: -50% -50%;
+  border: 0; border-radius: 50%; padding: 0;
+  display: grid; place-items: center;
+  pointer-events: auto; cursor: pointer;
+  color: var(--text-primary);
+  background: var(--control-raised);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 0 0 1px var(--border-primary);
+  -webkit-tap-highlight-color: transparent;
+}
+.rm-ring__close { width: 40%; height: 40%; display: grid; }
+.rm-ring__close svg { width: 100%; height: 100%; }
+.rm-ring__hint { max-width: 90%; font-size: 11px; font-weight: var(--iq-fw-subtitle); line-height: 1.1; text-align: center; color: var(--warning); pointer-events: none; }
+.rm-ring__hint:empty { display: none; }
+.rm-ring.is-arming .rm-ring__close { display: none; }
+.rm-ring__centre:hover { color: var(--accent); }
+.rm-ring__centre:focus-visible { outline: var(--focus-ring); outline-offset: 3px; }
+.rm-ring.is-arming .rm-ring__centre { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 0 0 2px var(--warning); }
+
+@media (prefers-reduced-motion: reduce) {
+  .rm-ring > *, .rm-backdrop { transition: none; }
+  .rm-seg.is-armed .rm-seg__shape path { animation: none; }
+}
+
+/* float: just the centre button, no tile (the host places it freely over the dashboard) */
+.rm.rm--float { background: none; box-shadow: none; border-radius: 50%; overflow: visible; min-height: 0; }
+.rm.rm--float .rm__in { padding: 0; }
+.rm.rm--float .rm__id { display: none; }
+.rm.rm--float .rm__centre { width: min(100cqw, 100cqh, 96px); min-width: 48px; box-shadow: 0 10px 24px -8px rgba(0, 0, 0, .8), inset 0 1px 0 rgba(255, 255, 255, .08), 0 0 0 1px var(--border-primary); }

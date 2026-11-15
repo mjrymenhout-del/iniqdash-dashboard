@@ -1,0 +1,32 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* Climate group V1 — header + average, the shared target, shared modes / fans, then each unit (scrolls when there are many) */
+.iq-cg { container: cg / size; height: 100%; box-sizing: border-box; display: grid; grid-template-rows: auto auto auto auto minmax(0, 1fr); gap: 10px; padding: 14px 16px;
+  border-radius: var(--radius-device); color: var(--text-primary); font-family: var(--font); background: var(--device-surface); box-shadow: var(--device-shadow); overflow: hidden; }
+.iq-cg__head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.iq-cg__name { margin: 0; font-size: 14px; font-weight: var(--iq-fw-title); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-cg__avg { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+.iq-cg__group { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; }
+.iq-cg__group[hidden], .iq-cg__modes[hidden], .iq-cg__fans[hidden] { display: none; }
+.iq-cg__tgt { text-align: center; display: grid; }
+.iq-cg__tgt b { font-size: clamp(26px, 10cqmin, 40px); font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.iq-cg__tgt small { font-size: 11px; color: var(--text-muted); }
+.iq-cg__step { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border-subtle); background: var(--surface-tertiary); color: var(--text-primary); font: 600 20px/1 var(--font); cursor: pointer; }
+.iq-cg__modes, .iq-cg__fans { display: flex; flex-wrap: wrap; gap: 6px; }
+.iq-cg__chip { padding: 5px 12px; border-radius: 999px; border: 1px solid var(--border-subtle); background: transparent; color: var(--text-secondary); font: 600 12px/1.2 var(--font); cursor: pointer; text-transform: capitalize; }
+.iq-cg__chip[aria-pressed="true"] { background: var(--accent); color: var(--page-bg); border-color: transparent; }
+.iq-cg__units { margin: 0; padding: 0; list-style: none; overflow-y: auto; min-height: 0; display: grid; align-content: start; gap: 6px; scrollbar-width: thin; }
+.iq-cg__unit { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 12px; background: var(--surface-tertiary); border-left: 3px solid transparent; }
+.iq-cg__unit[data-action="heating"] { border-left-color: var(--warning); }
+.iq-cg__unit[data-action="cooling"] { border-left-color: var(--info); }
+.iq-cg__unit[data-available="false"] { opacity: var(--unavailable-opacity, .5); }
+.iq-cg__info { flex: 1; min-width: 0; display: grid; }
+.iq-cg__info b { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-cg__info span { font-size: 11.5px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-cg__ctl { display: flex; align-items: center; gap: 6px; flex: none; }
+.iq-cg__ctl b { min-width: 4ch; text-align: center; font-size: 13px; font-variant-numeric: tabular-nums; }
+.iq-cg__s { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border-subtle); background: transparent; color: var(--text-primary); font: 600 15px/1 var(--font); cursor: pointer; }
+.iq-cg__s:disabled { opacity: .35; cursor: default; }
+.iq-cg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

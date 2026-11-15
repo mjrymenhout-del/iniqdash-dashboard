@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "climate",
+  "name": "Climate",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "climate.js",
+  "style": "climate.css",
+  "assets": "assets/",
+  "api": "MaisonClimate"
+}

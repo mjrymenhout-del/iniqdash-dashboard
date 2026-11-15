@@ -1,0 +1,17 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+.iq-rd { container: iq-rd / size; height: 100%; box-sizing: border-box; padding: 14px 18px; color: var(--text-primary); }
+.iq-rd__grid { list-style: none; margin: 0; padding: 0; height: 100%; display: grid; grid-template-columns: repeat(var(--rd-cols, 2), minmax(0, 1fr)); grid-auto-rows: 1fr; }
+.iq-rd__it { min-width: 0; display: flex; }
+.iq-rd__it[data-left] { border-left: 1px solid var(--border-primary, rgba(255, 255, 255, .07)); }
+.iq-rd__it[data-top] { border-top: 1px solid var(--border-primary, rgba(255, 255, 255, .07)); }
+.iq-rd__b { all: unset; box-sizing: border-box; position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 2px; padding: 8px 14px 8px 26px; }
+button.iq-rd__b { cursor: pointer; }
+button.iq-rd__b:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 10px; }
+.iq-rd__bar { position: absolute; left: 12px; top: 50%; width: 4px; height: 26px; margin-top: -19px; border-radius: 2px; background: var(--rd-c); box-shadow: 0 0 10px color-mix(in srgb, var(--rd-c) 60%, transparent); }
+.iq-rd__val { display: flex; align-items: baseline; gap: 4px; min-width: 0; white-space: nowrap; }
+.iq-rd__v { font-size: clamp(20px, 11cqi, 30px); font-weight: 500; letter-spacing: -.01em; }
+.iq-rd__u { font-size: clamp(14px, 7cqi, 22px); font-weight: 400; color: var(--text-primary); }
+.iq-rd__l { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "devicetile",
+  "name": "Device tile",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "devicetile.js",
+  "style": "devicetile.css",
+  "assets": "assets/",
+  "api": "MaisonDeviceTile"
+}

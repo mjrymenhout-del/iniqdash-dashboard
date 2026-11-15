@@ -1,0 +1,29 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+.iq-bat { box-sizing: border-box; height: 100%; display: flex; flex-direction: column; gap: 10px; padding: 16px; border-radius: var(--radius-device, 22px); background: var(--surface-primary); color: var(--text-primary); overflow: hidden; container-type: inline-size; }
+.iq-bat__head { display: flex; align-items: center; gap: 8px; }
+.iq-bat__title { margin: 0; margin-right: auto; font-size: 15px; font-weight: 600; }
+.iq-bat__count { font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 3px 9px; border-radius: 99px; }
+.iq-bat__count[data-tone="low"] { color: #fff; background: var(--danger, #ff5d6c); }
+.iq-bat__count[data-tone="ok"] { color: var(--success, #3ddc84); background: color-mix(in srgb, var(--success, #3ddc84) 14%, transparent); }
+.iq-bat__count:empty { display: none; }
+.iq-bat__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; overflow: auto; min-height: 0; }
+.iq-bat__b { all: unset; box-sizing: border-box; width: 100%; display: grid; grid-template-columns: 22px minmax(0, 1fr) minmax(48px, 32%) 44px; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 10px; cursor: default; }
+button.iq-bat__b { cursor: pointer; }
+button.iq-bat__b:hover { background: var(--surface-tertiary); }
+button.iq-bat__b:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.iq-bat__ic { width: 18px; height: 18px; color: var(--bat-c); }
+.iq-bat__ic svg { width: 100%; height: 100%; display: block; }
+.iq-bat__name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-bat__bar { height: 6px; border-radius: 99px; background: var(--control-well, rgba(255, 255, 255, .08)); overflow: hidden; }
+.iq-bat__fill { display: block; height: 100%; border-radius: inherit; background: var(--bat-c); }
+.iq-bat__pct { font-size: 13px; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; color: var(--bat-c); }
+.iq-bat__b[data-tone="low"] { --bat-c: var(--danger, #ff5d6c); }
+.iq-bat__b[data-tone="mid"] { --bat-c: var(--warning, #fc8427); }
+.iq-bat__b[data-tone="ok"] { --bat-c: var(--success, #3ddc84); }
+.iq-bat__b[data-tone="unknown"] { --bat-c: var(--text-muted); }
+.iq-bat__empty { margin: 0; font-size: 13px; color: var(--text-muted); }
+.iq-bat__empty[hidden] { display: none; }
+@container (max-width: 240px) { .iq-bat__b { grid-template-columns: 18px minmax(0, 1fr) 40px; } .iq-bat__bar { display: none; } }

@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "entitylist",
+  "name": "Entity List",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "entitylist.js",
+  "style": "entitylist.css",
+  "assets": "assets/",
+  "api": "MaisonEntityList"
+}

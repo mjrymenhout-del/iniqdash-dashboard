@@ -1,0 +1,19 @@
+# IniqDash — never commit deployment settings, secrets or runtime data
+server/local.php
+*.secret.php
+iniqdash-secrets.php
+private/
+var/
+# local tooling and test output
+node_modules/
+test-results/
+playwright-report/
+*.log
+.DS_Store
+Thumbs.db
+
+# Home Assistant App build context (made by packaging/ha-app/prepare.sh)
+packaging/ha-app/app/
+
+# installed for the duration of tests/custom-roles.mjs (removed when it finishes)
+widgets/custom/probe-roles/

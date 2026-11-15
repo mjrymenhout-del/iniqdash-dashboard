@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "roomtile",
+  "name": "Room tile",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "roomtile.js",
+  "style": "roomtile.css",
+  "assets": "assets/",
+  "api": "MaisonRoomTile"
+}

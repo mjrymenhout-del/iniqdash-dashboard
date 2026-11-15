@@ -1,0 +1,116 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   IniqElements (components/elements/elements.js) — Widget Studio's visual building blocks. Every colour arrives as a custom property
+   (a theme token's var() or an explicit #rrggbb), so a theme change reaches them through CSS inheritance alone.
+   ========================================================================== */
+.iqel { position: relative; box-sizing: border-box; width: 100%; height: 100%; min-width: 0; min-height: 0; color: var(--text-primary); font-family: var(--font); }
+.iqel-ico { display: inline-grid; place-items: center; flex: none; width: var(--iqel-ico, 16px); height: var(--iqel-ico, 16px); }
+.iqel-ico svg { width: 100%; height: 100%; fill: currentColor; }
+
+/* shape */
+.iqel-shape { display: grid; place-items: center; opacity: var(--iqel-o, 1); }
+.iqel-shape__s { box-sizing: border-box; width: 100%; height: 100%; background: var(--iqel-fill); border: var(--iqel-bw, 0) var(--iqel-bs, solid) var(--iqel-bc); box-shadow: var(--iqel-shadow, none); backdrop-filter: var(--iqel-blur, none); -webkit-backdrop-filter: var(--iqel-blur, none);
+  transform: rotate(var(--iqel-rot, 0deg)); }
+.iqel-shape[data-shape="rectangle"] .iqel-shape__s { border-radius: 0; }
+.iqel-shape[data-shape="rounded"] .iqel-shape__s { border-radius: var(--iqel-rc, var(--iqel-r, 16px)); }
+.iqel-shape:is([data-shape="square"], [data-shape="circle"]) .iqel-shape__s { width: auto; height: 100%; max-width: 100%; aspect-ratio: 1; }
+@container iqel (max-aspect-ratio: 1) { .iqel-shape:is([data-shape="square"], [data-shape="circle"]) .iqel-shape__s { width: 100%; height: auto; } }
+.iqel-shape { container: iqel / size; }
+.iqel-shape[data-shape="square"] .iqel-shape__s { border-radius: 0; }
+.iqel-shape:is([data-shape="circle"], [data-shape="ellipse"]) .iqel-shape__s { border-radius: 50%; }
+.iqel-shape[data-shape="pill"] .iqel-shape__s { border-radius: 9999px; }
+.iqel-shape[data-shape="triangle"] .iqel-shape__s { clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.iqel-shape { position: relative; }
+.iqel-shape__o { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+
+/* line */
+.iqel-line { display: grid; place-items: center; opacity: var(--iqel-o, 1); }
+.iqel-line__l { border: 0; }
+.iqel-line[data-orient="h"] .iqel-line__l { width: 100%; height: 0; border-top: var(--iqel-lw, 2px) var(--iqel-ls, solid) var(--iqel-lc); }
+.iqel-line[data-orient="v"] .iqel-line__l { height: 100%; width: 0; border-left: var(--iqel-lw, 2px) var(--iqel-ls, solid) var(--iqel-lc); }
+
+/* spacer: nothing on a dashboard (Widget Studio outlines it while designing: components/studio/studio.css) */
+.iqel-spacer { pointer-events: none; }
+
+/* badge */
+.iqel-badge { display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 0 10px; border-radius: 999px; font-size: var(--iqel-fs, 12px); font-weight: var(--iq-fw-status, 600);
+  white-space: nowrap; overflow: hidden; color: var(--iqel-c); background: color-mix(in srgb, var(--iqel-c) 16%, transparent); }
+.iqel-badge[data-style="filled"] { color: var(--accent-on, #1a0e04); background: var(--iqel-c); }
+.iqel-badge[data-style="outline"] { background: transparent; box-shadow: inset 0 0 0 1.5px var(--iqel-c); }
+.iqel-badge__t { overflow: hidden; text-overflow: ellipsis; }
+.iqel[data-state="unavailable"] { opacity: var(--unavailable-opacity, .45); }
+
+/* panel (Group / container) */
+.iqel-panel { border-radius: var(--iqel-r, 16px); opacity: var(--iqel-o, 1); padding: 10px 12px; }
+.iqel-panel[data-style="card"] { background: var(--iqel-pbg, var(--device-surface)); box-shadow: var(--device-shadow); }
+.iqel-panel[data-style="soft"] { background: var(--iqel-pbg, color-mix(in srgb, var(--surface-secondary) 70%, transparent)); box-shadow: inset 0 0 0 1px var(--border-subtle); }
+.iqel-panel[data-style="outline"] { background: var(--iqel-pbg, transparent); box-shadow: inset 0 0 0 1px var(--border-primary); }
+.iqel-panel[data-style="glass"] { background: var(--iqel-pbg, color-mix(in srgb, var(--surface-primary) 55%, transparent)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18), inset 0 0 0 1px rgba(255, 255, 255, .1);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.iqel-panel__t { display: block; font-size: 13px; font-weight: var(--iq-fw-title, 700); color: var(--text-heading, var(--text-primary)); }
+
+/* progress bar */
+.iqel-bar { display: flex; align-items: center; gap: 10px; }
+.iqel-bar__track { position: relative; flex: 1; height: var(--iqel-h, 10px); border-radius: var(--iqel-r, 999px); background: var(--iqel-t); overflow: hidden; }
+.iqel-bar__fill { position: absolute; inset: 0 auto 0 0; width: calc(var(--iqel-f, 0) * 100%); border-radius: inherit; background: linear-gradient(90deg, var(--iqel-c), var(--iqel-c2, var(--iqel-c))); transition: width var(--dur-medium, .2s) var(--ease, ease); }
+.iqel-bar[data-thumb] .iqel-bar__track { overflow: visible; }
+.iqel-bar__thumb { position: absolute; top: 50%; left: calc(var(--iqel-f, 0) * 100%); width: var(--iqel-th); height: var(--iqel-th); border-radius: 50%; transform: translate(-50%, -50%);
+  background: var(--iqel-thc); box-shadow: var(--iqel-thg); transition: left var(--dur-medium, .2s) var(--ease, ease); }
+.iqel-bar__v { flex: none; font-size: 13px; font-weight: var(--iq-fw-status, 600); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+
+/* gauge (ring / arc) + its value text */
+.iqel-gauge { display: grid; place-items: center; }
+.iqel-gauge > .iqg { position: absolute; inset: 0; }
+.iqel-gauge__v { position: relative; display: flex; align-items: baseline; gap: 2px; color: var(--iqel-tc, var(--text-primary)); font-size: var(--iqel-fs, 24px); line-height: 1; }
+.iqel-gauge__v b { font-weight: var(--iq-fw-display, 700); font-variant-numeric: tabular-nums; }
+.iqel-gauge__v small { font-size: .5em; color: var(--text-secondary); }
+
+/* status indicator */
+.iqel-status { display: flex; align-items: center; gap: 8px; font-size: var(--iqel-fs, 13px); font-weight: var(--iq-fw-status, 600); color: var(--text-secondary); }
+.iqel-status__dot { flex: none; width: .75em; height: .75em; border-radius: 50%; background: var(--iqel-c); box-shadow: 0 0 0 3px color-mix(in srgb, var(--iqel-c) 20%, transparent); }
+.iqel-status[data-pulse="true"] .iqel-status__dot { animation: iqel-pulse 1.8s ease-in-out infinite; }
+.iqel-status__t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@keyframes iqel-pulse { 50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--iqel-c) 0%, transparent); } }
+@media (prefers-reduced-motion: reduce) { .iqel-status[data-pulse="true"] .iqel-status__dot { animation: none; } .iqel-bar__fill { transition: none; } }
+
+/* label + value */
+.iqel-lv { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.iqel-lv[data-layout="stack"] { flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; }
+.iqel-lv__l { display: inline-flex; align-items: center; gap: 6px; min-width: 0; color: var(--iqel-lc); font-size: var(--iqel-ls, 13px); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.iqel-lv__v { color: var(--iqel-vc); font-size: var(--iqel-vs, 16px); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.iqel-lv__v b { font-weight: var(--iq-fw-display, 700); }
+.iqel-lv__v small { font-size: .7em; color: var(--text-secondary); }
+
+/* battery */
+.iqel-batt { display: flex; align-items: center; gap: 8px; }
+.iqel-batt__b { position: relative; flex: 1; height: 100%; max-height: 40px; min-height: 10px; border-radius: 6px; box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--text-secondary) 70%, transparent); padding: 3px; box-sizing: border-box; }
+.iqel-batt__fill { height: 100%; width: calc(var(--iqel-f, 0) * 100%); border-radius: 3px; background: var(--iqel-c); }
+.iqel-batt__cap { flex: none; width: 4px; height: 40%; margin-left: -6px; border-radius: 0 2px 2px 0; background: color-mix(in srgb, var(--text-secondary) 70%, transparent); }
+.iqel-batt__bolt { position: absolute; inset: 0; display: none; place-items: center; }
+.iqel-batt__bolt::before { content: ""; width: 10px; height: 14px; background: var(--text-primary); clip-path: polygon(60% 0, 0 58%, 45% 58%, 35% 100%, 100% 40%, 55% 40%); }
+.iqel-batt[data-charging="true"] .iqel-batt__bolt { display: grid; }
+.iqel-batt__v { flex: none; font-size: 13px; font-weight: var(--iq-fw-status, 600); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.iqel-batt[data-orient="v"] { flex-direction: column-reverse; }
+.iqel-batt[data-orient="v"] .iqel-batt__b { width: 100%; max-width: 40px; height: auto; flex: 1; max-height: none; display: flex; align-items: flex-end; }
+.iqel-batt[data-orient="v"] .iqel-batt__fill { width: 100%; height: calc(var(--iqel-f, 0) * 100%); }
+.iqel-batt[data-orient="v"] .iqel-batt__cap { width: 40%; height: 4px; margin: 0 0 -6px; border-radius: 2px 2px 0 0; }
+
+/* image overlay */
+.iqel-ov { overflow: hidden; border-radius: var(--iqel-r, 16px); display: flex; align-items: flex-end; }
+.iqel-ov[data-align="center"] { align-items: center; } .iqel-ov[data-align="top"] { align-items: flex-start; }
+.iqel-ov > .iqa { position: absolute; inset: 0; }
+.iqel-ov__tint { position: absolute; inset: 0; background: var(--iqel-tint); pointer-events: none; }
+.iqel-ov__t { position: relative; padding: 12px 14px; color: var(--iqel-tc, #fff); font-size: var(--iqel-fs, 18px); font-weight: var(--iq-fw-title, 700); text-shadow: 0 1px 3px rgba(0, 0, 0, .45); }
+
+/* FLOW CONNECTOR (IniqFlow inside its own box) */
+.iqel-flow { position: relative; width: 100%; height: 100%; }
+.iqel-flow > svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.iqel-sun { width: 100%; height: 100%; }
+
+/* CHART element (components/elements/chart.js): SVG at the element's logical size */
+.iqch { position: absolute; inset: 0; }
+.iqch__svg { display: block; width: 100%; height: 100%; overflow: visible; font-family: inherit; }
+.iqch__hit { cursor: pointer; }

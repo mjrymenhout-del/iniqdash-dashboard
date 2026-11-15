@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "studio",
+  "name": "Studio widget",
+  "source": "default",
+  "version": "0.1.0",
+  "entry": "studio.js",
+  "style": "studio.css",
+  "assets": "assets/",
+  "api": "MaisonStudioWidget"
+}

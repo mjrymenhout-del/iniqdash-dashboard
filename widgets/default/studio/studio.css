@@ -1,0 +1,28 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Studio widget — a composed widget: its logical canvas (.stw__stage, the design size) scaled to the widget's own box; each component in
+   its own box (.stw__c). The components draw themselves (their shared CSS); this only places them.
+   ========================================================================== */
+.stw {
+  position: relative; overflow: hidden; min-width: 0; min-height: 0;
+  border-radius: var(--radius-device);
+  color: var(--text-primary); font-family: var(--font);
+  background: radial-gradient(120% 90% at 100% 0%, rgba(255, 255, 255, .03), transparent 60%), linear-gradient(165deg, var(--surface-primary-top) 0%, var(--surface-primary) 58%, var(--surface-secondary) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .055), inset 0 0 0 1px rgba(255, 255, 255, .03), 0 12px 26px -16px rgba(0, 0, 0, .75);
+}
+.stw__stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.stw__c { position: absolute; display: flex; align-items: center; justify-content: center; box-sizing: border-box; min-width: 0; min-height: 0; }
+.stw__c > .iqa { flex: 1 1 auto; align-self: stretch; }
+.stw__c > .iqf { max-width: 100%; }
+.stw__c > .iqc-seg { max-width: 100%; }
+.stw__missing { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; padding: 12px; text-align: center; font-size: 13px; color: var(--text-muted); }
+/* a component whose Visible is off (Widget Studio's Layers): not shown on a dashboard (Studio draws it faintly: components/studio) */
+.stw__c[data-hidden] { visibility: hidden; }
+/* SHOW WHEN: a component whose widget property has no source in this copy is not drawn (Widget Studio's canvas shows it faintly) */
+.stw__c[data-absent] { display: none; }
+
+.stw__c[data-tap] { cursor: pointer; }
+.stw__c[data-tap]:focus-visible { outline: var(--focus-ring); outline-offset: 2px; border-radius: 8px; }

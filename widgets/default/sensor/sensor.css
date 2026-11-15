@@ -1,0 +1,376 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Sensor / Data Widget V1 — an information readout. The VALUE is the hero.
+
+   <article class="sw" data-tone="normal|positive|warning|critical|neutral"
+            data-avail="ok|unavailable|unknown" data-kind="number|text|…"
+            data-has-status data-has-secondary>              ← size container "sw"
+     <div class="sw__in">                                     ← arrangement grid
+       .sw__id        icon well + name
+       .sw__reading   value · unit · trend
+       .sw__status    tone dot + status text            (only when given)
+       .sw__secondary label + value + unit              (only when given)
+
+   Arrangements (by the widget's own width):
+     compact   < 260px   name on top, value, status; secondary only with ≥ 180px height (h4)
+     standard  260–479   with a secondary value: name + status on top, value bottom-left, secondary
+                         in an inset well bottom-right; without: name across the top, status beside
+                         the value
+     wide     >= 480px   one horizontal instrument line: identity | value | status + secondary;
+                         fits h2 (92–96px)
+   Widget responsiveness (MaisonFit, components/fit): the widget's OWN width × height decides,
+   never the screen breakpoint. The --fit scale sizes value, icon, name, status and padding with
+   both dimensions; by height, low-priority information goes first:
+     h < 110 (data-fit-h xs)   secondary value hidden; compact also hides the status line
+     h < 180, compact          secondary value hidden (as before)
+   Tone (data-tone) is decided by configuration, never here. It colours the status dot/text, the
+   hairline on the top edge and (warning/critical) the icon. The value itself stays neutral white.
+   ========================================================================== */
+
+.sw {
+  --sw-tone: transparent;
+  --sw-tone-text: var(--text-muted);
+  position: relative;
+  container: sw / size;
+  --fit-ref-w: 200;                              /* MaisonFit reference box (compact) */
+  --fit-ref-h: 150;
+  min-width: 0;
+  min-height: 72px;                              /* = the smallest grid area it accepts (wide, h2) */
+  overflow: hidden;
+  border-radius: var(--radius-device);
+  color: var(--text-primary);
+  font-family: var(--font);
+  background:
+    radial-gradient(130% 100% at 0% 0%, rgba(255, 255, 255, .03), transparent 55%),
+    linear-gradient(170deg, #23262d 0%, var(--surface-primary) 60%, #191a1f 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .055),
+    inset 0 0 0 1px rgba(255, 255, 255, .03),
+    0 12px 26px -16px rgba(0, 0, 0, .75);
+}
+.sw[role="button"] { cursor: pointer; }
+.sw[role="button"]:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+
+/* semantic tones */
+.sw[data-tone="normal"] { --sw-tone: rgba(222, 228, 238, .45); --sw-tone-text: var(--text-secondary); }
+.sw[data-tone="positive"] { --sw-tone: var(--success); --sw-tone-text: var(--success); }
+.sw[data-tone="warning"] { --sw-tone: var(--warning); --sw-tone-text: var(--warning); }
+.sw[data-tone="critical"] { --sw-tone: var(--danger); --sw-tone-text: var(--danger); }
+
+/* hairline on the top edge: the quiet signature of the readout */
+.sw::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 18px;
+  width: min(38%, 120px);
+  height: 2px;
+  border-radius: 0 0 2px 2px;
+  background: var(--sw-tone);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--sw-tone) 45%, transparent);
+  opacity: .9;
+}
+
+.sw__in {
+  --sw-val: clamp(22px, min(calc(38 * var(--fit-h)), 25cqw), 60px);   /* compact value: grows with the height, capped by the width — the value is the hero */
+  height: 100%;
+  padding: clamp(9px, calc(14 * var(--fit)), 20px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  grid-template-areas: "id" "reading" "status" "secondary";
+  row-gap: calc(5 * var(--fit));
+}
+
+/* ---- identity ---- */
+.sw__id { grid-area: id; display: flex; align-items: center; gap: calc(8 * var(--fit)); min-width: 0; }
+.sw__icon {
+  flex: none;
+  width: var(--sw-icon);
+  height: var(--sw-icon);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--text-secondary);
+  background: var(--surface-tertiary);
+  box-shadow: var(--shadow-icon), 0 1px 0 rgba(255, 255, 255, .04);
+}
+.sw__in { --sw-icon: clamp(20px, calc(28 * var(--fit)), 44px); }
+.sw__icon svg { width: 54%; height: 54%; }
+/* the icon well carries the kind of measurement in a functional colour (meaning, not decoration); a warning / critical tone still wins */
+.sw[data-avail="ok"] .sw__icon { color: var(--sw-kind, var(--text-secondary)); background: color-mix(in srgb, var(--sw-kind, var(--text-secondary)) 14%, var(--surface-tertiary)); }
+.sw[data-icon="temperature"] { --sw-kind: var(--heat-warm); }
+.sw[data-icon="humidity"], .sw[data-icon="water"] { --sw-kind: var(--info); }
+.sw[data-icon="battery"], .sw[data-icon="co2"] { --sw-kind: var(--success); }
+.sw[data-icon="power"], .sw[data-icon="energy"], .sw[data-icon="solar"], .sw[data-icon="illuminance"] { --sw-kind: var(--solar); }
+.sw[data-icon="pressure"], .sw[data-icon="signal"] { --sw-kind: var(--purple); }
+.sw[data-icon="gas"] { --sw-kind: var(--cool); }
+.sw[data-tone="warning"] .sw__icon, .sw[data-tone="critical"] .sw__icon { color: var(--sw-tone); }
+.sw__name {
+  margin: 0;
+  min-width: 0;
+  font-size: max(11.5px, calc(13 * var(--fit)));
+  font-weight: var(--iq-fw-title);
+  line-height: 1.2;
+  color: var(--text-secondary);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+/* ---- reading: value is the hero, the unit belongs to it ---- */
+.sw__reading { grid-area: reading; align-self: end; display: flex; align-items: baseline; min-width: 0; max-width: 100%; gap: 0; }
+.sw__value {
+  font-size: calc(var(--sw-val) * var(--sw-shrink, 1));   /* --sw-shrink: sensor.js fitReading() (long readings) */
+  font-weight: var(--iq-fw-display);
+  line-height: 1;
+  letter-spacing: -.025em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  white-space: nowrap;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, .35);
+}
+.sw[data-kind="text"] .sw__value { font-size: calc(var(--sw-val) * .62 * var(--sw-shrink, 1)); letter-spacing: 0; white-space: normal; }
+.sw__unit {
+  margin-left: .22em;
+  font-size: calc(var(--sw-val) * .42 * var(--sw-shrink, 1));
+  font-weight: var(--iq-fw-subtitle);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.sw__trend {
+  align-self: center;
+  flex: none;
+  margin-left: 8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--text-secondary);
+  background: var(--control-well);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(255, 255, 255, .04);
+}
+.sw__trend svg { width: 12px; height: 12px; }
+
+/* ---- status ---- */
+.sw__status {
+  grid-area: status;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: max(11px, calc(12 * var(--fit)));
+  font-weight: var(--iq-fw-status);
+  color: var(--sw-tone-text);
+}
+.sw__status-t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sw__dot { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--sw-tone); box-shadow: 0 0 6px color-mix(in srgb, var(--sw-tone) 60%, transparent); }
+.sw[data-tone="neutral"] .sw__dot { background: var(--text-muted); box-shadow: none; }
+
+/* ---- secondary value ---- */
+.sw__secondary { grid-area: secondary; display: flex; align-items: baseline; gap: 6px; min-width: 0; padding-top: 4px; border-top: 1px solid var(--border-subtle); }
+.sw__secondary[hidden], .sw__status[hidden], .sw__trend[hidden], .sw__unit[hidden] { display: none; }
+.sw__sec-k { font-size: 11px; font-weight: var(--iq-fw-subtitle); color: var(--text-muted); white-space: nowrap; }
+.sw__sec-v { margin-left: auto; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.sw__sec-v b { font-size: 13px; font-weight: var(--iq-fw-subtitle); color: var(--text-secondary); }
+.sw__sec-v small { margin-left: 2px; font-size: 11px; color: var(--text-muted); }
+
+/* ---- unavailable / unknown: subdued, never a fake value ---- */
+.sw[data-avail="unavailable"] .sw__value, .sw[data-avail="unknown"] .sw__value { color: var(--text-muted); font-weight: var(--iq-fw-display); text-shadow: none; }
+.sw[data-avail="unavailable"] .sw__icon, .sw[data-avail="unknown"] .sw__icon { opacity: .55; }
+.sw[data-avail="unavailable"] .sw__dot, .sw[data-avail="unknown"] .sw__dot { background: transparent; box-shadow: inset 0 0 0 1.5px var(--text-muted); }
+.sw[data-avail="unavailable"] .sw__name, .sw[data-avail="unknown"] .sw__name { color: var(--text-muted); }
+
+/* compact: the secondary value only when there is height for it (h4) */
+@container sw (max-width: 259px) and (max-height: 179px) {
+  .sw__secondary { display: none !important; }
+}
+/* lowest heights: name + value; the secondary value always goes, compact also drops the status */
+.sw[data-fit-h="xs"] .sw__secondary { display: none !important; }
+.sw[data-fit-h="xs"][data-fit-arr="compact"] .sw__status { display: none; }
+.sw[data-fit-h="xs"] .sw__name { -webkit-line-clamp: 1; }
+
+/* ---------------------------------------------------------------- standard: 260–479px */
+@container sw (min-width: 260px) {
+  .sw__in {
+    --sw-val: clamp(28px, min(calc(48 * var(--fit-h)), 19cqw), 76px);
+    padding: clamp(10px, calc(16 * var(--fit)), 22px);
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas: "id status" "reading secondary";
+    column-gap: 14px;
+  }
+  .sw__name { font-size: max(11.5px, calc(13.5 * var(--fit))); -webkit-line-clamp: 1; }
+  .sw__in { --sw-icon: clamp(22px, calc(32 * var(--fit)), 46px); }
+  .sw__status {
+    align-self: center;
+    justify-self: end;
+    padding: 5px 10px;
+    border-radius: var(--radius-pill);
+    background: #15161a;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .04);
+  }
+  /* no secondary value: the name gets the whole top line, the status sits beside the value */
+  .sw[data-has-secondary="false"] .sw__in { grid-template-areas: "id id" "reading status"; }
+  .sw[data-has-secondary="false"] .sw__status { align-self: end; margin-bottom: 2px; }
+  .sw__secondary {               /* inset well, bottom-right */
+    align-self: end;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1px;
+    padding: 7px 12px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--control-well);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, .5), inset 0 0 0 1px rgba(255, 255, 255, .035);
+  }
+  .sw__sec-v { margin-left: 0; }
+  .sw__sec-v b { font-size: 15px; }
+  .sw__trend { width: 22px; height: 22px; margin-left: 10px; }
+}
+/* narrow standard without a secondary value: status drops under the value instead of squeezing it */
+@container sw (min-width: 260px) and (max-width: 339px) {
+  .sw[data-has-secondary="false"] .sw__in { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; grid-template-areas: "id" "reading" "status"; row-gap: 6px; }
+  .sw[data-has-secondary="false"] .sw__status { justify-self: start; margin-bottom: 0; }
+}
+
+/* ---------------------------------------------------------------- wide: ≥ 480px and < 240px tall, one instrument line */
+@container sw (min-width: 480px) and (max-height: 239px) {
+  .sw__in {
+    --sw-val: clamp(24px, calc(40 * var(--fit)), 60px);
+    padding: clamp(8px, calc(14 * var(--fit)), 22px) clamp(12px, calc(20 * var(--fit)), 30px);
+    grid-template-columns: minmax(0, 1.25fr) fit-content(42%) minmax(0, 1fr);   /* a long reading never squeezes the name away */
+    grid-template-rows: minmax(0, 1fr) auto auto minmax(0, 1fr);
+    grid-template-areas: "id reading ." "id reading status" "id reading secondary" "id reading .";
+    column-gap: 0;
+    row-gap: 6px;
+  }
+  .sw[data-has-secondary] .sw__in { grid-template-areas: "id reading ." "id reading status" "id reading secondary" "id reading ."; }
+  .sw[data-has-secondary="false"] .sw__status { margin-bottom: 0; }
+  .sw__id { align-self: center; gap: 12px; padding-right: 20px; }
+  .sw__in { --sw-icon: clamp(26px, calc(40 * var(--fit)), 56px); }
+  .sw__name { font-size: max(12px, calc(15 * var(--fit))); color: var(--text-primary); -webkit-line-clamp: 2; overflow-wrap: break-word; }
+  .sw__reading {
+    align-self: center;
+    justify-self: center;
+    padding: 0 26px;
+    border-inline: 1px solid var(--border-subtle);
+  }
+  .sw__status { justify-self: end; align-self: end; }
+  .sw__secondary { justify-self: end; align-self: start; flex-direction: row; align-items: baseline; gap: 8px; padding: 5px 10px; }
+  .sw[data-has-status="false"] .sw__secondary { grid-row: 2 / 4; align-self: center; }
+  .sw[data-has-secondary="false"] .sw__status { grid-row: 2 / 4; align-self: center; }
+}
+
+/* ---------------------------------------------------------------- compact and TALL (narrow, ≥ 240px high):
+   the value + status sit together in the middle instead of leaving the card empty above them */
+@container sw (max-width: 259px) and (min-height: 240px) {
+  .sw__in { grid-template-rows: auto minmax(0, 1fr) auto auto minmax(0, 1fr) auto; grid-template-areas: "id" "." "reading" "status" "." "secondary"; row-gap: 6px; }
+  .sw__reading { align-self: center; }
+  .sw__name { -webkit-line-clamp: 3; }
+}
+/* ---------------------------------------------------------------- hero: ≥ 260 wide and ≥ 240 tall — a large card.
+   The value grows with BOTH dimensions (never past either), the identity and status keep the top line and the
+   secondary information gets a full-width row at the bottom. */
+@container sw (min-width: 260px) and (min-height: 240px) {
+  .sw__in {
+    --sw-val: clamp(40px, min(30cqh, 20cqw), 150px);
+    --sw-icon: clamp(28px, calc(36 * var(--fit)), 52px);
+    padding: clamp(14px, calc(20 * var(--fit)), 30px);
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-areas: "id status" "reading reading" "secondary secondary";
+    row-gap: 10px;
+  }
+  .sw[data-has-secondary="false"] .sw__in, .sw[data-has-secondary] .sw__in { grid-template-areas: "id status" "reading reading" "secondary secondary"; }
+  .sw[data-has-secondary="false"] .sw__status { align-self: center; margin-bottom: 0; }
+  .sw__name { font-size: max(13px, calc(15 * var(--fit))); color: var(--text-primary); -webkit-line-clamp: 2; }
+  .sw__reading { align-self: center; justify-self: start; }
+  .sw__trend { width: 28px; height: 28px; margin-left: 14px; }
+  .sw__trend svg { width: 15px; height: 15px; }
+  .sw__secondary { justify-self: stretch; align-self: end; flex-direction: row; align-items: baseline; justify-content: space-between; gap: 10px; padding: 10px 14px; }
+  .sw__sec-k { font-size: 12.5px; }
+  .sw__sec-v b { font-size: 17px; }
+}
+/* a hero that is still narrow: the status goes under the name instead of squeezing it */
+@container sw (min-width: 260px) and (max-width: 339px) and (min-height: 240px) {
+  .sw__in, .sw[data-has-secondary="false"] .sw__in, .sw[data-has-secondary] .sw__in { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr) auto; grid-template-areas: "id" "status" "reading" "secondary"; }
+  .sw__status, .sw[data-has-secondary="false"] .sw__status { justify-self: start; }
+}
+
+/* MaisonFit reference boxes per arrangement (--fit = 1px at these sizes) */
+.sw[data-fit-arr="hero"] { --fit-ref-w: 400; --fit-ref-h: 300; }
+.sw[data-fit-arr="standard"] { --fit-ref-w: 340; --fit-ref-h: 180; }
+.sw[data-fit-arr="wide"] { --fit-ref-w: 560; --fit-ref-h: 110; }
+
+/* ================================================================ variant: Value (shared variant system)
+   The same sensor, presented as its value alone — as large as the box allows (own size: cq units, then sensor.js
+   fitReading() shrinks a long reading), the name above it. The icon and the secondary value give way; the status
+   (tone + words) stays, so the state is never shown by colour alone. Every arrangement (compact / standard / hero /
+   wide) presents it the same way; MaisonFit still sizes it. */
+.sw[data-variant="value"] .sw__in,
+.sw[data-variant="value"][data-has-secondary] .sw__in {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: "id" "reading" "status";
+  justify-items: center;
+  text-align: center;
+  row-gap: calc(4 * var(--fit));
+  --sw-val: clamp(24px, min(44cqh, 22cqw), 200px);
+}
+.sw[data-variant="value"] :is(.sw__icon, .sw__secondary) { display: none !important; }
+.sw[data-variant="value"] .sw__id { justify-content: center; align-self: start; padding: 0; }
+.sw[data-variant="value"] .sw__name { text-align: center; color: var(--text-secondary); font-size: max(11.5px, calc(13 * var(--fit))); }
+.sw[data-variant="value"] .sw__reading { align-self: center; justify-self: center; padding: 0; border: 0; }
+.sw[data-variant="value"] .sw__status { justify-self: center; align-self: end; margin: 0; }
+.sw[data-variant="value"]::before { left: 50%; transform: translateX(-50%); }   /* the tone hairline, centred too */
+@container sw (max-height: 109px) { .sw[data-variant="value"] .sw__status { display: none; } }
+
+/* ================================================================ variant: Status
+   The state as a status: a tone dot and the state in Home Assistant's own words, large; the unit and trend stay quiet. */
+.sw[data-variant="status"] .sw__in { grid-template-rows: auto minmax(0, 1fr) auto; grid-template-areas: "id" "reading" "status"; --sw-val: clamp(18px, min(24cqh, 12cqw), 64px); }
+.sw[data-variant="status"] :is(.sw__secondary, .sw__trend) { display: none !important; }
+.sw[data-variant="status"] .sw__reading { align-items: center; gap: calc(var(--sw-val) * .3); align-self: center; }
+.sw[data-variant="status"] .sw__reading::before { content: ""; flex: none; width: calc(var(--sw-val) * .42); height: calc(var(--sw-val) * .42); border-radius: 50%; background: var(--sw-tone); box-shadow: 0 0 calc(var(--sw-val) * .3) color-mix(in srgb, var(--sw-tone) 55%, transparent); }
+.sw[data-variant="status"][data-tone="neutral"] .sw__reading::before { background: var(--text-muted); box-shadow: none; }
+.sw[data-variant="status"] .sw__value { font-size: calc(var(--sw-val) * .75 * var(--sw-shrink, 1)); white-space: normal; letter-spacing: 0; }
+.sw[data-variant="status"][data-kind="number"] .sw__value { white-space: nowrap; }
+
+/* ================================================================ variant: Level
+   The value inside its range as a bar (only with a real range: a %, the entity's own range, or the range you set). */
+.sw__level { grid-area: level; position: relative; height: calc(8 * var(--fit)); min-height: 6px; max-height: 14px; border-radius: 999px; background: var(--control-well, rgba(255, 255, 255, .08)); overflow: hidden; box-shadow: inset 0 1px 3px rgba(0, 0, 0, .45); }
+.sw__level[hidden] { display: none; }
+.sw__level i { display: block; height: 100%; border-radius: inherit; background: var(--sw-tone-fill, var(--accent)); transition: width .35s ease; }
+.sw[data-tone="positive"] { --sw-tone-fill: var(--success); }
+.sw[data-tone="warning"] { --sw-tone-fill: var(--warning); }
+.sw[data-tone="critical"] { --sw-tone-fill: var(--danger); }
+.sw[data-variant="level"] .sw__in { grid-template-rows: auto minmax(0, 1fr) auto auto auto; grid-template-areas: "id" "reading" "level" "status" "secondary"; }
+.sw[data-variant="level"] .sw__trend { display: none; }
+.sw[data-variant="level"] .sw__reading { align-self: center; }
+@container sw (max-height: 109px) { .sw[data-variant="level"] .sw__status { display: none; } }
+.sw:not([data-variant="level"]) .sw__level { display: none; }
+
+/* ================================================================ variant: Mini Graph
+   The value on top of its real Home Assistant history (a line / area for a measured value, a state timeline otherwise).
+   The graph is the shared history layer, loaded only while the widget is on screen; nothing is drawn without history. */
+.sw[data-variant="graph"] .iq-hist[data-pos="bottom"] { height: 62%; }
+.sw[data-variant="graph"] .sw__in { grid-template-rows: auto auto minmax(0, 1fr) auto; grid-template-areas: "id" "reading" "." "status"; }
+.sw[data-variant="graph"] .sw__reading { align-self: start; }
+.sw[data-variant="graph"] :is(.sw__secondary) { display: none !important; }
+.sw[data-variant="graph"] .sw__status { z-index: 1; }
+
+/* ---- fine-tune 1: the MICRO tier (shorter side < 110px) is icon + value + a one-line name; the status line gives way, the value is as large as the box allows ---- */
+.sw[data-fit-tier="micro"] .sw__in { row-gap: 2px; grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "id" "reading"; padding: clamp(8px, calc(11 * var(--fit)), 12px); }
+.sw[data-fit-tier="micro"] .sw__status, .sw[data-fit-tier="micro"] .sw__secondary, .sw[data-fit-tier="micro"] .sw__trend { display: none !important; }
+.sw[data-fit-tier="micro"] .sw__name { -webkit-line-clamp: 1; font-size: 11.5px; }
+.sw[data-fit-tier="micro"] .sw__icon { --sw-icon: 20px; }
+.sw[data-fit-tier="micro"] .sw__in { --sw-val: clamp(24px, min(34cqh, 27cqw), 44px); }
+/* a normal / large card that has height to spare: status and value sit together at the bottom, the name stays the title */
+.sw[data-fit-tier="normal"]:not([data-variant]) .sw__name, .sw[data-fit-tier="large"]:not([data-variant]) .sw__name { font-size: max(13px, calc(14 * var(--fit))); }

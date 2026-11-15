@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "switch",
+  "name": "Switch",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "switch.js",
+  "style": "switch.css",
+  "assets": "assets/",
+  "api": "MaisonSwitch"
+}

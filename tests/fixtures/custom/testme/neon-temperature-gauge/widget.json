@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "id": "custom.neon-temperature-gauge",
+  "name": "Neon Temperature Gauge",
+  "source": "custom",
+  "basedOn": "gauge",
+  "version": "1.0.0",
+  "entry": "neon-temperature-gauge.js",
+  "style": "neon-temperature-gauge.css",
+  "assets": "assets/",
+  "api": "IniqNeonTemperatureGauge",
+  "ha": {
+    "binding": "gauge",
+    "deviceClasses": [
+      "temperature"
+    ]
+  }
+}

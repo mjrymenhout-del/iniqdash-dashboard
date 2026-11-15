@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "activitylog",
+  "name": "Activity log",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "activitylog.js",
+  "style": "activitylog.css",
+  "assets": "assets/",
+  "api": "MaisonActivityLog"
+}

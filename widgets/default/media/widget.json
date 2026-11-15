@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "media",
+  "name": "Media player",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "media.js",
+  "style": "media.css",
+  "assets": "assets/",
+  "api": "MaisonMedia"
+}

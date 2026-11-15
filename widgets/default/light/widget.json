@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "light",
+  "name": "Light",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "light.js",
+  "style": "light.css",
+  "assets": "assets/",
+  "api": "MaisonLight"
+}

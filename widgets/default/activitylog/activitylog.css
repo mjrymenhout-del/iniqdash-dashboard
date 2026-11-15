@@ -1,0 +1,29 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+.iq-alog { container: iq-alog / inline-size; display: flex; flex-direction: column; gap: 14px; height: 100%; min-height: 0; padding: 20px 22px; box-sizing: border-box; color: var(--text-primary); }
+.iq-alog__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.iq-alog__title { margin: 0; font-size: 19px; font-weight: 700; color: var(--text-heading, var(--text-primary)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-alog__link { all: unset; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--accent); white-space: nowrap; }
+.iq-alog__link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.iq-alog__list { list-style: none; margin: 0; padding: 0 0 0 22px; position: relative; flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 8px; }
+.iq-alog__list::before { content: ''; position: absolute; left: 5px; top: 8px; bottom: 8px; width: 2px; border-radius: 1px; background: var(--border-primary, rgba(255, 255, 255, .1)); }
+.iq-alog__row { position: relative; }
+.iq-alog__dot { position: absolute; left: -22px; top: 50%; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; background: var(--surface-interactive, #343744); }
+.iq-alog__row[data-recent] .iq-alog__dot { background: var(--warning, #ffa550); box-shadow: 0 0 0 4px color-mix(in srgb, var(--warning, #ffa550) 22%, transparent); }
+.iq-alog__b { all: unset; box-sizing: border-box; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; width: 100%; padding: 6px 4px; border-radius: 14px; cursor: default; }
+button.iq-alog__b { cursor: pointer; }
+button.iq-alog__b:hover { background: color-mix(in srgb, var(--text-primary) 4%, transparent); }
+button.iq-alog__b:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.iq-alog__ic { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 14px; background: var(--surface-tertiary, #262833); color: var(--warning, #ffa550); }
+.iq-alog__ic svg { width: 22px; height: 22px; }
+.iq-alog__row[data-tone="alert"] .iq-alog__ic { color: var(--danger, #ff5d6c); }
+.iq-alog__tx { display: flex; flex-direction: column; min-width: 0; }
+.iq-alog__t { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-alog__s { font-size: 12.5px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-alog__time { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+.iq-alog__empty { color: var(--text-muted); font-size: 14px; padding: 12px 0; }
+@container iq-alog (max-width: 330px) { .iq-alog__time { display: none; } .iq-alog__ic { width: 38px; height: 38px; } }
+
+.iq-alog__link[hidden] { display: none; }

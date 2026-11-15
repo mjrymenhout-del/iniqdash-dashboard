@@ -1,0 +1,104 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* Sun & Moon Widget V1 — widget-specific CSS only (tokens from assets/css/tokens.css). Namespace: iq-sun. */
+.iq-sun {
+  position: relative;
+  container: iq-sun / size;
+  min-width: 0;
+  min-height: 56px;
+  overflow: hidden;
+  border-radius: var(--radius-device);
+  color: var(--text-primary);
+  font-family: var(--font);
+  background: linear-gradient(165deg, var(--surface-primary-top), var(--surface-primary) 55%, var(--surface-secondary));
+  box-shadow: var(--shadow-primary), inset 0 0 0 1px var(--border-subtle);
+}
+.iq-sun [hidden] { display: none !important; }
+.iq-sun__in { height: 100%; box-sizing: border-box; padding: 10px 12px; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; grid-template-areas: "head" "sky" "info"; gap: 8px; min-width: 0; }
+.iq-sun__head { grid-area: head; min-width: 0; }
+.iq-sun__name { margin: 0; font-size: 13px; font-weight: var(--iq-fw-title); color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-sun__sub { margin: 0; font-size: 11.5px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-sun__sky { grid-area: sky; min-height: 0; min-width: 0; display: grid; place-items: center; container: iq-sun-sky / size; overflow: hidden; }
+.iq-sun__plot { display: block; width: min(100cqw, 200cqh); height: auto; aspect-ratio: 2 / 1; }
+.iq-sun__sky-bg { fill: color-mix(in srgb, var(--text-secondary) 6%, transparent); stroke: none; }
+.iq-sun[data-phase="above"] .iq-sun__sky-bg { fill: color-mix(in srgb, var(--solar) 12%, transparent); }
+.iq-sun__ring { fill: none; stroke: var(--border-primary); stroke-width: 1; stroke-dasharray: 2 3; }
+.iq-sun__axis { stroke: var(--border-primary); stroke-width: 1.2; }
+.iq-sun__tick { stroke: var(--border-primary); stroke-width: 1.2; }
+.iq-sun__dir { fill: var(--text-secondary); font: var(--iq-fw-status) 7.5px var(--font); }
+.iq-sun__dot { fill: var(--solar); stroke: color-mix(in srgb, var(--solar) 35%, transparent); stroke-width: 6; }
+.iq-sun__dot--below { fill: var(--control-well); stroke: var(--text-muted); stroke-width: 1.4; }
+.iq-sun__info { grid-area: info; min-width: 0; }
+.iq-sun__state { margin: 0; font-size: 14px; font-weight: var(--iq-fw-status); }
+.iq-sun[data-phase="na"] .iq-sun__state { color: var(--text-muted); }
+.iq-sun__pos { margin: 1px 0 0; font-size: 11.5px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-sun__times { margin: 6px 0 0; padding: 0; list-style: none; display: grid; gap: 3px; }
+.iq-sun__time { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+.iq-sun__ti svg { width: 16px; height: 16px; display: block; }
+.iq-sun__tl { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-sun__tv { font-weight: 600; color: var(--text-primary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.iq-sun__moon { display: flex; align-items: center; gap: 10px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-subtle); min-width: 0; }
+.iq-sun__moonicon { flex: none; width: 36px; height: 36px; display: grid; }
+.iq-sun__moonicon:empty { display: none; }
+.iq-sun__moonsvg { width: 100%; height: 100%; }
+.iq-sun__moondark { fill: var(--surface-tertiary, #3a3d46); stroke: var(--border-subtle); stroke-width: .8; }
+.iq-sun__moonlit { fill: #e9e6d8; }
+.iq-sun__moontxt { display: flex; flex-direction: column; min-width: 0; }
+.iq-sun__moonname { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-sun__moonmore { font-size: 11.5px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* the widget's OWN box: wide → the plot beside the information; short → events by priority; micro → the state and the two main times */
+@container iq-sun (min-aspect-ratio: 13 / 10) and (min-width: 300px) { .iq-sun__in { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "head head" "sky info"; align-items: center; } .iq-sun__info { align-self: center; } .iq-sun__sky { align-self: stretch; } }
+@container iq-sun (max-height: 260px) { .iq-sun__time[data-prio="4"], .iq-sun__time[data-prio="3"] { display: none; } }
+@container iq-sun (max-height: 200px) { .iq-sun__time[data-prio="2"], .iq-sun__moonmore { display: none; } }
+@container iq-sun (max-height: 150px) { .iq-sun__pos, .iq-sun__moon { display: none; } .iq-sun__sub { display: none; } }
+@container iq-sun (max-width: 190px) { .iq-sun__in { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "sky" "info"; } .iq-sun__moonmore, .iq-sun__pos { display: none; } }
+@container iq-sun (max-height: 110px) { .iq-sun__sky { display: none; } .iq-sun__in { grid-template-areas: "head" "info"; grid-template-rows: auto auto; grid-template-columns: minmax(0, 1fr); align-content: center; } .iq-sun__head { display: none; } .iq-sun__moon { display: none; } }
+/* times: sunrise · sunset only, in one line */
+.iq-sun[data-variant="times"] .iq-sun__sky, .iq-sun[data-variant="times"] .iq-sun__pos, .iq-sun[data-variant="times"] .iq-sun__moon, .iq-sun[data-variant="times"] .iq-sun__time:not([data-prio="1"]) { display: none; }
+.iq-sun[data-variant="times"] .iq-sun__in { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; grid-template-areas: "head" "info"; align-content: center; }
+.iq-sun[data-variant="times"] .iq-sun__times { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 4px; }
+.iq-sun[data-variant="times"] .iq-sun__state { font-size: 12px; color: var(--text-secondary); font-weight: var(--iq-fw-status); }
+.iq-sun[data-variant="times"] .iq-sun__time { grid-template-columns: 18px auto auto; }
+@container iq-sun (max-height: 110px) { .iq-sun[data-variant="times"] .iq-sun__head { display: none; } }
+
+/* ---- THE SUN PATH presets (minimal · horizon · atmospheric · detail · moon): one drawing (.iq-sun__arc), styled per preset ---- */
+.iq-sun { --iq-sun-c: var(--solar); --iq-sun-arc: var(--text-secondary); }
+.iq-sun:is([data-variant="minimal"], [data-variant="horizon"], [data-variant="atmospheric"], [data-variant="detail"], [data-variant="moon"]) .iq-sun__plot { display: none; }
+.iq-sun__arc { display: block; width: min(100cqw, 200cqh); height: auto; aspect-ratio: 2 / 1; overflow: visible; color: var(--iq-sun-c); }
+.iq-sun__hz { stroke: color-mix(in srgb, var(--text-primary) 35%, transparent); stroke-width: 1; }
+.iq-sun__track { fill: none; stroke: color-mix(in srgb, var(--iq-sun-arc) 45%, transparent); stroke-linecap: round; stroke-dasharray: 3 4; }
+.iq-sun__done { fill: none; stroke: color-mix(in srgb, var(--iq-sun-c) 85%, var(--text-primary)); stroke-linecap: round; }
+.iq-sun__sun { fill: var(--iq-sun-c); stroke: color-mix(in srgb, var(--iq-sun-c) 40%, white); stroke-width: 1; }
+.iq-sun__sun--below { fill: var(--control-well); stroke: var(--text-muted); stroke-width: 1.4; }
+.iq-sun[data-glow="true"] .iq-sun__sun:not(.iq-sun__sun--below) { filter: drop-shadow(0 0 4px var(--iq-sun-c)); }
+.iq-sun__al { fill: var(--text-secondary); font: 600 7.4px var(--font); font-variant-numeric: tabular-nums; }
+/* minimal: the arc and the sun only — the event list gives way to the two labels */
+.iq-sun[data-variant="minimal"] .iq-sun__times, .iq-sun[data-variant="minimal"] .iq-sun__pos, .iq-sun[data-variant="minimal"] .iq-sun__moon { display: none; }
+.iq-sun[data-variant="minimal"] .iq-sun__track { stroke-dasharray: none; stroke: color-mix(in srgb, var(--iq-sun-arc) 30%, transparent); }
+/* horizon: the wave through the line; the night half dimmer */
+.iq-sun[data-variant="horizon"] .iq-sun__times, .iq-sun[data-variant="horizon"] .iq-sun__moon { display: none; }
+.iq-sun[data-variant="horizon"] .iq-sun__track { stroke-dasharray: none; stroke: color-mix(in srgb, var(--iq-sun-arc) 40%, transparent); }
+/* atmospheric: the card is the sky — from the REAL elevation (day ≥ 6°, twilight −6…6°, night) */
+.iq-sun[data-variant="atmospheric"] { background: linear-gradient(180deg, #13203a, #0b1222 70%); }
+.iq-sun[data-variant="atmospheric"][data-sky="day"] { background: linear-gradient(180deg, #2f6fb8, #1f4b80 60%, #173a63); }
+.iq-sun[data-variant="atmospheric"][data-sky="twilight"] { background: linear-gradient(180deg, #3b2f5c, #7a3f3f 65%, #c46a2c); }
+.iq-sun[data-variant="atmospheric"] :is(.iq-sun__name, .iq-sun__pos, .iq-sun__tl, .iq-sun__al) { color: rgba(255, 255, 255, .78); fill: rgba(255, 255, 255, .8); }
+.iq-sun[data-variant="atmospheric"] :is(.iq-sun__state, .iq-sun__tv) { color: #fff; }
+.iq-sun[data-variant="atmospheric"] .iq-sun__times { display: none; }
+/* detail: the arc larger, the real elevation / azimuth in words, the events kept */
+.iq-sun[data-variant="detail"] .iq-sun__pos { font-size: 13px; color: var(--text-primary); }
+/* moon: the mapped moon phase large beside the sun path (without a moon source there is no moon) */
+.iq-sun[data-variant="moon"] .iq-sun__times { display: none; }
+.iq-sun[data-variant="moon"] .iq-sun__moonicon { width: 64px; height: 64px; }
+.iq-sun[data-variant="moon"] .iq-sun__moonlit { filter: drop-shadow(0 0 6px rgba(233, 230, 216, .35)); }
+
+/* ---- THE SUN ARC preset: the shared IniqSunArc fills the sky area; the state line and the moon (when mapped) under it ---- */
+.iq-sun[data-variant="arc"] .iq-sun__plot, .iq-sun[data-variant="arc"] .iq-sun__times, .iq-sun[data-variant="arc"] .iq-sun__pos { display: none; }
+.iq-sun[data-variant="arc"] .iq-sun__in { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; grid-template-areas: "head" "sky" "info"; }
+.iq-sun[data-variant="arc"] .iq-sun__sky { display: block; place-items: initial; }
+.iq-sun[data-variant="arc"] .iq-sun__state { font-size: 12px; color: var(--text-secondary); }
+.iq-sun[data-variant="arc"] .iq-sun__moon { margin-top: 4px; padding-top: 6px; }
+@container iq-sun (max-height: 170px) { .iq-sun[data-variant="arc"] .iq-sun__info { display: none; } .iq-sun[data-variant="arc"] .iq-sun__in { grid-template-areas: "head" "sky"; grid-template-rows: auto minmax(0, 1fr); } }
+@container iq-sun (max-height: 110px) { .iq-sun[data-variant="arc"] .iq-sun__sky { display: block; } .iq-sun[data-variant="arc"] .iq-sun__in { grid-template-areas: "sky"; grid-template-rows: minmax(0, 1fr); } }

@@ -1,0 +1,25 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* Application header: a single compact line (brand / dashboard name · Sign out). */
+.iqh {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  min-height: 40px; padding: 4px max(16px, env(safe-area-inset-right, 0px)) 4px max(16px, env(safe-area-inset-left, 0px));
+  border-bottom: 1px solid var(--border-subtle); background: var(--nav-bg);
+  font-family: var(--font);
+}
+@media (min-width: 700px) { .iqh { padding-left: 24px; padding-right: 24px; } }
+.iqh__id { margin: 0; min-width: 0; display: flex; align-items: baseline; gap: 7px; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iqh__mark { flex: none; width: 20px; height: 20px; align-self: center; margin-right: 1px; }
+.iqh__brand { font-weight: 800; color: var(--text-primary); letter-spacing: .1px; }
+.iqh__sep { color: var(--text-muted); }
+.iqh__name { color: var(--text-secondary); font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+.iqh__out { margin: 0; flex: none; }
+.iqh__out-b {
+  min-height: 30px; padding: 0 12px; border: 0; border-radius: var(--radius-sm); cursor: pointer;
+  font: 700 12px var(--font); color: var(--text-secondary); background: var(--surface-secondary, #1d2027);
+  box-shadow: 0 0 0 1px var(--border-primary) inset;
+}
+.iqh__out-b:hover { color: var(--text-primary); }
+.iqh__out-b:focus-visible { outline: 2px solid var(--accent, #6fa8ff); outline-offset: 2px; }

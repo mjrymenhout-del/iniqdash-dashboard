@@ -1,0 +1,337 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Energy Flow Widget V1 — widget-specific CSS only (tokens from assets/css/tokens.css; a theme changes the tokens).
+   FLOW: discs (Home in the centre, larger) on a stage; connections drawn BEHIND them in an SVG sized to the widget's own box
+   (track · moving dots · a static chevron). COMPACT and the micro arrangement: a list, rows hidden by priority.
+   Direction is never colour alone: every node says Import / Export / Charging…, with an arrow; the chevron points the way.
+   ========================================================================== */
+.iq-energy {
+  --iq-energy-home: var(--accent);       /* the house: the IniqDash accent */
+  --iq-energy-solar: var(--solar);       /* functional colours: solar yellow, grid blue, battery green, EV purple */
+  --iq-energy-grid: var(--info);
+  --iq-energy-battery: var(--success);
+  --iq-energy-ev: var(--purple);
+  position: relative;
+  container: iq-energy / size;
+  min-width: 0;
+  min-height: 92px;
+  overflow: hidden;
+  border-radius: var(--radius-device);
+  color: var(--text-primary);
+  font-family: var(--font);
+  background: linear-gradient(165deg, var(--surface-primary-top), var(--surface-primary) 55%, var(--surface-secondary));
+  box-shadow: var(--shadow-primary), inset 0 0 0 1px var(--border-subtle);
+}
+.iq-energy__in { position: relative; height: 100%; box-sizing: border-box; }
+.iq-energy__head { position: absolute; left: 14px; top: 11px; right: 14px; z-index: 2; min-width: 0; pointer-events: none; }
+.iq-energy__name { margin: 0; font-size: 13px; font-weight: var(--iq-fw-title); color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-energy__sub { margin: 0; font-size: 11.5px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-energy__sub[hidden], .iq-energy__info[hidden], .iq-energy__row[hidden] { display: none; }
+.iq-energy__info { position: absolute; left: 14px; right: 14px; bottom: 8px; z-index: 2; margin: 0; font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+
+/* ================================================================ FLOW stage (rebuilt)
+   Home is a hub in the middle (house glyph, its power, the word "Home"); every other source / store is a CHIP — a ringed icon, the
+   power in strong type and its name + direction word under it. Curved connections join the chips to the hub; the moving dots and the
+   static chevron share the connection's colour. COLS: chips left and right of the hub · ROWS: chips above and below it. */
+.iq-energy__stage { position: absolute; inset: 0; }
+.iq-energy__lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.iq-energy__link { --iq-energy-tone: var(--text-secondary); }
+.iq-energy__link--solar { --iq-energy-tone: var(--iq-energy-solar); } .iq-energy__link--grid { --iq-energy-tone: var(--iq-energy-grid); }
+.iq-energy__link--battery { --iq-energy-tone: var(--iq-energy-battery); } .iq-energy__link--ev { --iq-energy-tone: var(--iq-energy-ev); }
+.iq-energy__track { fill: none; stroke: color-mix(in srgb, var(--border-primary) 80%, transparent); stroke-width: 2; stroke-linecap: round; }
+.iq-energy__link:not([data-dir="none"]):not([data-dir="na"]) .iq-energy__track { stroke: color-mix(in srgb, var(--iq-energy-tone) 34%, var(--border-primary)); }
+.iq-energy__link[data-na="true"] .iq-energy__track { stroke-dasharray: 3 5; stroke: var(--text-muted); opacity: .55; }
+/* the moving dots: a dash pattern (period 16) carried along by the shared 'flow' animation — only while energy really flows */
+.iq-energy__dots { --iqv-flow-step: 16px; fill: none; stroke: var(--iq-energy-tone); stroke-width: 4.2; stroke-linecap: round; stroke-dasharray: .01 16; opacity: 0; }
+.iq-energy__link:is([data-dir="out"], [data-dir="in"], [data-dir="both"]) .iq-energy__dots { opacity: 1; }
+.iq-energy__link:not([data-dir="both"]) .iq-energy__dots--b { opacity: 0; }
+/* direction without motion: a chevron at the middle of the line (always — and the only cue with reduced motion) */
+.iq-energy__chev { fill: none; stroke: var(--iq-energy-tone); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+.iq-energy__link:is([data-dir="out"], [data-dir="in"], [data-dir="both"]) .iq-energy__chev:not(.iq-energy__chev--b) { opacity: .95; }
+.iq-energy__link[data-dir="both"] .iq-energy__chev--b { opacity: .95; }
+
+/* nodes (position, width and height are set by the widget from its own box) */
+.iq-energy__node {
+  --iq-energy-tone: var(--text-secondary);
+  --iq-energy-ch: 56px;
+  all: unset;
+  position: absolute;
+  z-index: 1;
+  box-sizing: border-box;
+  display: flex; align-items: center; gap: 9px;
+  padding: 0 8px 0 calc((var(--iq-energy-ch) - var(--iq-energy-disc)) / 2);
+  --iq-energy-disc: min(calc(38px * var(--iq-energy-sc, 1)), calc(var(--iq-energy-ch) - 16px));
+  border-radius: calc(var(--iq-energy-ch) / 2.6);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface-tertiary) 90%, var(--surface-interactive)), var(--surface-secondary));
+  box-shadow: inset 0 0 0 1px var(--border-subtle), inset 0 1px 0 var(--edge-highlight), 0 6px 14px -8px rgba(0, 0, 0, .7);
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+.iq-energy__node:not(:disabled) { cursor: pointer; }
+.iq-energy__node:not(:disabled):hover { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--iq-energy-tone) 45%, var(--border-subtle)), inset 0 1px 0 var(--edge-highlight), 0 6px 14px -8px rgba(0, 0, 0, .7); }
+.iq-energy__node:focus-visible { outline: var(--focus-ring); outline-offset: 3px; }
+.iq-energy__node--home { --iq-energy-tone: var(--iq-energy-home); } .iq-energy__node--solar { --iq-energy-tone: var(--iq-energy-solar); } .iq-energy__node--grid { --iq-energy-tone: var(--iq-energy-grid); }
+.iq-energy__node--battery { --iq-energy-tone: var(--iq-energy-battery); } .iq-energy__node--ev { --iq-energy-tone: var(--iq-energy-ev); }
+.iq-energy__disc {
+  position: relative; flex: none; width: var(--iq-energy-disc); height: var(--iq-energy-disc); border-radius: 50%;
+  display: grid; place-items: center;
+  background: radial-gradient(circle at 35% 28%, color-mix(in srgb, var(--iq-energy-tone) 22%, var(--surface-interactive)), var(--surface-secondary) 75%);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--iq-energy-tone) 60%, var(--border-primary));
+}
+.iq-energy__ring { position: absolute; inset: -4px; pointer-events: none; }
+.iq-energy__ring .iqv-ring { width: 100%; height: 100%; }
+.iq-energy__icon { display: grid; width: 52%; height: 52%; color: var(--iq-energy-tone); }
+.iq-energy__icon svg { width: 100%; height: 100%; }
+.iq-energy__txt { min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 1px; }
+.iq-energy__val { order: 1; font-size: clamp(14px, calc(var(--iq-energy-ch) * .29), calc(18px * var(--iq-energy-sc, 1))); font-weight: var(--iq-fw-display); line-height: 1.1; letter-spacing: -.01em; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-energy__cap { order: 2; display: flex; align-items: baseline; gap: 5px; min-width: 0; white-space: nowrap; }
+.iq-energy__label { flex: none; font-size: calc(11.5px * min(1.2, var(--iq-energy-sc, 1))); font-weight: var(--iq-fw-subtitle); color: var(--text-muted); }
+.iq-energy__dir { min-width: 0; font-size: calc(11.5px * min(1.2, var(--iq-energy-sc, 1))); font-weight: var(--iq-fw-status); color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; }
+.iq-energy__dir:empty { display: none; }
+.iq-energy__today { display: none; }
+.iq-energy__wd { display: none; }
+.iq-energy__node[data-wide="true"] .iq-energy__wd { display: inline; }
+.iq-energy__node[data-wide="false"] { --iq-energy-disc: min(34px, calc(var(--iq-energy-ch) - 16px)); gap: 8px; }
+.iq-energy__node[data-wide="false"] .iq-energy__val { font-size: clamp(14px, calc(var(--iq-energy-ch) * .27), 16px); }
+/* tall chips carry the direction word on a line of its own */
+.iq-energy__node[data-tall="true"] .iq-energy__cap { flex-wrap: wrap; row-gap: 0; }
+.iq-energy__node[data-tall="true"] .iq-energy__dir { flex: 1 1 100%; }
+.iq-energy__node[data-tall="true"] .iq-energy__wd { display: inline; }
+.iq-energy__arr { font-weight: var(--iq-fw-title); color: var(--iq-energy-tone); }
+.iq-energy__node[data-na="true"] .iq-energy__val { font-size: 13px; font-weight: var(--iq-fw-title); color: var(--text-muted); }
+.iq-energy__node[data-na="true"] .iq-energy__icon { color: var(--text-muted); }
+.iq-energy__node[data-na="true"] .iq-energy__disc { box-shadow: inset 0 0 0 1.5px var(--border-primary); }
+
+/* the Home hub: a lit circle — glyph, power, name */
+.iq-energy__node--home {
+  display: block; padding: 0; border-radius: 50%;
+  background: radial-gradient(circle at 50% 28%, color-mix(in srgb, var(--accent) 14%, var(--surface-interactive)), var(--surface-secondary) 78%);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--accent) 55%, var(--border-primary)), inset 0 1px 0 var(--edge-highlight), 0 10px 24px -10px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.iq-energy__node--home .iq-energy__disc { position: absolute; left: 50%; top: 13%; width: 30%; height: 30%; transform: translateX(-50%); background: none; box-shadow: none; }
+.iq-energy__node--home .iq-energy__icon { width: 100%; height: 100%; }
+.iq-energy__node--home .iq-energy__txt { position: absolute; left: 6%; right: 6%; top: 47%; align-items: center; text-align: center; gap: 0; }
+.iq-energy__node--home .iq-energy__val { font-size: clamp(13px, calc(var(--iq-energy-r, 48px) * .3), 24px); }
+.iq-energy__node--home .iq-energy__cap { justify-content: center; }
+.iq-energy__node--home .iq-energy__dir { display: none; }
+.iq-energy[data-iq-energy-size="s"] .iq-energy__node--home .iq-energy__label { display: none; }
+.iq-energy__node--home[data-na="true"] .iq-energy__val { font-size: 12px; }
+/* narrow chips: the direction word gives way before the name does; the arrow stays on the line */
+/* the head gives way to nothing: it sits above the top chips */
+.iq-energy[data-fit-arr="cols"] .iq-energy__head, .iq-energy[data-fit-arr="rows"] .iq-energy__head { right: 14px; }
+
+/* ================================================================ list (COMPACT · micro) */
+.iq-energy__list { display: none; margin: 0; padding: 0; list-style: none; }
+.iq-energy:is([data-variant="compact"], [data-fit-arr="micro"]) .iq-energy__stage { display: none; }
+.iq-energy:is([data-variant="compact"], [data-fit-arr="micro"]) .iq-energy__head { position: static; padding: 11px 14px 4px; }
+.iq-energy:is([data-variant="compact"], [data-fit-arr="micro"]) .iq-energy__in { display: flex; flex-direction: column; }
+.iq-energy:is([data-variant="compact"], [data-fit-arr="micro"]) .iq-energy__list { display: flex; flex-direction: column; gap: 2px; padding: 0 14px 8px; min-height: 0; overflow: hidden; }
+.iq-energy:is([data-variant="compact"], [data-fit-arr="micro"]) .iq-energy__info { position: static; text-align: left; padding: 0 14px 8px; }
+.iq-energy__row { display: grid; grid-template-columns: 18px minmax(0, auto) minmax(0, 1fr); grid-template-areas: "i l v" "i l d"; column-gap: 8px; align-items: center; min-height: 26px; }
+.iq-energy__row { grid-template-columns: 18px auto minmax(0, 1fr); grid-template-areas: "i l v"; }
+.iq-energy__ri { grid-area: i; display: grid; width: 18px; height: 18px; color: var(--iq-energy-tone, var(--text-secondary)); }
+.iq-energy__ri svg { width: 100%; height: 100%; }
+.iq-energy__row--home { --iq-energy-tone: var(--iq-energy-home); } .iq-energy__row--solar { --iq-energy-tone: var(--iq-energy-solar); } .iq-energy__row--grid { --iq-energy-tone: var(--iq-energy-grid); }
+.iq-energy__row--battery { --iq-energy-tone: var(--iq-energy-battery); } .iq-energy__row--ev { --iq-energy-tone: var(--iq-energy-ev); }
+.iq-energy__rl { grid-area: l; font-size: 12.5px; color: var(--text-secondary); white-space: nowrap; }
+.iq-energy__rv { grid-area: v; justify-self: end; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.iq-energy__rd { grid-column: 2 / -1; justify-self: end; margin-top: -4px; font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.iq-energy__rd:empty { display: none; }
+.iq-energy__row--home .iq-energy__rv { font-size: 15px; }
+.iq-energy__row[data-na="true"] .iq-energy__rv { color: var(--text-muted); font-weight: 600; }
+.iq-energy__row--totals { display: block; min-height: 0; padding-top: 3px; font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* the list keeps what matters first (energy.js fitRows(): totals → EV → words → Battery → Grid → Solar give way; Home stays) */
+.iq-energy__row--cut { display: none; }
+.iq-energy--terse .iq-energy__rd { display: none; }
+.iq-energy:is([data-variant="compact"], [data-fit-arr="micro"]) .iq-energy__list { flex: 1 1 0; }
+@container iq-energy (max-height: 100px) { .iq-energy__sub { display: none; } }
+/* wide compact: label · value · direction on one line */
+@container iq-energy (min-width: 360px) {
+  .iq-energy[data-variant="compact"] .iq-energy__row:not(.iq-energy__row--totals) { grid-template-columns: 18px minmax(70px, auto) auto minmax(0, 1fr); grid-template-areas: "i l v d"; }
+  .iq-energy[data-variant="compact"] .iq-energy__rd { grid-column: auto; grid-area: d; justify-self: start; margin: 0; }
+  .iq-energy[data-variant="compact"] .iq-energy__rv { justify-self: start; }
+}
+
+/* ================================================================ DYNAMIC NODE FLOW — presets 'circles' (Tesla-style) and 'nodes' (cards)
+   Nodes are positioned by energy.js (createNodes) from the widget's own box; connections are the shared flow connector (IniqFlow). */
+.iq-energy--dyn .iq-energy__lines { z-index: 0; }
+.iq-energy__n {
+  all: unset; position: absolute; z-index: 1; box-sizing: border-box; --iq-energy-d: 60px;
+  -webkit-tap-highlight-color: transparent; cursor: default;
+}
+.iq-energy__n:not(:disabled) { cursor: pointer; }
+.iq-energy__n:focus-visible { outline: var(--focus-ring); outline-offset: 3px; }
+.iq-energy__nd { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; }
+.iq-energy__nr { position: absolute; inset: -5px; pointer-events: none; }
+.iq-energy__nr .iqv-ring { width: 100%; height: 100%; }
+.iq-energy__ni { display: grid; width: calc(var(--iq-energy-d) * .3); height: calc(var(--iq-energy-d) * .3); color: var(--iq-energy-tone); }
+.iq-energy__ni svg { width: 100%; height: 100%; }
+.iq-energy__nv { font-size: clamp(11px, calc(var(--iq-energy-d) * .2), 22px); font-weight: var(--iq-fw-display); line-height: 1.05; font-variant-numeric: tabular-nums; white-space: nowrap; letter-spacing: -.01em; }
+.iq-energy__n[data-na="true"] .iq-energy__nv { font-size: clamp(10px, calc(var(--iq-energy-d) * .15), 14px); color: var(--text-muted); font-weight: var(--iq-fw-title); }
+.iq-energy__nt { position: absolute; left: 50%; top: calc(100% + 4px); transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; width: max-content; max-width: calc(var(--iq-energy-r, 30px) * 2.9); text-align: center; line-height: 1.15; pointer-events: none; }
+.iq-energy__nl { font-size: 11.5px; font-weight: var(--iq-fw-subtitle); color: var(--text-secondary); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iq-energy__nw { font-size: 10.5px; color: var(--iq-energy-tone); font-weight: var(--iq-fw-status); white-space: nowrap; }
+.iq-energy__ns { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+.iq-energy__nw:empty, .iq-energy__ns:empty { display: none; }
+
+/* CIRCLES — circular nodes with coloured outlines; Home a larger lit circle in the middle */
+.iq-energy[data-variant="circles"] .iq-energy__n { border-radius: 50%;
+  background: radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--iq-energy-tone) 14%, var(--surface-interactive)), var(--surface-secondary) 78%);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--iq-energy-tone) 70%, transparent), 0 8px 20px -10px rgba(0, 0, 0, .7); }
+.iq-energy[data-variant="circles"] .iq-energy__n[data-flow="true"] { box-shadow: inset 0 0 0 2px var(--iq-energy-tone), 0 0 18px -4px color-mix(in srgb, var(--iq-energy-tone) 60%, transparent); }
+.iq-energy[data-variant="circles"] .iq-energy__n[data-na="true"] { box-shadow: inset 0 0 0 2px var(--border-primary); }
+.iq-energy[data-variant="circles"] .iq-energy__n--home { box-shadow: inset 0 0 0 2.5px var(--iq-energy-home), 0 0 26px -6px color-mix(in srgb, var(--iq-energy-home) 55%, transparent); }
+.iq-energy[data-variant="circles"] .iq-energy__n--home .iq-energy__nv { font-size: clamp(12px, calc(var(--iq-energy-d) * .19), 26px); }
+
+/* NODE CARDS — rounded cards: the icon, then the value over the name and the direction word */
+.iq-energy[data-variant="nodes"] .iq-energy__n { border-radius: 16px; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "i v" "i l" "i w"; align-content: center; column-gap: 9px; padding: 0 12px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface-tertiary) 90%, var(--surface-interactive)), var(--surface-secondary));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--iq-energy-tone) 45%, var(--border-subtle)), 0 6px 14px -8px rgba(0, 0, 0, .7); }
+.iq-energy[data-variant="nodes"] .iq-energy__n[data-flow="true"] { box-shadow: inset 0 0 0 1.5px var(--iq-energy-tone), 0 6px 14px -8px rgba(0, 0, 0, .7); }
+.iq-energy[data-variant="nodes"] :is(.iq-energy__nd, .iq-energy__nt) { display: contents; }
+.iq-energy[data-variant="nodes"] .iq-energy__nr { display: none; }
+.iq-energy[data-variant="nodes"] .iq-energy__ni { grid-area: i; width: calc(var(--iq-energy-d) * .46); height: calc(var(--iq-energy-d) * .46); }
+.iq-energy[data-variant="nodes"] .iq-energy__nv { grid-area: v; justify-self: start; font-size: clamp(12px, calc(var(--iq-energy-d) * .3), 20px); }
+.iq-energy[data-variant="nodes"] .iq-energy__nl { grid-area: l; justify-self: start; font-size: 11px; color: var(--text-muted); }
+.iq-energy[data-variant="nodes"] .iq-energy__nw { grid-area: w; justify-self: start; }
+.iq-energy[data-variant="nodes"] .iq-energy__ns { display: none; }
+.iq-energy[data-variant="nodes"] .iq-energy__n--home { grid-template-areas: "i v" "i l"; justify-content: center; }
+
+/* Home's name sits INSIDE its circle (connections may arrive from below) */
+.iq-energy[data-variant="circles"] .iq-energy__n--home .iq-energy__nd { justify-content: flex-start; padding-top: 18%; }
+.iq-energy[data-variant="circles"] .iq-energy__n--home .iq-energy__nt { top: auto; bottom: 16%; }
+.iq-energy[data-variant="circles"] .iq-energy__n--home .iq-energy__nl { font-size: 10.5px; color: var(--text-muted); }
+
+/* the summary list (a box too small for a readable diagram) */
+.iq-energy--dyn[data-fit-arr="micro"] .iq-energy__stage { display: none; }
+.iq-energy--dyn[data-fit-arr="micro"] .iq-energy__head { position: static; padding: 11px 14px 4px; }
+.iq-energy--dyn[data-fit-arr="micro"] .iq-energy__in { display: flex; flex-direction: column; }
+.iq-energy--dyn[data-fit-arr="micro"] .iq-energy__list { display: flex; flex-direction: column; gap: 2px; padding: 0 14px 8px; min-height: 0; overflow: hidden; flex: 1 1 0; }
+.iq-energy--dyn .iq-energy__ri { color: var(--iq-energy-tone); }
+.iq-energy--dyn .iq-energy__row { grid-template-columns: 18px auto minmax(0, 1fr) auto; grid-template-areas: "i l v d"; }
+.iq-energy--dyn .iq-energy__rv { grid-area: v; }
+.iq-energy--dyn .iq-energy__rd { grid-area: d; grid-column: auto; margin: 0 0 0 6px; }
+@container iq-energy (max-width: 260px) { .iq-energy--dyn .iq-energy__rd { display: none; } }
+
+/* ================================================================ TESLA STYLE — the reference: large circles with a thin coloured outline and a
+   dark interior, the icon and a large value centred inside (the direction under it), the name above (top row) or below the circle,
+   a slightly larger Home circle, thin coloured connections with a few moving dots. Positions: energy.js planTesla(). */
+.iq-energy__nx { display: none; }
+.iq-energy[data-variant="tesla"] .iq-energy__n { border-radius: 50%; background: var(--surface-primary, #1c1c1c);
+  box-shadow: inset 0 0 0 2px var(--iq-energy-tone); }
+.iq-energy[data-variant="tesla"] .iq-energy__n[data-na="true"] { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--iq-energy-tone) 35%, var(--border-primary)); }
+.iq-energy[data-variant="tesla"] .iq-energy__nd { gap: 3px; padding: 0 8%; }
+.iq-energy[data-variant="tesla"] .iq-energy__ni { width: calc(var(--iq-energy-d) * .25); height: calc(var(--iq-energy-d) * .25); }
+.iq-energy[data-variant="tesla"] .iq-energy__nv { font-size: clamp(11px, calc(var(--iq-energy-d) * .15), 19px); font-weight: 600; color: var(--text-primary); letter-spacing: 0; }
+.iq-energy[data-variant="tesla"] .iq-energy__nx { display: block; max-width: 100%; font-size: clamp(9px, calc(var(--iq-energy-d) * .1), 12px); color: var(--iq-energy-tone); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.1; }
+.iq-energy[data-variant="tesla"] .iq-energy__nx:empty { display: none; }
+.iq-energy[data-variant="tesla"] .iq-energy__nr { inset: -6px; }
+/* the name: above the top row, below the others (the direction is inside the circle) */
+.iq-energy[data-variant="tesla"] .iq-energy__nt { top: calc(100% + 5px); max-width: none; }
+.iq-energy[data-variant="tesla"] .iq-energy__n[data-cap="above"] .iq-energy__nt { top: auto; bottom: calc(100% + 5px); }
+.iq-energy[data-variant="tesla"] .iq-energy__nl { font-size: 12.5px; font-weight: 500; color: var(--text-secondary); }
+.iq-energy[data-variant="tesla"] .iq-energy__nw { display: none; }
+/* Home: icon and value only, a little larger */
+.iq-energy[data-variant="tesla"] .iq-energy__n--home .iq-energy__nt { display: none; }
+.iq-energy[data-variant="tesla"] .iq-energy__n--home .iq-energy__nv { font-size: clamp(12px, calc(var(--iq-energy-d) * .16), 21px); }
+.iq-energy[data-variant="tesla"] .iq-energy__n[data-small="true"] .iq-energy__nx { display: none; }
+
+/* HOUSE: the Home hub is the picture of the house; its value in a chip on the picture's lower edge */
+.iq-energy[data-house="true"] .iq-energy__n--home { border-radius: 18px; background: #0d0e12 center / cover no-repeat; box-shadow: 0 18px 40px -18px rgba(0, 0, 0, .9); display: block; padding: 0; overflow: visible; }
+.iq-energy[data-house="true"] .iq-energy__n--home :is(.iq-energy__ni, .iq-energy__nr, .iq-energy__nx, .iq-energy__nw, .iq-energy__ns) { display: none; }
+.iq-energy[data-house="true"] .iq-energy__n--home .iq-energy__nd, .iq-energy[data-house="true"] .iq-energy__n--home .iq-energy__nt { display: contents; }
+.iq-energy[data-house="true"] .iq-energy__n--home .iq-energy__nl { position: absolute; left: 50%; bottom: -16px; transform: translateX(-50%); padding: 6px 14px; border-radius: 999px; white-space: nowrap;
+  background: #1c1d24; border: 1px solid rgba(255, 255, 255, .08); font-size: 12px; color: var(--text-secondary); }
+.iq-energy[data-house="true"] .iq-energy__n--home .iq-energy__nl::before { content: none; }   /* a dash there read as "no value" */
+.iq-energy[data-house="true"] .iq-energy__n--home .iq-energy__nv { position: absolute; right: 12px; top: 10px; padding: 4px 10px; border-radius: 999px; background: rgba(13, 14, 18, .7); font-size: 13px; }
+.iq-energy[data-house="true"] .iq-energy__n:not(.iq-energy__n--home) { border-radius: 22px; background: linear-gradient(150deg, color-mix(in srgb, var(--iq-energy-tone) 16%, #1c1d24), #1a1b21 70%);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--iq-energy-tone) 35%, transparent), 0 10px 26px -14px rgba(0, 0, 0, .8); }
+.iq-energy[data-house="true"] .iq-energy__n[data-flow="true"]:not(.iq-energy__n--home) { box-shadow: inset 0 0 0 1.5px var(--iq-energy-tone), 0 0 26px -6px color-mix(in srgb, var(--iq-energy-tone) 55%, transparent); }
+/* HOUSE node cards: the icon left in a soft disc, the label above the value, what it is doing below */
+.iq-energy[data-house="true"] .iq-energy__n:not(.iq-energy__n--home) { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "i l" "i v" "i w"; column-gap: 16px; padding: 0 20px; text-align: left; justify-items: start; }
+.iq-energy[data-house="true"] .iq-energy__n:not(.iq-energy__n--home) .iq-energy__ni { width: 44px; height: 44px; color: var(--iq-energy-tone); filter: drop-shadow(0 0 10px color-mix(in srgb, var(--iq-energy-tone) 60%, transparent)); }
+.iq-energy[data-house="true"] .iq-energy__n:not(.iq-energy__n--home) .iq-energy__ni svg { width: 34px; height: 34px; }
+.iq-energy[data-house="true"] .iq-energy__n:not(.iq-energy__n--home) .iq-energy__nl { font-size: 14px; color: var(--text-secondary); position: static; transform: none; }
+.iq-energy[data-house="true"] .iq-energy__n:not(.iq-energy__n--home) .iq-energy__nv { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+.iq-energy[data-house="true"] .iq-energy__n:not(.iq-energy__n--home) .iq-energy__nw { font-size: 12.5px; color: var(--iq-energy-tone); }
+.iq-energy[data-house="true"] .iq-energy__n:not(.iq-energy__n--home) { display: grid; align-content: center; }
+.iq-energy[data-house="true"] .iq-energy__n:not(.iq-energy__n--home) :is(.iq-energy__nd, .iq-energy__nt) { display: contents; }
+.iq-energy[data-house="true"] .iq-energy__n:not(.iq-energy__n--home) :is(.iq-energy__nr, .iq-energy__ns, .iq-energy__nx) { display: none; }
+.iq-energy[data-house="true"] .iq-energy__n:not(.iq-energy__n--home) .iq-energy__ni { grid-area: i; }
+.iq-energy[data-house="true"] .iq-energy__n:not(.iq-energy__n--home) .iq-energy__nv { grid-area: v; justify-self: start; }
+.iq-energy[data-house="true"] .iq-energy__n:not(.iq-energy__n--home) .iq-energy__nl { grid-area: l; justify-self: start; }
+.iq-energy[data-house="true"] .iq-energy__n:not(.iq-energy__n--home) .iq-energy__nw { grid-area: w; justify-self: start; }
+
+/* ==========================================================================
+   SYSTEM — the house at the centre, every node around it, spokes and routes (energy.js createSystem)
+   ========================================================================== */
+.iq-energy--sys { height: 100%; --iq-esys-lw: 3px; --iq-esys-glow: .25; --iq-esys-nr: 40px; --iq-esys-hr: 56px; }
+.iq-esys { position: relative; height: 100%; box-sizing: border-box; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; padding: 12px 14px 10px; gap: 4px; }
+.iq-esys__head { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.iq-esys__name { margin: 0; font-size: 14px; font-weight: var(--iq-fw-title); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-esys__sub { margin: 0; font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.iq-esys__sub[hidden] { display: none; }
+.iq-esys__self { margin-left: auto; flex: none; font-size: 11.5px; font-weight: 700; color: var(--success); padding: 3px 9px; border-radius: 999px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--success) 26%, transparent) var(--p, 0%), color-mix(in srgb, var(--success) 8%, transparent) var(--p, 0%)); }
+.iq-esys__self[hidden] { display: none; }
+.iq-esys__stage { position: relative; min-height: 0; }
+.iq-esys__lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; z-index: 0; }
+.iq-esys__ln { fill: none; stroke-width: var(--iq-esys-lw); stroke-linecap: round; opacity: .22; }
+.iq-esys__ln[data-state="na"] { stroke-dasharray: 4 6; opacity: .35; stroke: var(--text-muted) !important; }
+.iq-esys__fl { fill: none; stroke-width: var(--iq-esys-lw); stroke-linecap: round; stroke-dasharray: 1 calc(var(--iq-esys-lw) * 4); animation: iq-esys-flow 1.6s linear infinite;
+  filter: drop-shadow(0 0 calc(var(--iq-esys-glow) * 8px) currentColor); color: inherit; }
+.iq-esys__fl[data-dir="rev"] { animation-direction: reverse; }
+.iq-esys__fl[data-still="true"], .iq-esys__fl[data-state="na"] { animation: none; stroke-dasharray: none; opacity: 0; }
+.iq-esys__rt.iq-esys__ln { opacity: .16; stroke-dasharray: 2 5; }
+@keyframes iq-esys-flow { to { stroke-dashoffset: calc(var(--iq-esys-lw) * -10); } }
+/* nodes: a ring in the node's colour, its icon, value, label; a level ring for batteries / EVs */
+.iq-esys__node { position: absolute; width: calc(var(--iq-esys-nr) * 2); height: calc(var(--iq-esys-nr) * 2); margin: calc(var(--iq-esys-nr) * -1) 0 0 calc(var(--iq-esys-nr) * -1); border-radius: 50%; box-sizing: border-box; z-index: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  border: 2px solid var(--c); color: var(--text-primary);
+  background: radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--c) 22%, var(--device-surface)), var(--device-surface) 72%);
+  box-shadow: 0 0 calc(var(--iq-esys-glow) * 22px) color-mix(in srgb, var(--c) 55%, transparent), 0 6px 18px rgba(0, 0, 0, .25); }
+.iq-esys__ic { width: calc(var(--iq-esys-nr) * .62); height: calc(var(--iq-esys-nr) * .62); color: var(--c); display: grid; place-items: center; }
+.iq-esys__ic svg { width: 100%; height: 100%; }
+.iq-esys__v { font-size: clamp(10px, calc(var(--iq-esys-nr) * .3), 16px); font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; white-space: nowrap; }
+.iq-esys__l { position: absolute; top: calc(100% + 3px); left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 600; color: var(--text-secondary); white-space: nowrap; }
+.iq-esys__x { position: absolute; top: calc(100% + 17px); left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+.iq-esys__node[data-above="true"] .iq-esys__l { top: auto; bottom: calc(100% + 17px); }
+.iq-esys__node[data-above="true"] .iq-esys__x { top: auto; bottom: calc(100% + 3px); }
+.iq-esys__lvl { position: absolute; inset: -6px; border-radius: 50%; pointer-events: none; display: none;
+  background: conic-gradient(var(--c) var(--lv), transparent 0); -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px)); mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px)); }
+.iq-esys__node[data-level="true"] .iq-esys__lvl { display: block; }
+.iq-esys__node:not([data-state="ok"]) { border-style: dashed; opacity: .7; box-shadow: none; }
+.iq-esys__node:not([data-state="ok"]) .iq-esys__v { font-size: 10px; font-weight: 600; color: var(--text-muted); }
+/* the house */
+.iq-esys__hub { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 2px; z-index: 1; }
+.iq-esys__house { width: calc(var(--iq-esys-hr) * 2); height: calc(var(--iq-esys-hr) * 2); border-radius: 50%; display: grid; place-items: center; color: #7fb2ff;
+  background: radial-gradient(circle at 50% 35%, color-mix(in srgb, #7fb2ff 26%, var(--device-surface)), var(--device-surface) 70%) center / cover no-repeat;
+  border: 2px solid color-mix(in srgb, #7fb2ff 70%, transparent); box-shadow: 0 0 calc(var(--iq-esys-glow) * 34px) color-mix(in srgb, #7fb2ff 55%, transparent), 0 10px 26px rgba(0, 0, 0, .3); }
+.iq-esys__house[data-photo="true"] { background-size: cover; background-position: center; }
+.iq-esys__house > * { width: 52%; height: 52%; }
+.iq-esys__house svg { width: 100%; height: 100%; }
+.iq-esys__hv { position: absolute; top: calc(100% - 18px); padding: 3px 10px; border-radius: 999px; background: var(--device-surface); box-shadow: 0 2px 10px rgba(0, 0, 0, .3);
+  font-size: clamp(11px, calc(var(--iq-esys-hr) * .22), 17px); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.iq-esys__hl { position: absolute; top: calc(100% + 12px); font-size: 11px; font-weight: 600; color: var(--text-secondary); }
+.iq-esys__note { margin: 0; font-size: 11px; color: var(--warning); text-align: center; }
+.iq-esys__note[hidden] { display: none; }
+.iq-esys__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); margin: 0; padding: 0; }
+@media (prefers-reduced-motion: reduce) { .iq-esys__fl { animation: none; stroke-dasharray: none; opacity: .75; } .iq-esys__fl[data-still="true"] { opacity: 0; } }
+.iq-esys__chev { fill: none; stroke-width: calc(var(--iq-esys-lw) * .9); stroke-linecap: round; stroke-linejoin: round; opacity: .95; }
+.iq-energy--sys[data-labels="false"] .iq-esys__l, .iq-energy--sys[data-labels="false"] .iq-esys__x, .iq-energy--sys[data-labels="false"] .iq-esys__hl { display: none; }
+.iq-energy--sys[data-values="false"] .iq-esys__v, .iq-energy--sys[data-values="false"] .iq-esys__hv { display: none; }
+.iq-energy--sys[data-small="true"] .iq-esys__x { display: none; }
+.iq-energy--sys[data-small="true"] .iq-esys__l { font-size: 10px; }
+.iq-energy--sys[data-small="true"] .iq-esys__node[data-above="true"] .iq-esys__l { bottom: calc(100% + 3px); }
+.iq-energy--sys[data-small="true"] .iq-esys__hl { top: calc(100% + 8px); }
+
+/* the narrow house (a phone): smaller cards under the picture */
+.iq-energy[data-house="true"][data-house-narrow="true"] .iq-energy__n:not(.iq-energy__n--home) { padding: 0 12px; column-gap: 10px; border-radius: 16px; }
+.iq-energy[data-house="true"][data-house-narrow="true"] .iq-energy__n:not(.iq-energy__n--home) .iq-energy__ni { width: 30px; height: 30px; }
+.iq-energy[data-house="true"][data-house-narrow="true"] .iq-energy__n:not(.iq-energy__n--home) .iq-energy__ni svg { width: 24px; height: 24px; }
+.iq-energy[data-house="true"][data-house-narrow="true"] .iq-energy__n:not(.iq-energy__n--home) .iq-energy__nv { font-size: 17px; }
+.iq-energy[data-house="true"][data-house-narrow="true"] .iq-energy__n:not(.iq-energy__n--home) .iq-energy__nl { font-size: 12px; }
+.iq-energy[data-house="true"][data-house-narrow="true"] .iq-energy__n:not(.iq-energy__n--home) .iq-energy__nw { font-size: 11px; }

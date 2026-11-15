@@ -1,0 +1,17 @@
+# DRAFT — never installed on Home Assistant. See README.md in this folder.
+name: IniqDash
+version: "0.1.0-beta.1"
+slug: iniqdash
+description: Dashboards for Home Assistant, designed in the browser (alpha — untested as an App)
+url: https://github.com/mjrymenhout-del/iniqdash
+arch:
+  - amd64
+  - aarch64
+init: false
+startup: application
+ingress: true
+ingress_port: 8099
+panel_icon: mdi:view-dashboard
+panel_title: IniqDash
+homeassistant_api: true
+# no ports: reachable through Home Assistant's ingress only

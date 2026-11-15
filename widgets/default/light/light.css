@@ -1,0 +1,387 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Light widget — ONE tree, four VARIANTS (data-variant), each with its own Micro · Compact · Normal · Large composition for the
+   widget's OWN box (data-fit-arr, MaisonFit), finished by semantic Appearance attributes set by light.js (data-title, data-align,
+   data-image, data-power, data-glow) — allow-listed values only, never CSS from the configuration.
+     artwork  STANDARD  the fixture lamp hanging into the card, its light thrown down; name · state · power · brightness · colour
+     compact  COMPACT   a row: the lamp in a small lit well · name · state · power (brightness as a thin bar when there is room)
+     slider   SLIDER    the card is the brightness: its fill, a large percentage; horizontal, or vertical in a tall box (data-orient)
+     image    ARTWORK   the picture is the card and lights up with the light; name, state, power over it
+   STATE: data-lit = on | off | unavailable — the CONFIRMED state only (Home Assistant's report). The glow (the shared layer
+   components/widget-visuals: data-iqv-anim="glow", --iqv-int = the confirmed brightness) is the LIGHT's own colour (--lw-glow:
+   its reported colour / colour temperature, else a warm white) — never the app accent. Unavailable is never lit.
+   CONTROLS appear only for what the light reports (data-dim, data-extra are set by light.js: shown · behind "Colour" · none).
+   Namespace: lw / iq-light · container: lw · custom properties: --lw-*
+   ========================================================================== */
+.lw {
+  --b: 1;
+  --lw-art-ratio: 1.1;                            /* the fixture PNG's width / height */
+  --lw-pad: clamp(12px, 4cqmin, 22px);
+  --lw-glow: rgb(255 190 112);                    /* the light's own colour (light.js) */
+  --lw-k: 1;                                      /* the glow choice: natural 1 · subtle .55 · strong 1.3 */
+  --lw-on: 0;
+  --lw-i: calc(var(--lw-on) * var(--lw-k) * (.42 + .58 * var(--iqv-int, 1)));   /* the light's strength: bounded, never 0 → 100 % drama */
+  --lw-ts: 1;
+  --lw-fs: 16px;
+  --lw-sc: 44px;                                  /* the round power button */
+  position: relative;
+  container: lw / size;
+  min-width: 0;
+  min-height: 72px;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: var(--radius-device);
+  color: var(--text-primary);
+  font-family: var(--font);
+  background: var(--device-surface);
+  box-shadow: var(--device-shadow);
+  -webkit-tap-highlight-color: transparent;
+}
+.lw[data-iqv-anim="glow"] { filter: none; }                  /* the shared glow layer's card filter: the light is drawn by the parts below */
+.lw[data-lit="on"] { --lw-on: 1; box-shadow: inset 0 1px 0 color-mix(in srgb, var(--lw-glow) 18%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--lw-glow) 10%, transparent), var(--device-shadow); }
+.lw[data-glow="subtle"] { --lw-k: .55; }
+.lw[data-glow="strong"] { --lw-k: 1.3; }
+.lw [hidden] { display: none !important; }
+/* the card itself, warmed by its light (all variants; a subtle pool from the top) */
+.lw::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: calc(var(--lw-i) * .9); transition: opacity .45s ease;
+  background: radial-gradient(90% 70% at 70% 0%, color-mix(in srgb, var(--lw-glow) 16%, transparent), transparent 70%); }
+
+/* ---------------------------------------------------------------- the parts (shown per variant below) */
+.lw__media, .lw__fill, .lw__stage, .lw__big, .lw__dim, .iq-light-more, .lw__extra, .lw__icon { display: none; }
+.lw__body { position: absolute; inset: 0; z-index: 2; box-sizing: border-box; padding: var(--lw-pad); display: grid; min-width: 0; pointer-events: none; }
+.lw__body > * { pointer-events: auto; min-width: 0; }
+.lw__id { grid-area: id; min-width: 0; }
+.lw__name { margin: 0; font-size: calc(var(--lw-fs) * var(--lw-ts)); font-weight: var(--iq-fw-title); line-height: 1.2; letter-spacing: -.005em; white-space: nowrap; overflow: clip visible; text-overflow: ellipsis; min-width: 0; }
+.lw__state { margin: 3px 0 0; font-size: max(11.5px, calc(var(--lw-fs) * .78)); font-weight: var(--iq-fw-status); color: var(--text-secondary); line-height: 1.25; white-space: nowrap; overflow: clip visible; text-overflow: ellipsis; min-width: 0; font-variant-numeric: tabular-nums; }
+.lw[data-lit="on"] .lw__state { color: color-mix(in srgb, var(--lw-glow) 70%, var(--text-primary)); }
+.lw[data-lit="unavailable"] .lw__state { color: var(--text-muted); }
+
+/* ---- power: a switch (a bulb knob in a track) or a round button ---- */
+/* the POWER control is the shared control button (components/controls — its whole look: icon, sizes, style, shape, colours, state);
+   the variant gives only its place (grid-area / region) and its AUTOMATIC size — a configured size wins (set inline by the control) */
+.lw__power { grid-area: power; justify-self: start; align-self: start; }
+.lw .lw__power { --iqc-size: var(--lw-sc); }
+.lw[data-power="switch"] .lw__power { --iqc-size: clamp(32px, 9cqmin, 46px); }
+
+/* ---- brightness bar ---- */
+.lw[data-dim="true"] .lw__dim { display: block; }
+.lw__dim { position: relative; height: var(--lw-dh, 40px); min-width: 0; }
+.lw__range { --v: .7; -webkit-appearance: none; appearance: none; display: block; width: 100%; height: var(--lw-dh, 40px); margin: 0; border-radius: calc(var(--lw-dh, 40px) * .34); cursor: pointer; touch-action: pan-y;
+  --lw-fa: rgba(255, 255, 255, .06); --lw-fb: rgba(255, 255, 255, .12);
+  background: linear-gradient(90deg, var(--lw-fa), var(--lw-fb)) 0 0 / calc(9px + (100% - 18px) * var(--v)) 100% no-repeat, var(--control-well); box-shadow: var(--control-well-shadow); }
+.lw[data-state="on"] .lw__range { --lw-fa: color-mix(in srgb, var(--lw-bc, var(--lw-glow)) 26%, transparent); --lw-fb: color-mix(in srgb, var(--lw-bc, var(--lw-glow)) 78%, transparent); }
+.lw__range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: var(--lw-dh, 40px); border: 0; border-radius: 2px;
+  background: linear-gradient(90deg, transparent 7px, rgba(255, 255, 255, .9) 7px 11px, transparent 11px) 0 50% / 18px 18px no-repeat; }
+.lw__range::-moz-range-thumb { width: 18px; height: var(--lw-dh, 40px); border: 0; background: linear-gradient(90deg, transparent 7px, rgba(255, 255, 255, .9) 7px 11px, transparent 11px) 0 50% / 18px 18px no-repeat; }
+.lw__range::-moz-range-track { background: transparent; }
+.lw__range:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.lw__range:disabled { cursor: not-allowed; opacity: .5; }
+.lw__dim-icon, .lw__pct { position: absolute; top: 0; height: 100%; display: flex; align-items: center; pointer-events: none; font-size: 12.5px; font-weight: var(--iq-fw-display); font-variant-numeric: tabular-nums; color: var(--text-muted); }
+.lw__dim-icon { left: 12px; }
+.lw__dim-icon svg { width: 1.2em; height: 1.2em; }
+.lw__pct { right: 12px; }
+.lw[data-state="on"] .lw__pct { color: var(--text-primary); }
+/* unavailable: no last-known value is shown as if it were current */
+.lw[data-available="false"] .lw__range { --v: 0; }
+.lw[data-available="false"] :is(.lw__pct, .iq-light-more) { display: none; }
+.lw[data-state="on"] .lw__dim-icon { color: #2a1804; }
+
+/* ---- colour tools: inline, or a panel behind the "Colour" button ---- */
+.lw[data-extra="pop"] .iq-light-more { display: inline-flex; align-items: center; margin-top: 8px; height: 26px; padding: 0 11px; border: 0; border-radius: 13px; cursor: pointer;
+  font: 600 11.5px var(--font); color: var(--text-secondary); background: var(--control-well); box-shadow: var(--control-well-shadow); }
+.lw[data-extra="pop"] .iq-light-more::before { content: ""; width: 10px; height: 10px; margin-right: 6px; border-radius: 50%; background: conic-gradient(#ff5d5d, #ffd25d, #6dff8a, #5dd6ff, #8a6dff, #ff5dd2, #ff5d5d); }
+.iq-light-more:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.lw[data-extra="pop"][data-extra-open="true"] .lw__extra { display: flex; position: absolute; left: 0; right: 0; bottom: 0; z-index: 5; flex-direction: column; gap: 10px; padding: 12px 14px 14px; box-sizing: border-box;
+  background: color-mix(in srgb, var(--surface-primary) 96%, transparent); box-shadow: 0 -10px 24px -12px rgba(0, 0, 0, .7); border-radius: 16px 16px 0 0; }
+.lw[data-extra="inline"] .lw__extra { display: flex; grid-area: extra; flex-direction: column; gap: 10px; }
+.lw[data-extra="inline"] .iq-light-pop__x { display: none; }
+.iq-light-pop__x { align-self: flex-end; width: 26px; height: 26px; border: 0; border-radius: 50%; cursor: pointer; font-size: 16px; line-height: 1; color: var(--text-secondary); background: var(--control-well); }
+.iq-light-pop__x:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.iq-light-ct { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 11px; color: var(--text-muted); }
+.iq-light-ct__range { flex: 1 1 auto; min-width: 0; height: 8px; border-radius: 4px; -webkit-appearance: none; appearance: none; background: linear-gradient(90deg, #ffb35c, #fff3e0 55%, #bcd8ff); }
+.iq-light-ct__range::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, .6); }
+.iq-light-ct__range::-moz-range-thumb { width: 18px; height: 18px; border: 0; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, .6); }
+.iq-light-ct[data-unknown="true"] .iq-light-ct__range::-webkit-slider-thumb { opacity: .55; }
+.iq-light-ct__range:focus-visible { outline: var(--focus-ring); outline-offset: 3px; }
+.iq-light-ct__v { min-width: 4.2em; text-align: right; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+.iq-light-fx { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 11px; color: var(--text-muted); }
+.iq-light-fx__sel { flex: 1 1 auto; min-width: 0; height: 28px; border: 0; border-radius: 14px; padding: 0 10px; font: 600 12px var(--font); color: var(--text-primary); background: var(--control-well); box-shadow: var(--control-well-shadow); }
+.iq-light-fx__sel:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.iq-light-sw { display: flex; gap: 6px; flex-wrap: nowrap; justify-content: space-between; }
+.iq-light-sw__b { flex: 1 1 0; min-width: 14px; max-width: 26px; aspect-ratio: 1; height: auto; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: hsl(var(--iq-light-hue) 90% 55%); padding: 0; }
+.iq-light-sw__b[aria-pressed="true"] { border-color: var(--text-primary); }
+.iq-light-sw__b:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+
+/* ---------------------------------------------------------------- the fixture (Standard; Compact's lamp well) */
+.lw__stage { position: absolute; z-index: 1; aspect-ratio: var(--lw-art-ratio); cursor: pointer; --lw-mouth: 95%; }
+.lw__art { position: relative; z-index: 2; display: block; width: 100%; height: 100%; object-fit: contain; object-position: 50% 0; user-select: none; -webkit-user-drag: none;
+  filter: grayscale(.8) brightness(.72) contrast(1.05) drop-shadow(0 10px 14px rgba(0, 0, 0, .55)); transition: filter .45s ease; }
+.lw[data-lit="on"] .lw__art { filter: brightness(calc(.88 + .2 * var(--iqv-int, 1))) saturate(1.05) drop-shadow(0 10px 18px rgba(0, 0, 0, .5)); }
+.lw[data-lit="unavailable"] .lw__art { filter: grayscale(1) brightness(.55) drop-shadow(0 10px 14px rgba(0, 0, 0, .5)); }
+.lw__wash, .lw__beam, .lw__bloom { position: absolute; pointer-events: none; opacity: var(--lw-i); transition: opacity .45s ease; }
+.lw__wash { z-index: 0; left: 50%; top: var(--lw-mouth); width: 230%; height: 170%; transform: translate(-50%, -18%);
+  background: radial-gradient(34% 16% at 50% 18%, color-mix(in srgb, var(--lw-glow) 40%, transparent), transparent 100%),
+    radial-gradient(closest-side at 50% 18%, color-mix(in srgb, var(--lw-glow) 22%, transparent), color-mix(in srgb, var(--lw-glow) 6%, transparent) 55%, transparent 100%); }
+.lw__beam { z-index: 1; left: 50%; top: calc(var(--lw-mouth) - 34%); width: 260%; height: 300%; transform: translateX(-50%); filter: blur(5px); mix-blend-mode: screen;
+  background: conic-gradient(from 146deg at 50% 0%, transparent 0deg, color-mix(in srgb, var(--lw-glow) 20%, transparent) 20deg, color-mix(in srgb, var(--lw-glow) 28%, transparent) 34deg, color-mix(in srgb, var(--lw-glow) 20%, transparent) 48deg, transparent 68deg);
+  -webkit-mask-image: radial-gradient(48% 62% at 50% 0%, #000 25%, transparent 100%); mask-image: radial-gradient(48% 62% at 50% 0%, #000 25%, transparent 100%); }
+.lw__bloom { z-index: 3; left: 50%; top: var(--lw-mouth); width: 62%; height: 16%; transform: translate(-50%, -55%); border-radius: 50%; filter: blur(3px); mix-blend-mode: screen;
+  background: radial-gradient(closest-side, #fff8ea, color-mix(in srgb, var(--lw-glow) 60%, transparent) 55%, transparent); }
+.lw:not([data-lit="on"]) .lw__bloom { opacity: .9; width: 88%; height: 11%; mix-blend-mode: normal; filter: blur(1.5px); background: radial-gradient(closest-side, rgba(14, 14, 17, .92), rgba(14, 14, 17, .65) 70%, transparent); }
+.lw__stage::after { content: ""; position: absolute; bottom: 100%; left: 50%; width: max(1px, calc(100% * .0066)); height: 400px; transform: translateX(-50%); background: #3b3d43; pointer-events: none; }
+
+/* ---------------------------------------------------------------- the fallback icon (no artwork): the shared MDI icon, its colour a token
+   (else the light's own colour while lit, muted while off), its animation the shared IniqIcons one (as configured) */
+/* SIZE: each variant gives the icon a SPACE (--lw-iw, a square). The GLYPH (--lw-ig) is a share of it, or the configured size
+   (fallbackIcon.size → data-size="n", --lw-is), never larger than the space allows. A background (subtle · accent) is drawn AROUND the
+   glyph (padding) — it never shrinks the glyph — and the icon stays centred in its space (--lw-io). */
+.lw__icon { --lw-iw: 48px; --lw-ib: 0; --lw-ig: calc(var(--lw-iw) * .6); --lw-ip: calc(var(--lw-ig) * .18 * var(--lw-ib));
+  --lw-io: max(0px, calc((var(--lw-iw) - var(--lw-ig) - 2 * var(--lw-ip)) / 2));
+  position: absolute; z-index: 1; box-sizing: content-box; width: var(--lw-ig); height: var(--lw-ig); padding: var(--lw-ip); margin: var(--lw-io);
+  place-items: center; pointer-events: none; color: var(--text-muted); transition: color .45s ease, filter .45s ease; }
+.lw .lw__icon[data-size="n"] { --lw-ig: min(var(--lw-is), calc(var(--lw-iw) * .74)); }
+.lw .lw__icon[data-iqi-bg] { box-sizing: content-box; }
+.lw .lw__icon:is([data-iqi-bg="subtle"], [data-iqi-bg="accent"]) { --lw-ib: 1; }
+.lw .lw__icon[data-iqi-bg] > svg, .lw .lw__icon > svg { width: 100%; height: 100%; transition: filter .45s ease; }
+/* its surface (none · subtle · accent) is the shared one (components/icons/icons.css [data-iqi-bg]); the light glows on the glyph only */
+.lw[data-lit="on"] .lw__icon { color: color-mix(in srgb, var(--lw-glow) 85%, #fff); }
+.lw[data-lit="on"] .lw__icon > svg { filter: drop-shadow(0 0 calc(8px + 12px * var(--lw-i)) color-mix(in srgb, var(--lw-glow) 45%, transparent)); }
+.lw[data-lit="on"] .lw__icon[style*="color"] > svg { filter: drop-shadow(0 0 calc(6px + 10px * var(--lw-i)) color-mix(in srgb, currentColor 40%, transparent)); }
+.lw[data-lit="unavailable"] .lw__icon { opacity: .45; }
+
+/* ================================================================ STANDARD (variant "artwork"): the lamp hangs into the card */
+.lw[data-variant="artwork"][data-visual="fixture"] .lw__stage { display: block; }
+/* a picture (a built-in illustration or an upload): a rounded panel where the lamp would hang · an icon: large, in the same place ·
+   nothing: the name and controls take the whole card */
+.lw[data-variant="artwork"]:is([data-visual="scene"], [data-visual="photo"]) .lw__media { display: block; position: absolute; z-index: 1; overflow: hidden; border-radius: 16px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08); }
+.lw[data-variant="artwork"][data-visual="icon"] .lw__icon { display: grid; }
+.lw[data-variant="artwork"]:is([data-fit-arr="normal"], [data-fit-arr="compact"]):is([data-visual="scene"], [data-visual="photo"]) .lw__media { top: var(--lw-pad); right: var(--lw-pad); width: min(46cqw, 62cqh); bottom: calc(var(--lw-pad) + var(--lw-dh) * var(--lw-hasdim, 1) + 12px); }
+.lw[data-variant="artwork"]:is([data-fit-arr="normal"], [data-fit-arr="compact"])[data-visual="icon"] .lw__icon { top: var(--lw-pad); right: var(--lw-pad); --lw-iw: min(40cqw, calc(100cqh - var(--lw-pad) * 2 - var(--lw-dh) * var(--lw-hasdim, 1) - 16px)); }
+.lw[data-variant="artwork"]:is([data-fit-arr="normal"], [data-fit-arr="compact"]):is([data-visual="scene"], [data-visual="photo"]) .lw__id { padding-right: calc(min(46cqw, 62cqh) + 8px); }
+.lw[data-variant="artwork"]:is([data-fit-arr="normal"], [data-fit-arr="compact"])[data-visual="icon"] .lw__id { padding-right: calc(min(40cqw, 50cqh) + 8px); }
+.lw[data-variant="artwork"][data-visual="none"] .lw__id { padding-right: 0; }
+.lw[data-variant="artwork"] .lw__body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr) auto; grid-template-areas: "id" "power" "." "dim"; row-gap: 10px; }
+/* Normal / Compact: the lamp on the right, hanging from the top edge; name and power on the left; the brightness along the bottom */
+.lw[data-variant="artwork"]:is([data-fit-arr="normal"], [data-fit-arr="compact"]) {
+  --lw-dh: clamp(34px, 11cqh, 46px); --lw-fs: clamp(15px, 4.6cqw, 21px);
+  --lw-S: min(52cqw, calc((100cqh - var(--lw-pad) * 2 - var(--lw-dh) * var(--lw-hasdim, 1) - 16px) * var(--lw-art-ratio) / .95));
+}
+.lw[data-variant="artwork"][data-dim="false"] { --lw-hasdim: 0; }
+.lw[data-variant="artwork"]:is([data-fit-arr="normal"], [data-fit-arr="compact"]) .lw__stage { top: 0; right: clamp(8px, 4cqw, 26px); width: var(--lw-S); }
+.lw[data-variant="artwork"]:is([data-fit-arr="normal"], [data-fit-arr="compact"]) .lw__id { padding-right: calc(var(--lw-S) * .7); }
+/* Compact: the power beside the brightness on one bottom row (the name, state and "Colour" above, the lamp to the right) */
+.lw[data-variant="artwork"][data-fit-arr="compact"] .lw__body { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; grid-template-areas: "id id" ". ." "power dim"; column-gap: 10px; }
+.lw[data-variant="artwork"][data-fit-arr="compact"] .lw__power { align-self: center; }
+.lw[data-variant="artwork"][data-fit-arr="compact"][data-dim="false"] .lw__body { grid-template-areas: "id id" ". ." "power ."; }
+.lw[data-variant="artwork"][data-fit-arr="compact"] { --lw-S: min(50cqw, calc((100cqh - var(--lw-pad) * 2 - var(--lw-dh) - 10px) * var(--lw-art-ratio) / .95)); }
+/* a tall, narrow box: the lamp centred above, everything else under it */
+@container lw (max-aspect-ratio: 5 / 6) {
+  .lw[data-variant="artwork"]:is([data-fit-arr="normal"], [data-fit-arr="compact"]) { --lw-S: min(78cqw, calc((100cqh - var(--lw-pad) * 2 - var(--lw-dh) * var(--lw-hasdim, 1) - 110px) * var(--lw-art-ratio) / .95)); }
+  .lw[data-variant="artwork"]:is([data-fit-arr="normal"], [data-fit-arr="compact"]) .lw__stage { right: auto; left: 50%; transform: translateX(-50%); }
+  .lw[data-variant="artwork"]:is([data-fit-arr="normal"], [data-fit-arr="compact"]) .lw__body { grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: minmax(0, 1fr) auto auto; grid-template-areas: ". ." "id power" "dim dim"; }
+  .lw[data-variant="artwork"]:is([data-fit-arr="normal"], [data-fit-arr="compact"]) .lw__id { padding-right: 0; }
+  .lw[data-variant="artwork"]:is([data-fit-arr="normal"], [data-fit-arr="compact"]) .lw__power { align-self: center; }
+}
+/* Large: the lamp in its own lit column, the controls beside it (colour tools inline) */
+.lw[data-variant="artwork"][data-fit-arr="large"] { --lw-dh: 46px; --lw-fs: clamp(20px, 3.4cqw, 30px); --lw-pad: clamp(20px, 3.4cqw, 32px); --lw-S: min(42cqw, calc((100cqh - 40px) * var(--lw-art-ratio) / .95)); }
+.lw[data-variant="artwork"][data-fit-arr="large"] .lw__stage { top: 0; left: clamp(16px, 4cqw, 44px); width: var(--lw-S); }
+.lw[data-variant="artwork"][data-fit-arr="large"]:is([data-visual="scene"], [data-visual="photo"]) .lw__media { top: var(--lw-pad); left: var(--lw-pad); bottom: var(--lw-pad); width: calc(var(--lw-S) + 20px); }
+.lw[data-variant="artwork"][data-fit-arr="large"][data-visual="icon"] .lw__icon { top: 50%; left: clamp(16px, 4cqw, 44px); --lw-iw: min(34cqw, 60cqh); transform: translateY(-50%); margin: 0 0 0 var(--lw-io); }
+.lw[data-variant="artwork"][data-fit-arr="large"][data-visual="none"] .lw__body { padding-left: var(--lw-pad); }
+.lw[data-variant="artwork"][data-fit-arr="large"] .lw__body { padding-left: calc(var(--lw-S) + clamp(36px, 7cqw, 72px)); grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto minmax(0, 1fr) auto auto minmax(0, 1fr);
+  grid-template-areas: "id power" ". ." "dim dim" "extra extra" ". ."; row-gap: 18px; }
+.lw[data-variant="artwork"][data-fit-arr="large"] .lw__state { font-size: 15px; }
+.lw[data-variant="artwork"][data-fit-arr="large"]::before { background: radial-gradient(60% 90% at 22% 20%, color-mix(in srgb, var(--lw-glow) 18%, transparent), transparent 70%); }
+/* Micro: no lamp, the power as the hero, the name and state under it */
+.lw[data-variant="artwork"][data-fit-arr="micro"], .lw[data-variant="image"][data-fit-arr="micro"] { --lw-pad: 10px; --lw-fs: 13.5px; --lw-sc: clamp(34px, 30cqmin, 44px); }
+.lw[data-variant="artwork"][data-fit-arr="micro"] :is(.lw__stage, .lw__media, .lw__icon) { display: none; }
+.lw[data-variant="artwork"][data-fit-arr="micro"] .lw__body { grid-template-rows: auto minmax(0, 1fr) auto; grid-template-areas: "power" "." "id"; row-gap: 4px; }
+.lw[data-variant="artwork"][data-fit-arr="micro"]::before { background: radial-gradient(110% 90% at 0% 0%, color-mix(in srgb, var(--lw-glow) 24%, transparent), transparent 70%); }
+
+/* ================================================================ COMPACT: one row — the lamp in a small lit well · name · state · power */
+.lw[data-variant="compact"] { --lw-well: clamp(48px, calc(100cqh - 2 * var(--lw-pad)), 72px); --lw-fs: clamp(14px, 4.4cqw, 17px); --lw-pad: clamp(10px, 3.4cqmin, 16px); --lw-sc: clamp(36px, 30cqh, 44px); --lw-dh: 30px; }
+.lw[data-variant="compact"][data-visual="fixture"] .lw__stage { display: block; }
+.lw[data-variant="compact"]:is([data-visual="scene"], [data-visual="photo"]) .lw__media { display: block; position: absolute; z-index: 1; overflow: hidden; top: calc(50% - var(--lw-well) / 2); left: var(--lw-pad); width: var(--lw-well); height: var(--lw-well); border-radius: 16px; box-shadow: inset 0 0 0 1px var(--border-subtle); }
+.lw[data-variant="compact"][data-visual="icon"] .lw__icon { display: grid; top: calc(50% - var(--lw-well) / 2); left: var(--lw-pad); --lw-iw: var(--lw-well); }
+.lw[data-variant="compact"][data-visual="none"] .lw__body { padding-left: var(--lw-pad); }
+.lw[data-variant="compact"] .lw__stage { top: calc(50% - var(--lw-well) / 2); left: var(--lw-pad); width: var(--lw-well); height: var(--lw-well); aspect-ratio: auto; overflow: hidden; border-radius: 16px;
+  background: radial-gradient(80% 70% at 50% 92%, color-mix(in srgb, var(--lw-glow) calc(var(--lw-i) * 30%), transparent), transparent 75%), var(--surface-tertiary); box-shadow: inset 0 0 0 1px var(--border-subtle); }
+.lw[data-variant="compact"] .lw__stage::after, .lw[data-variant="compact"] .lw__beam { display: none; }
+.lw[data-variant="compact"] .lw__art { position: absolute; left: 12%; top: 18%; width: 76%; height: auto; aspect-ratio: var(--lw-art-ratio); }
+.lw[data-variant="compact"] .lw__stage { --lw-mouth: 86%; }
+.lw[data-variant="compact"] .lw__wash { width: 160%; height: 90%; }
+.lw[data-variant="compact"] .lw__bloom { width: 48%; height: 10%; }
+.lw[data-variant="compact"] .lw__body { padding-left: calc(var(--lw-pad) * 2 + var(--lw-well)); grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: minmax(0, 1fr) auto auto minmax(0, 1fr);
+  grid-template-areas: ". power" "id power" "dim power" ". power"; column-gap: 12px; row-gap: 8px; align-items: center; }
+.lw[data-variant="compact"] .lw__power { align-self: center; }
+.lw[data-variant="compact"] .iq-light-more { margin-top: 6px; }
+.lw[data-variant="compact"][data-fit-arr="normal"] { --lw-well: clamp(64px, 30cqh, 96px); --lw-fs: 18px; }
+.lw[data-variant="compact"][data-fit-arr="large"] { --lw-well: clamp(88px, 28cqh, 132px); --lw-fs: clamp(20px, 3cqw, 26px); --lw-pad: 22px; --lw-sc: 52px; --lw-dh: 38px; }
+/* Micro: the lamp well small at the left, the name; the power at the right */
+.lw[data-variant="compact"][data-fit-arr="micro"] { --lw-pad: 8px; --lw-well: clamp(34px, calc(100cqh - 16px), 48px); --lw-fs: 13px; --lw-sc: 32px; }
+.lw[data-variant="compact"][data-fit-arr="micro"] .lw__state { font-size: 11px; }
+/* a very short row: the name and the power (the identity and the control) before the state line */
+@container lw (max-height: 60px) { .lw[data-variant="compact"] .lw__state { display: none; } }
+@container lw (max-width: 150px) { .lw[data-variant="compact"] :is(.lw__stage, .lw__media, .lw__icon) { display: none; } .lw[data-variant="compact"] .lw__body { padding-left: var(--lw-pad); } }
+
+/* ================================================================ SLIDER: the card is the brightness */
+.lw[data-variant="slider"] { --lw-fs: clamp(14px, 4.2cqmin, 20px); --lw-sc: clamp(34px, 11cqmin, 46px); }
+.lw[data-variant="slider"] .lw__fill { display: block; position: absolute; z-index: 0; left: 0; bottom: 0; top: 0; width: calc(100% * var(--b) * var(--lw-on-fill, 0)); pointer-events: none; transition: width .25s ease, height .25s ease;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--lw-bc, var(--lw-glow)) 30%, transparent), color-mix(in srgb, var(--lw-bc, var(--lw-glow)) 58%, transparent)); box-shadow: inset -2px 0 0 color-mix(in srgb, var(--lw-bc, var(--lw-glow)) 70%, transparent); }
+.lw[data-variant="slider"][data-state="on"] { --lw-on-fill: 1; }
+.lw[data-variant="slider"][data-orient="vertical"] .lw__fill { top: auto; right: 0; width: auto; height: calc(100% * var(--b) * var(--lw-on-fill, 0));
+  background: linear-gradient(0deg, color-mix(in srgb, var(--lw-bc, var(--lw-glow)) 30%, transparent), color-mix(in srgb, var(--lw-bc, var(--lw-glow)) 58%, transparent)); box-shadow: inset 0 2px 0 color-mix(in srgb, var(--lw-bc, var(--lw-glow)) 70%, transparent); }
+.lw[data-variant="slider"]:not([data-dimmable]) .lw__fill { width: calc(100% * var(--lw-on-fill, 0)); height: auto; top: 0; opacity: .55; }
+.lw[data-variant="slider"] .lw__big { display: block; grid-area: big; align-self: end; font-size: clamp(30px, 17cqmin, 76px); font-weight: var(--iq-fw-display, 700); line-height: .95; letter-spacing: -.03em; font-variant-numeric: tabular-nums; pointer-events: none; }
+.lw[data-variant="slider"][data-lit="on"] .lw__big { color: #fff; text-shadow: 0 2px 16px color-mix(in srgb, var(--lw-glow) 45%, transparent); }
+.lw[data-variant="slider"]:not([data-lit="on"]) .lw__big { color: var(--text-muted); }
+.lw[data-variant="slider"] .lw__body { grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto minmax(0, 1fr) auto auto; grid-template-areas: "id power" "big big" "dim dim" "extra extra"; row-gap: 8px; }
+.lw[data-variant="slider"] :is(.lw__id, .lw__big) { pointer-events: none; }
+.lw[data-variant="slider"] .iq-light-more { pointer-events: auto; }
+.lw[data-variant="slider"] .lw__power { position: relative; z-index: 3; }
+/* the brightness input fills the card (invisible): drag anywhere; keyboard on it like any slider */
+.lw[data-variant="slider"] .lw__dim { display: block; position: absolute; inset: 0; z-index: 1; height: auto; pointer-events: auto; }
+.lw[data-variant="slider"] .lw__range { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; border-radius: 0; }
+.lw[data-variant="slider"] :is(.lw__dim-icon, .lw__pct) { display: none; }
+.lw[data-variant="slider"][data-orient="vertical"] .lw__range { inset: auto; left: 50%; top: 50%; width: 100cqh; height: 100cqw; transform: translate(-50%, -50%) rotate(-90deg); cursor: ns-resize; }
+.lw[data-variant="slider"]:has(.lw__range:focus-visible) { outline: var(--focus-ring); outline-offset: -3px; }
+.lw[data-variant="slider"] .lw__extra { position: relative; z-index: 3; }
+.lw[data-variant="slider"][data-extra="inline"] .lw__extra { padding: 10px 12px; border-radius: 14px; background: color-mix(in srgb, var(--surface-primary) 82%, transparent); }
+.lw[data-variant="slider"][data-orient="vertical"] .lw__body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr) auto auto auto; grid-template-areas: "power" "id" "." "big" "dim" "extra"; }
+.lw[data-variant="slider"][data-orient="vertical"] .lw__power { justify-self: end; }
+.lw[data-variant="slider"][data-fit-arr="large"] { --lw-pad: 24px; --lw-fs: 22px; }
+.lw[data-variant="slider"][data-visual="icon"]:not([data-fit-arr="micro"]) .lw__icon { display: grid; z-index: 3; top: var(--lw-pad); left: var(--lw-pad); --lw-iw: var(--lw-siw); }
+.lw[data-variant="slider"][data-visual="icon"]:not([data-fit-arr="micro"]) .lw__id { padding-left: calc(var(--lw-siw) + 10px); }
+/* (the icon's space beside the name: a configured icon size widens it, within the card) */
+.lw[data-variant="slider"] { --lw-siw: clamp(calc(var(--lw-fs) * 2.2), calc(var(--lw-is, 0px) * 1.36), 34cqmin); }
+.lw[data-variant="slider"] .lw__icon:not([data-size]) { --lw-ig: calc(var(--lw-iw) * .74); }
+.lw[data-variant="slider"][data-visual="icon"][data-orient="vertical"]:not([data-fit-arr="micro"]) .lw__id { padding-left: 0; }
+.lw[data-variant="slider"][data-fit-arr="micro"] { --lw-pad: 10px; --lw-fs: 13px; --lw-sc: 30px; }
+.lw[data-variant="slider"][data-fit-arr="micro"] .lw__big { font-size: clamp(22px, 24cqmin, 34px); }
+.lw[data-variant="slider"][data-fit-arr="micro"] .lw__state { display: none; }
+.lw[data-variant="slider"][data-fit-arr="micro"][data-orient="vertical"] .lw__body { grid-template-rows: auto minmax(0, 1fr) auto auto; grid-template-areas: "power" "." "big" "id"; }
+/* no brightness to slide: the whole card is the power (a large On / Off) */
+.iq-light-alt__hit { position: absolute; inset: 0; z-index: 1; border: 0; padding: 0; background: transparent; cursor: pointer; }
+.iq-light-alt__hit:focus-visible { outline: var(--focus-ring); outline-offset: -3px; border-radius: inherit; }
+.lw[data-variant="slider"]:not([data-dimmable]) .lw__power { display: none; }
+/* alignment */
+.lw[data-variant="slider"][data-align="center"] :is(.lw__id, .lw__big) { text-align: center; }
+.lw[data-variant="slider"][data-align="right"] :is(.lw__id, .lw__big) { text-align: right; }
+
+/* ================================================================ ARTWORK (variant "image"): the picture is the card */
+.lw[data-variant="image"]:is([data-visual="scene"], [data-visual="photo"]) .lw__media { display: block; position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+/* a cut-out fixture as the picture: the lamp hangs large in the middle of a warm dark room · an icon: large, above the name ·
+   nothing: a quiet graphite card (the name and controls at the bottom, as always) */
+.lw[data-variant="image"]:not([data-visual="scene"]):not([data-visual="photo"]) { background: radial-gradient(70% 60% at 50% 30%, #2e2620, #141110 75%); }
+.lw[data-variant="image"][data-visual="fixture"] .lw__stage { display: block; top: 0; left: 50%; transform: translateX(-50%); width: min(62cqw, calc(52cqh * var(--lw-art-ratio))); }
+.lw[data-variant="image"][data-visual="icon"] .lw__icon { top: 12%; left: 50%; --lw-iw: min(40cqw, 38cqh); transform: translateX(-50%); margin: var(--lw-io) 0 0; }
+.lw[data-variant="image"][data-visual="icon"]:not([data-fit-arr="micro"]) .lw__icon { display: grid; }
+.lw[data-variant="image"][data-fit-arr="micro"] .lw__stage { display: none; }
+.lw__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%;
+  --lw-lit-fx: grayscale(.85) brightness(.5) contrast(.95); --lw-img-fx: ; filter: var(--lw-lit-fx) var(--lw-img-fx); transition: filter .45s ease; }
+.lw[data-lit="on"] .lw__photo { --lw-lit-fx: grayscale(0) brightness(calc(.7 + .3 * var(--iqv-int, 1))) contrast(1); }
+.lw[data-lit="unavailable"] .lw__photo { --lw-lit-fx: grayscale(1) brightness(.42) contrast(.9); }
+/* the light itself: a soft pool in the light's own colour (the picture's lamp sits top-centre in the bundled illustration) */
+.lw__tint { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: calc(var(--lw-i) * .85); transition: opacity .45s ease;
+  background: radial-gradient(42% 38% at 50% 44%, color-mix(in srgb, var(--lw-glow) 34%, transparent), transparent 72%); }
+.lw[data-variant="image"]::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(0deg, rgba(8, 6, 4, .82) 0%, rgba(8, 6, 4, .3) 38%, transparent 62%), linear-gradient(180deg, rgba(8, 6, 4, .35), transparent 30%); }
+.lw[data-variant="image"]::before { display: none; }
+.lw[data-variant="image"] { color: #fff; --lw-fs: clamp(16px, 5.4cqw, 26px); --lw-dh: 34px; --lw-sc: clamp(38px, 11cqmin, 50px); }
+.lw[data-variant="image"] .lw__name { text-shadow: 0 2px 12px rgba(0, 0, 0, .55); }
+.lw[data-variant="image"] .lw__state { color: rgba(255, 255, 255, .8); }
+.lw[data-variant="image"][data-lit="on"] .lw__state { color: color-mix(in srgb, var(--lw-glow) 55%, #fff); }
+.lw[data-variant="image"] .lw__body { grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: minmax(0, 1fr) auto auto; grid-template-areas: ". ." "id power" "dim dim"; row-gap: 12px; column-gap: 14px; }
+.lw[data-variant="image"] .lw__power { align-self: end; }
+.lw[data-variant="image"] .lw__range { background: linear-gradient(90deg, var(--lw-fa), var(--lw-fb)) 0 0 / calc(9px + (100% - 18px) * var(--v)) 100% no-repeat, rgba(10, 8, 6, .5);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.lw[data-variant="image"]:not([data-state="on"]) .lw__power[data-look="auto"]:not([data-style="switch"]) { color: var(--iqc-icolor, #fff); background: rgba(14, 11, 8, .55); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.lw[data-variant="image"][data-fit-arr="large"] { --lw-fs: clamp(26px, 4.2cqw, 40px); --lw-pad: 26px; --lw-dh: 42px; }
+.lw[data-variant="image"][data-fit-arr="compact"] { --lw-fs: clamp(15px, 6cqw, 20px); }
+.lw[data-variant="image"][data-fit-arr="micro"] .lw__body { grid-template-rows: minmax(0, 1fr) auto; grid-template-areas: ". ." "id power"; }
+.lw[data-variant="image"][data-align="center"] .lw__body { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto auto auto; grid-template-areas: "." "id" "power" "dim"; justify-items: center; text-align: center; }
+.lw[data-variant="image"][data-align="center"] .lw__dim { width: min(100%, 360px); }
+.lw[data-variant="image"][data-align="right"] .lw__body { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: ". ." "power id" "dim dim"; text-align: right; }
+/* image treatment (a separate, never-brightening filter: OFF never looks lit) */
+.lw[data-image="dark"] .lw__photo { --lw-img-fx: brightness(.7); }
+.lw[data-image="soft"] .lw__photo { --lw-img-fx: blur(4px) saturate(.9); transform: scale(1.06); }
+.lw[data-image="dim"] .lw__media { opacity: .6; }
+
+/* ---------------------------------------------------------------- title size */
+.lw[data-title="small"] { --lw-ts: .8; }
+.lw[data-title="medium"] { --lw-ts: .92; }
+.lw[data-title="large"] { --lw-ts: 1.2; }
+/* the colour pill and the colour panel stay out of a Micro card */
+.lw[data-fit-arr="micro"] .iq-light-more { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lw::before, .lw__wash, .lw__beam, .lw__bloom, .lw__art, .lw__icon, .lw__photo, .lw__tint, .lw__fill { transition: none; }
+}
+
+/* ================================================================ CONTROLS (the configurator's Power and Controls)
+   Power: the SHARED control button in every variant and style. Its configured size is honoured where the card has room: --iqc-max
+   caps it at each MaisonFit size (the colours, style, shape and icon stay; the glyph stays in proportion). The controls row: brightness and toggles (the shared segmented control) in the configured order. */
+.lw { --iqc-auto: var(--lw-glow); --iqc-max: min(120px, 30cqmin); }
+.lw[data-fit-arr="compact"] { --iqc-max: min(56px, calc(100cqh - var(--lw-pad) * 2)); }
+.lw[data-fit-arr="micro"] { --iqc-max: min(var(--lw-sc, 44px), calc(100cqh - var(--lw-pad) * 2)); }   /* Micro: the variant's own power size at most */
+/* over a picture an outline / bare button keeps a quiet surface (readable) */
+.lw[data-variant="image"] .lw__power:is([data-style="outline"], [data-style="bare"]) { background: rgba(14, 11, 8, .45); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+
+.lw__ctrls { grid-area: dim; display: none; min-width: 0; flex-wrap: wrap; align-items: center; gap: var(--lw-cgap, 10px); }
+.lw[data-ctrls="true"] .lw__ctrls { display: flex; }
+.lw[data-calign="center"] .lw__ctrls { justify-content: center; }
+.lw[data-calign="right"] .lw__ctrls { justify-content: flex-end; }
+.lw__ctrls > .lw__dim { flex: 1 1 150px; }
+.lw[data-variant="slider"] .lw__ctrls { position: relative; z-index: 3; }
+.lw[data-variant="image"] .lw__ctrls > .iqc-seg[data-inactive="minimal"] { background: rgba(14, 11, 8, .45); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); padding-inline: var(--iqc-in); }
+
+/* brightness: a configured track thickness (thin: no icon / percentage inside) and a round handle */
+.lw__dim[data-thin] :is(.lw__dim-icon, .lw__pct) { display: none; }
+.lw__dim[data-knob] { height: max(var(--lw-dh, 40px), var(--lw-hs)); }
+.lw .lw__dim[data-knob] .lw__range { height: max(var(--lw-dh, 40px), var(--lw-hs)); border-radius: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none;
+  background: linear-gradient(90deg, var(--lw-fa), var(--lw-fb)) 0 50% / calc(var(--lw-hs) / 2 + (100% - var(--lw-hs)) * var(--v)) var(--lw-dh, 40px) no-repeat,
+    linear-gradient(var(--control-well), var(--control-well)) 0 50% / 100% var(--lw-dh, 40px) no-repeat; }
+.lw .lw__dim[data-knob] .lw__range::-webkit-slider-thumb { width: var(--lw-hs); height: var(--lw-hs); border-radius: 50%; background: #fff; box-shadow: 0 1px 5px rgba(0, 0, 0, .55); }
+.lw .lw__dim[data-knob] .lw__range::-moz-range-thumb { width: var(--lw-hs); height: var(--lw-hs); border-radius: 50%; background: #fff; box-shadow: 0 1px 5px rgba(0, 0, 0, .55); }
+
+/* ================================================================ PLACEMENT — the NINE REGIONS (light.js adds them only when a control or the
+   title is placed; otherwise the variant's own composition above is used unchanged). The body's padding is the variant's (it keeps clear
+   of the lamp well / column); inside it: three rows of three regions, each followed by a full-width LINE (top · centre · bottom) for the
+   brightness, the toggles that follow it and the inline colour tools. Several controls in one region form a group in the list's order,
+   --lw-cgap apart (never overlapping); the region's corner decides their alignment. */
+.lw[data-zones][data-zones][data-zones] .lw__body {
+  display: grid; grid-template-columns: auto 1fr auto;     /* (content-sized: a region of controls keeps its width; the title's region gives way) */
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto minmax(0, 1fr) auto auto;
+  grid-template-areas: "tl tc tr" "lt lt lt" ". . ." "cl cc cr" "lc lc lc" ". . ." "bl bc br" "lb lb lb";
+  row-gap: 0; column-gap: 10px; justify-items: stretch; align-items: stretch; text-align: left;
+}
+.lw[data-zones] .lw__ctrls { display: none; }
+.lw__z, .lw__ln { display: flex; flex-wrap: wrap; align-items: center; gap: var(--lw-cgap, 10px); min-width: 0; pointer-events: none; }
+.lw__z > *, .lw__ln > * { pointer-events: auto; }
+.lw__z:empty, .lw__ln:empty { display: none; }
+.lw__z[data-z="top-left"] { grid-area: tl; } .lw__z[data-z="top-center"] { grid-area: tc; } .lw__z[data-z="top-right"] { grid-area: tr; }
+.lw__z[data-z="center-left"] { grid-area: cl; } .lw__z[data-z="center-center"] { grid-area: cc; } .lw__z[data-z="center-right"] { grid-area: cr; }
+.lw__z[data-z="bottom-left"] { grid-area: bl; } .lw__z[data-z="bottom-center"] { grid-area: bc; } .lw__z[data-z="bottom-right"] { grid-area: br; }
+.lw__ln[data-ln="top"] { grid-area: lt; } .lw__ln[data-ln="center"] { grid-area: lc; } .lw__ln[data-ln="bottom"] { grid-area: lb; }
+.lw__z[data-z^="top-"] { align-self: start; align-content: flex-start; }
+.lw__z[data-z^="center-"] { align-self: center; align-content: center; }
+.lw__z[data-z^="bottom-"] { align-self: end; align-content: flex-end; }
+.lw__z[data-z$="-left"] { justify-content: flex-start; }
+.lw__z[data-z$="-center"] { justify-content: center; text-align: center; }
+.lw__z[data-z$="-right"] { justify-content: flex-end; text-align: right; }
+.lw__z[data-z^="center-"], .lw__z[data-z^="bottom-"] { margin-top: 6px; }
+.lw__ln { margin-top: 10px; }
+.lw[data-calign="center"] .lw__ln { justify-content: center; }
+.lw[data-calign="right"] .lw__ln { justify-content: flex-end; }
+.lw__z > .lw__id { flex: 1 1 100%; min-width: 0; }                      /* the title is a line of its own in its region */
+.lw__z:not(:has(> .lw__id)) { min-width: min-content; }                  /* controls never shrink under a neighbour (they wrap instead) */
+.lw__z > .lw__dim { flex: 1 1 120px; }                                    /* (a constrained card: the brightness shares its row) */
+.lw[data-zones] .lw__z > :is(.lw__power, .iqc-seg) { align-self: center; flex: none; }
+.lw__ln > .lw__dim { flex: 1 1 150px; }
+.lw__ln > .lw__extra { flex: 1 1 100%; }
+.lw[data-zones] .lw__z > .lw__big { flex: 1 1 100%; }
+/* the Slider's brightness is the whole card (beneath): its regions and lines sit above it */
+.lw[data-variant="slider"] :is(.lw__z, .lw__ln) { position: relative; z-index: 3; }

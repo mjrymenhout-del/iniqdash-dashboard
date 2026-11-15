@@ -1,0 +1,164 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   IniqDial — the shared DIAL (components/dial/dial.js): one renderer, five designs (Spectrum ring · Minimal ring · State arc · Full dial ·
+   Digital ring) and a bare readout. Domain-free: its colours are its own tokens (--iqdl-warm · --iqdl-cool · --iqdl-idle, the tone from
+   the view: data-tone warm | cool | idle, data-off) — an owner may map its own (Climate maps its heat / cool / idle colours).
+   Sizes: the dial is a square; its text is relative to it (cqw), or the configured --iqdl-vsz / --iqdl-lsz.
+   ========================================================================== */
+.iqdl {
+  --iqdl-warm: var(--accent-hot, #ff6b2c); --iqdl-cool: var(--info, #3fa9ff); --iqdl-idle: #8f939d; --iqdl-mid: #e9e2d6;
+  --iqdl-tone: var(--iqdl-idle);
+  --iqdl-plate-hi: #2b2d34; --iqdl-plate-lo: #111216;
+  --iqdl-face-hi: color-mix(in srgb, var(--iqdl-tone) 78%, #fff); --iqdl-face-lo: color-mix(in srgb, var(--iqdl-tone) 82%, #000);
+}
+.iqdl[data-tone="warm"] { --iqdl-tone: var(--iqdl-warm); }
+.iqdl[data-tone="cool"] { --iqdl-tone: var(--iqdl-cool); }
+.iqdl[data-off="true"] { --iqdl-tone: color-mix(in srgb, var(--iqdl-idle) 70%, transparent); }
+/* ---------------------------------------------------------------- the DIAL — one renderer, four designs */
+/* its size and place: the anchored layer's (the configured size, else the room its composition leaves it — climate.js) */
+.iqdl { position: relative; flex: none; aspect-ratio: 1; container: iqdl / size; touch-action: pan-y; }
+.iqdl__svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.iqdl__ro { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5cqw; pointer-events: none; text-align: center; }
+.iqdl__target { display: inline-flex; align-items: flex-start; font-size: min(var(--iqdl-vsz, 23cqw), 34cqw); font-weight: var(--iq-fw-display, 700); line-height: .95; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.iqdl__dec { font-size: .42em; margin-top: .12em; letter-spacing: -.01em; }
+.iqdl__deg { font-size: .42em; margin-top: .12em; font-weight: 500; }
+.iqdl__off { font-size: .6em; color: var(--text-muted); letter-spacing: -.01em; }
+.iqdl__label { font-size: var(--iqdl-lsz, 6.2cqw); font-weight: 500; color: var(--text-secondary); line-height: 1.2; }
+.iqdl__room { font-size: 5.6cqw; color: var(--text-secondary); line-height: 1.2; }
+.iqdl__room b { color: var(--text-primary); font-weight: 600; }
+.iqdl__act-t { font-size: 6cqw; font-weight: 600; color: var(--iqdl-tone); line-height: 1.2; letter-spacing: .01em; }
+.iqdl__fico { position: absolute; left: 50%; bottom: 9%; width: 10cqw; height: 10cqw; transform: translateX(-50%); color: rgba(255, 255, 255, .8); pointer-events: none; }
+.iqdl__fico > svg { width: 100%; height: 100%; }
+.iqdl__fico[hidden] { display: none; }
+.iqdl__knob { position: absolute; width: 8.5cqw; height: 8.5cqw; min-width: 14px; min-height: 14px; transform: translate(-50%, -50%); border-radius: 50%; box-sizing: border-box; cursor: grab; touch-action: none; z-index: 2;
+  background: #fff; box-shadow: 0 0 0 3px var(--iqdl-tone), 0 2px 8px rgba(0, 0, 0, .55); transition: box-shadow .3s ease; }
+.iqdl__knob:focus-visible { outline: var(--focus-ring); outline-offset: 3px; }
+.iqdl.is-dragging .iqdl__knob { cursor: grabbing; }
+.iqdl__knob[hidden] { display: none; }
+.iqdl__mm { font: 600 9px var(--font); fill: var(--text-muted); }
+.iqdl__cur { fill: #fff; stroke: rgba(0, 0, 0, .45); stroke-width: 1; }
+.iqdl[data-off="true"] { opacity: .78; }
+
+/* SPECTRUM RING: a dark centre, an outer ring in the state colour (or a cool → warm gradient), ticks, depth */
+.iqdl[data-design="spectrum"] .iqdl__track { fill: none; stroke: rgba(255, 255, 255, .07); stroke-width: 12; stroke-linecap: round; }
+.iqdl[data-design="spectrum"] .iqdl__act { fill: none; stroke: var(--iqdl-tone); stroke-width: 12; stroke-linecap: round; filter: drop-shadow(0 0 4px color-mix(in srgb, var(--iqdl-tone) 55%, transparent)); transition: stroke .4s ease; }
+.iqdl[data-design="spectrum"] .iqdl__seg { fill: none; stroke-width: 12; opacity: .25; transition: opacity .3s ease; }
+.iqdl[data-design="spectrum"] .iqdl__seg[data-lit="true"] { opacity: 1; }
+.iqdl[data-design="spectrum"][data-ring="state"] .iqdl__grad, .iqdl[data-design="spectrum"][data-ring="gradient"] .iqdl__act { display: none; }
+.iqdl[data-design="spectrum"] .iqdl__plate { filter: drop-shadow(0 10px 18px rgba(0, 0, 0, .65)); }
+.iqdl[data-design="spectrum"] .iqdl__rim { fill: none; stroke: rgba(255, 255, 255, .07); stroke-width: 1; }
+.iqdl[data-design="spectrum"] .iqdl__glow { opacity: .9; }
+.iqdl[data-design="spectrum"] .iqdl__tick { stroke: rgba(255, 255, 255, .2); stroke-width: 1; stroke-linecap: round; }
+.iqdl[data-design="spectrum"] .iqdl__tick--major { stroke: rgba(255, 255, 255, .42); stroke-width: 1.4; }
+.iqdl[data-design="spectrum"] .iqdl__tick[data-on="true"] { stroke: color-mix(in srgb, var(--iqdl-tone) 65%, rgba(255, 255, 255, .5)); }
+.iqdl[data-design="spectrum"] .iqdl__ro { inset: 18%; }
+.iqdl[data-design="spectrum"] .iqdl__target { font-size: min(var(--iqdl-vsz, 19cqw), 26cqw); }
+.iqdl[data-design="spectrum"] .iqdl__knob { width: 7.5cqw; height: 7.5cqw; background: var(--iqdl-plate-hi); box-shadow: 0 0 0 2.5px #fff, 0 2px 8px rgba(0, 0, 0, .6); }
+
+/* MINIMAL RING: a thin open ring, a large value, a big marker — nothing else */
+.iqdl[data-design="minimal"] .iqdl__track { fill: none; stroke: rgba(255, 255, 255, .16); stroke-width: var(--iqdl-thick, 3); stroke-linecap: round; }
+.iqdl[data-design="minimal"] .iqdl__act { fill: none; stroke: color-mix(in srgb, var(--iqdl-tone) 55%, #d9dbe0); stroke-width: var(--iqdl-thick, 3); stroke-linecap: round; }
+.iqdl[data-design="minimal"] .iqdl__knob { width: 11cqw; height: 11cqw; background: radial-gradient(circle at 50% 40%, #fff, #e6e8ec); box-shadow: 0 0 0 2px rgba(0, 0, 0, .35), 0 3px 10px rgba(0, 0, 0, .55); }
+.iqdl[data-design="minimal"][data-marker="off"] .iqdl__knob { background: transparent; box-shadow: none; }
+.iqdl[data-design="minimal"] .iqdl__target { font-size: min(var(--iqdl-vsz, 25cqw), 34cqw); }
+
+/* STATE ARC: a horseshoe in the state colour, the action spoken, a large value */
+.iqdl[data-design="arc"] .iqdl__track { fill: none; stroke: rgba(255, 255, 255, .09); stroke-width: 10; stroke-linecap: round; }
+.iqdl[data-design="arc"] .iqdl__act { fill: none; stroke: var(--iqdl-tone); stroke-width: 10; stroke-linecap: round; transition: stroke .4s ease; }
+.iqdl[data-design="arc"][data-arc="glow"] .iqdl__act { filter: drop-shadow(0 0 6px color-mix(in srgb, var(--iqdl-tone) 70%, transparent)); }
+.iqdl[data-design="arc"] .iqdl__glow { opacity: 0; }
+.iqdl[data-design="arc"][data-arc="glow"] .iqdl__glow { opacity: .9; }
+.iqdl[data-design="arc"] .iqdl__knob { width: 8cqw; height: 8cqw; }
+
+/* FULL DIAL: a graphical face in the state colour, dense perimeter ticks, the target and the room marked */
+.iqdl[data-design="full"] .iqdl__face { filter: drop-shadow(0 12px 22px rgba(0, 0, 0, .55)); transition: fill .4s ease; }
+.iqdl[data-design="full"][data-face="dark"] { --iqdl-face-hi: var(--iqdl-plate-hi); --iqdl-face-lo: var(--iqdl-plate-lo); }
+.iqdl[data-design="full"] .iqdl__tick { stroke: rgba(255, 255, 255, .36); stroke-width: .9; }
+.iqdl[data-design="full"] .iqdl__tick--major { stroke: rgba(255, 255, 255, .55); stroke-width: 1.2; }
+.iqdl[data-design="full"] .iqdl__tick[data-span="true"] { stroke: #fff; stroke-width: 1.8; }
+.iqdl[data-design="full"][data-face="dark"] .iqdl__tick[data-span="true"] { stroke: var(--iqdl-tone); }
+.iqdl[data-design="full"][data-density="simple"] .iqdl__tick:not(.iqdl__tick--major) { display: none; }
+.iqdl[data-design="full"] .iqdl__tmark { stroke: #fff; stroke-width: 2.6; stroke-linecap: round; }
+.iqdl[data-design="full"] .iqdl__cmark { stroke: rgba(255, 255, 255, .85); stroke-width: 1.6; stroke-linecap: round; }
+.iqdl[data-design="full"] :is(.iqdl__tlab, .iqdl__clab) { font: 700 7.5px var(--font); fill: #fff; }
+.iqdl[data-design="full"] .iqdl__clab { font-size: 6.5px; fill: rgba(255, 255, 255, .8); }
+.iqdl[data-design="full"] .iqdl__mm { fill: rgba(255, 255, 255, .7); }
+.iqdl[data-design="full"] .iqdl__ro { color: #fff; }
+.iqdl[data-design="full"] :is(.iqdl__label, .iqdl__room, .iqdl__act-t) { color: rgba(255, 255, 255, .82); }
+.iqdl[data-design="full"] .iqdl__room b { color: #fff; }
+.iqdl[data-design="full"] .iqdl__target { font-size: min(var(--iqdl-vsz, 25cqw), 34cqw); text-shadow: 0 2px 10px rgba(0, 0, 0, .25); }
+.iqdl[data-design="full"] .iqdl__knob { width: 6cqw; height: 6cqw; background: transparent; box-shadow: none; }
+.iqdl[data-design="full"] .iqdl__knob:focus-visible { box-shadow: 0 0 0 2px #fff; }
+
+/* DIGITAL RING: a device face, a THIN ring in the state colour (or chosen), a clean large value, a few structured information places */
+.iqdl[data-design="digital"] { --iqdl-dface-hi: #17181c; --iqdl-dface-lo: #0c0d10; --iqdl-drim-hi: #2a2c31; --iqdl-drim-lo: #121316; }
+.iqdl[data-design="digital"][data-surface="soft"] { --iqdl-dface-hi: #24262c; --iqdl-dface-lo: #15161a; }
+.iqdl[data-design="digital"][data-surface="glass"] { --iqdl-dface-hi: #1c1e24; --iqdl-dface-lo: #0f1013; }
+.iqdl[data-design="digital"][data-surface="deep"] { --iqdl-dface-hi: #0b0b0d; --iqdl-dface-lo: #000; }
+.iqdl[data-design="digital"] .iqdl__dglass { display: none; }
+.iqdl[data-design="digital"][data-surface="glass"] .iqdl__dglass { display: block; }
+.iqdl[data-design="digital"][data-surface="deep"] .iqdl__dface { filter: drop-shadow(0 0 0 #000) drop-shadow(0 6px 10px rgba(0, 0, 0, .7)); }
+.iqdl[data-design="digital"] .iqdl__drim { filter: drop-shadow(0 8px 16px rgba(0, 0, 0, .55)); }
+.iqdl[data-design="digital"][data-depth="flat"] .iqdl__drim { fill: none; filter: none; }
+.iqdl[data-design="digital"][data-depth="raised"] { --iqdl-drim-hi: #3a3c42; --iqdl-drim-lo: #141518; }
+.iqdl[data-design="digital"][data-depth="raised"] .iqdl__drim { filter: drop-shadow(0 12px 22px rgba(0, 0, 0, .7)) drop-shadow(0 1px 0 rgba(255, 255, 255, .08)); }
+/* (its thickness is real px at any dial size — a thin ring stays thin) */
+.iqdl[data-design="digital"] .iqdl__dring { fill: none; stroke: var(--iqdl-dring, var(--iqdl-tone)); stroke-width: var(--iqdl-thick, 3); vector-effect: non-scaling-stroke; transition: stroke .4s ease, opacity .4s ease; }
+.iqdl[data-design="digital"][data-active-arc="on"] .iqdl__dring { opacity: .28; }
+.iqdl[data-design="digital"] .iqdl__act { fill: none; stroke: var(--iqdl-dring, var(--iqdl-tone)); stroke-width: calc(var(--iqdl-thick, 3) * 1px + 1px); stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.iqdl[data-design="digital"][data-active-arc="off"] .iqdl__act { display: none; }
+.iqdl[data-design="digital"] .iqdl__tick { stroke: rgba(255, 255, 255, .22); stroke-width: 1; }
+.iqdl[data-design="digital"] .iqdl__ro { inset: 26% 14%; gap: 1cqw; }
+.iqdl[data-design="digital"] .iqdl__target { font-size: min(var(--iqdl-vsz, 27cqw), 34cqw); font-weight: 400; letter-spacing: -.02em; }
+.iqdl[data-design="digital"] .iqdl__dec { font-size: .4em; }
+.iqdl[data-design="digital"] .iqdl__deg { font-size: .3em; margin: .2em 0 0 .12em; font-weight: 400; }
+.iqdl[data-design="digital"] .iqdl__act-t { display: none; }
+.iqdl[data-design="digital"] .iqdl__knob { width: 4.5cqw; height: 4.5cqw; background: #fff; box-shadow: 0 0 0 2px var(--iqdl-dring, var(--iqdl-tone)); }
+.iqdl[data-design="digital"][data-active-arc="off"] .iqdl__knob { background: transparent; box-shadow: none; }
+.iqdl[data-design="digital"][data-active-arc="off"] .iqdl__knob:focus-visible { box-shadow: 0 0 0 2px #fff; }
+/* the information places inside the dial (structured; the temperature keeps the centre); each item keeps its own sizes */
+.iqdl__dinfo { position: absolute; inset: 0; pointer-events: none; }
+.iqdl__dslot { position: absolute; display: flex; gap: 2.5cqw; align-items: center; justify-content: center; max-width: 34%; }
+.iqdl__dslot:empty { display: none; }
+.iqdl__dslot[data-slot="top"] { top: 11%; left: 50%; translate: -50% 0; max-width: 60%; }
+.iqdl__dslot[data-slot="bottom"] { bottom: 9%; left: 50%; translate: -50% 0; max-width: 64%; }
+.iqdl__dslot[data-slot="upper-left"] { top: 21%; left: 18%; justify-content: flex-start; }
+.iqdl__dslot[data-slot="upper-right"] { top: 21%; right: 18%; justify-content: flex-end; }
+.iqdl__dslot[data-slot="lower-left"] { bottom: 19%; left: 16%; justify-content: flex-start; }
+.iqdl__dslot[data-slot="lower-right"] { bottom: 19%; right: 16%; justify-content: flex-end; }
+.iqdl__dslot > * { max-width: 100%; }
+/* by the DIAL's own size (never squeezed): large — every chosen item; medium — the first four; small — the first; tiny (and Micro) — none */
+.iqdl[data-dsize="m"] .iqdl__dslot > :not([data-rank="0"], [data-rank="1"], [data-rank="2"], [data-rank="3"]) { display: none; }
+.iqdl[data-dsize="s"] .iqdl__dslot > :not([data-rank="0"]) { display: none; }
+.iqdl[data-dsize="s"][data-design="digital"] :is(.iqdl__label) { display: none; }
+.iqdl[data-dsize="xs"] .iqdl__dinfo { display: none; }
+
+/* the BARE readout (Compact / Minimal variants): no ring — the value, its label and the room temperature */
+.iqdl[data-design="bare"] { aspect-ratio: auto; height: auto; width: auto; container-type: normal; }
+.iqdl[data-design="bare"] :is(.iqdl__svg, .iqdl__knob, .iqdl__fico) { display: none; }
+.iqdl[data-design="bare"] .iqdl__ro { position: static; align-items: flex-start; gap: 3px; }
+.iqdl[data-design="bare"] .iqdl__target { font-size: var(--iqdl-vsz, clamp(28px, 30cqh, 60px)); }
+.iqdl[data-design="bare"] :is(.iqdl__label, .iqdl__room, .iqdl__act-t) { font-size: var(--iqdl-lsz, 12.5px); }
+
+.iqdl[data-ticks="off"] .iqdl__ticks, .iqdl[data-minmax="off"] .iqdl__mm { display: none; }
+
+@media (prefers-reduced-motion: reduce) { .iqdl__knob, .iqdl .iqdl__act, .iqdl__seg { transition: none; } }
+
+/* KNOB: a raised dark knob in a thin outer scale; a cool → warm ring around it, lit up to the setpoint */
+.iqdl[data-design="knob"] { --iqdl-mid-k: #22c7a3; --iqdl-warm-k: #ff3d6e; --iqdl-plate-hi: #3a3d47; --iqdl-plate-lo: #16171c; }
+.iqdl[data-design="knob"] .iqdl__track { fill: none; stroke: rgba(0, 0, 0, .5); stroke-width: 10; }
+.iqdl[data-design="knob"] .iqdl__seg { fill: none; stroke-width: 7; opacity: .14; transition: opacity .3s ease; }
+.iqdl[data-design="knob"] .iqdl__seg[data-lit="true"] { opacity: 1; }
+.iqdl[data-design="knob"] .iqdl__plate { filter: drop-shadow(0 14px 22px rgba(0, 0, 0, .7)) drop-shadow(0 -2px 3px rgba(255, 255, 255, .05)); }
+.iqdl[data-design="knob"] .iqdl__rim { fill: none; stroke: rgba(255, 255, 255, .09); stroke-width: 1; }
+.iqdl[data-design="knob"] .iqdl__tick { stroke: rgba(255, 255, 255, .22); stroke-width: 1; stroke-linecap: round; }
+.iqdl[data-design="knob"] .iqdl__tick--major { stroke: rgba(255, 255, 255, .5); stroke-width: 1.3; }
+.iqdl[data-design="knob"][data-ticks="off"] .iqdl__ticks { display: none; }
+.iqdl[data-design="knob"] .iqdl__mm { font-size: 8px; font-weight: 500; }
+.iqdl[data-design="knob"] .iqdl__ro { inset: 24%; }
+.iqdl[data-design="knob"] .iqdl__target { font-size: min(var(--iqdl-vsz, 21cqw), 26cqw); font-weight: 700; }
+.iqdl[data-design="knob"] .iqdl__act-t { display: none; }
+.iqdl[data-design="knob"] .iqdl__knob { width: 7cqw; height: 7cqw; background: #2a2d36; box-shadow: 0 0 0 2px rgba(255, 255, 255, .85), 0 3px 8px rgba(0, 0, 0, .6); }

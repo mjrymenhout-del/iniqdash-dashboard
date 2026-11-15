@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "spotlight",
+  "name": "Event spotlight",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "spotlight.js",
+  "style": "spotlight.css",
+  "assets": "assets/",
+  "api": "MaisonSpotlight"
+}

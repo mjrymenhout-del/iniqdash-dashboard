@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "action",
+  "name": "Action",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "action.js",
+  "style": "action.css",
+  "assets": "assets/",
+  "api": "MaisonAction"
+}

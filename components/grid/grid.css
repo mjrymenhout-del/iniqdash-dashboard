@@ -1,0 +1,128 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Dashboard grid — explicit x / y / w / h placement, three breakpoints.
+
+   The GRID owns placement, spans, gaps, breakpoints and reflow.
+   It never styles what is placed in it (containers or widgets).
+
+   DOM (built by grid.js)
+   <div class="mg [mg--nested]">            ← measured box (container query "mg")
+     <div class="mg__grid">                  ← the CSS grid
+       <div class="mg__item" style="--d-x:1; --d-y:1; --d-w:4; --d-h:4; --t-…; --m-…">
+         …container or widget…
+       </div>
+     </div>
+   </div>
+
+   Breakpoints are chosen from the GRID'S OWN WIDTH, not the viewport, so a nested grid in a
+   narrow container gets a compact layout even on a desktop screen:
+     mobile    < 560px   4 columns   gap --grid-gap-compact
+     tablet   >= 560px   8 columns   gap --grid-gap
+     desktop  >= 960px  12 columns   gap --grid-gap
+   (keep in sync with MaisonGrid.BREAKPOINTS in grid.js)
+
+   Rows: every row track is exactly --grid-row (40px) — fixed, never stretched by content — so
+   h rows = h × 40px + (h − 1) × gap, always. Two items with the same h are always the same height.
+   Geometry is deterministic: content adapts to the area it is given (and is contained within it);
+   a component that needs more room declares a minH so a smaller h can never be assigned.
+
+   Dashboard geometry (per dashboard, optional — app.grid): a PAGE grid created with a geometry carries
+   --mgc-d/t/m (columns), --mgr-d/t/m (row height) and --mgg-d/t/m (gap). Every rule below reads them with the
+   legacy value as fallback, so a grid without them is exactly the grid above. Nested grids reset them (they keep
+   the legacy rows, the compact gap and their own / their container's columns).
+
+   Every item carries all twelve variables (grid.js always writes them; x/y may be 'auto'),
+   so a nested item never inherits its parent item's values.
+   ========================================================================== */
+
+.mg {
+  container: mg / inline-size;
+  width: 100%;
+  min-width: 0;
+}
+
+.mg__grid {
+  --mg-cols: var(--mgc-m, 4);
+  --mg-gap: var(--mgg-m, var(--grid-gap-compact));
+  --mg-row: var(--mgr-m, var(--grid-row));
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--mg-cols), minmax(0, 1fr));
+  grid-auto-rows: var(--mg-row);     /* fixed row unit: content never resizes the grid */
+  grid-auto-flow: row;            /* auto-placed items keep their logical (DOM) order */
+  gap: var(--mg-gap);
+}
+
+/* a dashboard geometry's PAGE EDGE per screen size (app.grid[bp].pad): room around the page grid; the grid's own box (its
+   columns, the editor's drag maths) is inside it */
+.mg--geo { display: flow-root; }
+.mg--geo > .mg__grid { margin: var(--mgp-m, 0px); }
+
+/* mobile (default): reflow in order; x/y are normally 'auto' */
+.mg__item {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  grid-column: var(--m-x) / span var(--m-w);
+  grid-row: var(--m-y) / span var(--m-h);
+}
+/* whatever is placed fills the item's area exactly (a container in fill mode, or a widget) and is
+   contained in it: it cannot push the area larger, and it cannot spill into a neighbour */
+.mg__item > * { flex: 1 1 auto; min-width: 0; min-height: 0; overflow: hidden; }
+
+@container mg (min-width: 560px) {
+  .mg__grid { --mg-cols: var(--mgc-t, 8); --mg-gap: var(--mgg-t, var(--grid-gap)); --mg-row: var(--mgr-t, var(--grid-row)); }
+  .mg--geo > .mg__grid { margin: var(--mgp-t, 0px); }
+  .mg__item {
+    grid-column: var(--t-x) / span var(--t-w);
+    grid-row: var(--t-y) / span var(--t-h);
+  }
+}
+@container mg (min-width: 960px) {
+  .mg__grid { --mg-cols: var(--mgc-d, 12); --mg-gap: var(--mgg-d, var(--grid-gap)); --mg-row: var(--mgr-d, var(--grid-row)); }
+  .mg--geo > .mg__grid { margin: var(--mgp-d, 0px); }
+  .mg__item {
+    grid-column: var(--d-x) / span var(--d-w);
+    grid-row: var(--d-y) / span var(--d-h);
+  }
+}
+
+/* nested grids (inside a container) on a LEGACY page, in a popup or on a free surface use the compact gap and the legacy rows: the
+   dashboard geometry variables are reset here. On a page with a dashboard grid the nested grid SHARES the page's rows and gaps
+   (.mg--pagerows — the variables are inherited from the page grid); only the column count is its own (the container's span). */
+.mg--nested { --mgc-d: initial; --mgc-t: initial; --mgc-m: initial; }
+.mg--nested:not(.mg--pagerows) { --mgr-d: initial; --mgr-t: initial; --mgr-m: initial; --mgg-d: initial; --mgg-t: initial; --mgg-m: initial; }
+.mg--nested:not(.mg--pagerows) > .mg__grid { --mg-gap: var(--grid-gap-compact); }
+
+/* inheriting nested grid (opt-in: MaisonGrid.create({ nested: true, inherit: true })):
+   it is not itself a breakpoint container, so its items' "@container mg" queries resolve to the PARENT
+   grid — the page breakpoint. Its column count is the span of the item that holds it (the container's
+   --m-w / --t-w / --d-w, inherited), so a 4-column-wide container offers 4 placement columns. */
+.mg--inherit { container-name: mg-sub; }
+.mg--inherit > .mg__grid { --mg-cols: var(--m-w, 4); }
+@container mg (min-width: 560px) { .mg--inherit > .mg__grid { --mg-cols: var(--t-w, 8); } }
+@container mg (min-width: 960px) { .mg--inherit > .mg__grid { --mg-cols: var(--d-w, 12); } }
+
+/* forced breakpoint (opt-in: MaisonGrid.create({ nested, inherit, bp })) for an inheriting grid with no
+   parent grid — e.g. a container placed on a free surface. Mirrors the container-query rules above. */
+.mg--inherit[data-mg-bp="mobile"] > .mg__grid { --mg-cols: var(--m-w, 4); }
+.mg--inherit[data-mg-bp="mobile"] > .mg__grid > .mg__item { grid-column: var(--m-x) / span var(--m-w); grid-row: var(--m-y) / span var(--m-h); }
+.mg--inherit[data-mg-bp="tablet"] > .mg__grid { --mg-cols: var(--t-w, 8); }
+.mg--inherit[data-mg-bp="tablet"] > .mg__grid > .mg__item { grid-column: var(--t-x) / span var(--t-w); grid-row: var(--t-y) / span var(--t-h); }
+.mg--inherit[data-mg-bp="desktop"] > .mg__grid { --mg-cols: var(--d-w, 12); }
+.mg--inherit[data-mg-bp="desktop"] > .mg__grid > .mg__item { grid-column: var(--d-x) / span var(--d-w); grid-row: var(--d-y) / span var(--d-h); }
+/* a forced breakpoint on a nested grid that carries PAGE ROWS (a popup's tabbed container with app.grid.popups 'page'): that
+   breakpoint's row height and gap too — there is no page grid around it whose container query would choose them */
+.mg--inherit.mg--pagerows[data-mg-bp="mobile"] > .mg__grid { --mg-row: var(--mgr-m, var(--grid-row)); --mg-gap: var(--mgg-m, var(--grid-gap-compact)); }
+.mg--inherit.mg--pagerows[data-mg-bp="tablet"] > .mg__grid { --mg-row: var(--mgr-t, var(--grid-row)); --mg-gap: var(--mgg-t, var(--grid-gap)); }
+.mg--inherit.mg--pagerows[data-mg-bp="desktop"] > .mg__grid { --mg-row: var(--mgr-d, var(--grid-row)); --mg-gap: var(--mgg-d, var(--grid-gap)); }
+
+/* an item HIDDEN at a screen size (layout[bp].hide): mobile by default, then the tablet / desktop rule takes over */
+.mg__item[data-hide-m] { display: none; }
+@container mg (min-width: 560px) { .mg__item[data-hide-m] { display: flex; } .mg__item[data-hide-t] { display: none; } }
+@container mg (min-width: 960px) { .mg__item[data-hide-t] { display: flex; } .mg__item[data-hide-d] { display: none; } }

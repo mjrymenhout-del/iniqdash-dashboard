@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "chart",
+  "name": "Chart",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "chart.js",
+  "style": "chart.css",
+  "assets": "assets/",
+  "api": "MaisonChart"
+}

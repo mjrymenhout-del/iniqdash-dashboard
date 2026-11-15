@@ -1,0 +1,27 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* IniqSunArc — the reusable sun arc (components/sunarc/sunarc.js): a thin golden arc, a luminous sun. Drawn in the stage's own pixels. */
+.iqsa { --iqsa-sun: #f6c445; --iqsa-arc: var(--iqsa-sun);
+  position: relative; display: flex; flex-direction: column; width: 100%; height: 100%; min-height: 0; color: var(--text-primary); }
+.iqsa__stage { position: relative; flex: 1 1 auto; min-height: 0; }
+.iqsa__svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.iqsa__hz { stroke: color-mix(in srgb, var(--text-secondary) 45%, transparent); stroke-width: 1; stroke-dasharray: 2 5; stroke-linecap: round; }
+.iqsa__arc { fill: none; stroke-width: 2; stroke-linecap: round; filter: drop-shadow(0 0 2.5px color-mix(in srgb, var(--iqsa-sun) 70%, transparent)); }
+.iqsa__mk--rise { fill: var(--iqsa-sun); }
+.iqsa__mk--set { fill: color-mix(in srgb, var(--iqsa-sun) 45%, #ff6a1a); }
+.iqsa__mk { stroke: color-mix(in srgb, #fff 25%, transparent); stroke-width: 1; }
+.iqsa__time, .iqsa__now { font: 500 12px var(--font, system-ui, sans-serif); fill: color-mix(in srgb, var(--text-primary) 82%, transparent); font-variant-numeric: tabular-nums; }
+.iqsa__now { fill: var(--text-secondary); }
+.iqsa__elev { font: 600 11.5px var(--font, system-ui, sans-serif); fill: var(--iqsa-sun); }
+.iqsa__drop { stroke: color-mix(in srgb, var(--iqsa-sun) 80%, transparent); stroke-width: 1.6; stroke-dasharray: 3 4; stroke-linecap: round; }
+.iqsa__nowdot { fill: color-mix(in srgb, var(--iqsa-sun) 70%, #fff); }
+.iqsa__halo { fill: color-mix(in srgb, var(--iqsa-sun) 30%, transparent); }
+.iqsa__sun { stroke: color-mix(in srgb, #fff 70%, var(--iqsa-sun)); stroke-width: .8; filter: drop-shadow(0 0 6px var(--iqsa-sun)); }
+.iqsa[data-glow="false"] .iqsa__sun { filter: none; }
+.iqsa[data-glow="false"] .iqsa__halo { opacity: .5; }
+/* night: the arc rests; the sun waits on the horizon, quiet and hollow */
+.iqsa:is([data-phase="before"], [data-phase="after"]) .iqsa__arc { opacity: .32; filter: none; }
+.iqsa:is([data-phase="before"], [data-phase="after"]) .iqsa__sun { fill: var(--surface-primary, #1c1c1c); stroke: color-mix(in srgb, var(--iqsa-sun) 60%, var(--text-muted)); stroke-width: 1.4; filter: none; }
+.iqsa[data-phase="na"] .iqsa__arc { opacity: .25; filter: none; }

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+  <!-- IniqDash Climate built-in artwork: a cool, air-conditioned room by a night window (original illustration) -->
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#151b22"/><stop offset=".7" stop-color="#1c242d"/><stop offset="1" stop-color="#0c1015"/></linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#17202a"/><stop offset="1" stop-color="#07090c"/></linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d2238"/><stop offset="1" stop-color="#1b4466"/></linearGradient>
+    <linearGradient id="unit" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9e2ea"/><stop offset="1" stop-color="#9aa8b5"/></linearGradient>
+    <linearGradient id="breeze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd3ff" stop-opacity=".45"/><stop offset="1" stop-color="#8fd3ff" stop-opacity="0"/></linearGradient>
+    <radialGradient id="cool" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#5fc3ff" stop-opacity=".32"/><stop offset="1" stop-color="#5fc3ff" stop-opacity="0"/></radialGradient>
+    <radialGradient id="vig" cx=".5" cy=".5" r=".8"><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".6"/></radialGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#wall)"/>
+  <rect y="620" width="1200" height="180" fill="url(#floor)"/>
+  <!-- window -->
+  <rect x="120" y="150" width="380" height="400" rx="6" fill="url(#sky)"/>
+  <g fill="#cfe8ff"><circle cx="190" cy="220" r="2"/><circle cx="300" cy="190" r="1.6"/><circle cx="420" cy="250" r="2.2"/><circle cx="250" cy="300" r="1.4"/><circle cx="380" cy="330" r="1.8"/></g>
+  <circle cx="420" cy="210" r="28" fill="#e9f4ff" opacity=".85"/>
+  <path d="M120 470l90-60 70 40 90-70 130 90v80H120z" fill="#0a1828"/>
+  <rect x="120" y="150" width="380" height="400" rx="6" fill="none" stroke="#2c3743" stroke-width="16"/>
+  <path d="M310 150v400M120 350h380" stroke="#2c3743" stroke-width="10"/>
+  <!-- wall unit and its cool breeze -->
+  <ellipse cx="800" cy="330" rx="420" ry="300" fill="url(#cool)"/>
+  <rect x="640" y="160" width="360" height="110" rx="22" fill="url(#unit)"/>
+  <rect x="664" y="232" width="312" height="10" rx="5" fill="#6f7f8e"/>
+  <circle cx="960" cy="196" r="6" fill="#5fd38a"/>
+  <path d="M680 270c20 80 10 160-30 240h300c-20-80-20-160 10-240z" fill="url(#breeze)"/>
+  <g fill="none" stroke="#bfe6ff" stroke-opacity=".35" stroke-width="4" stroke-linecap="round"><path d="M720 300c-10 40 10 70-6 110M800 300c-8 50 14 80-4 130M880 300c-8 40 12 70-4 110"/></g>
+  <!-- sofa silhouette -->
+  <path d="M600 700V560c0-30 24-50 56-50h420c32 0 56 20 56 50v140z" fill="#121a22"/>
+  <path d="M570 700v-90c0-16 12-28 28-28s28 12 28 28v90zM1106 700v-90c0-16 12-28 28-28s28 12 28 28v90z" fill="#18222c"/>
+  <rect width="1200" height="800" fill="url(#vig)"/>
+</svg>

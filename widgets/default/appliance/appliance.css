@@ -1,0 +1,371 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Appliance Widget V1 — widget-specific CSS only (theme from assets/css/tokens.css).
+
+   Identity: the device (artwork or icon) next to a clear operating status, the programme and time
+   left, and a progress rail that fills while a cycle runs. Configured actions (Start / Pause /
+   Resume / Stop) appear as small labelled keys; none are invented.
+
+   Arrangements (container "ap" = the widget's own box):
+     compact   < 260px   device + first action on top, name, status, programme · time, progress
+     standard  260–479   device on the left; name, status, programme · time; progress + actions below
+     wide     >= 480px   device | name + status | progress block | actions — one line, fits h2;
+                         only while the box is a strip (< 240px tall, or ≥ 2 : 1)
+     tall     ≥ 300px tall (≥ 240 when narrow), not a strip: the device large in the free middle (both axes), name,
+                         status and programme under it, progress + actions at the bottom
+   ========================================================================== */
+
+.ap {
+  --ap-art-ratio: .83;
+  --ap-tone: var(--text-muted);
+  position: relative;
+  container: ap / size;
+  min-width: 0;
+  min-height: 92px;
+  overflow: hidden;
+  border-radius: var(--radius-device);
+  color: var(--text-primary);
+  font-family: var(--font);
+  background: var(--device-surface);
+  box-shadow: var(--device-shadow);
+}
+.ap[data-active="true"] { --ap-tone: var(--accent); }
+.ap[data-state="finished"] { --ap-tone: var(--success); }
+.ap[data-state="paused"] { --ap-tone: var(--warning); }
+.ap[data-state="error"] { --ap-tone: var(--danger); }
+.ap[data-state="idle"], .ap[data-state="off"], .ap[data-state="other"] { --ap-tone: var(--text-secondary); }
+
+.ap__in {
+  height: 100%;
+  padding: 11px 12px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto auto auto auto;
+  grid-template-areas: "vis acts" ". ." "id id" "status status" "meta meta" "prog prog";
+  row-gap: 2px;
+}
+
+/* ---- device ---- */
+.ap__vis { grid-area: vis; position: relative; align-self: start; height: 40px; }
+.ap__vis img { display: none; height: 100%; aspect-ratio: var(--ap-art-ratio); object-fit: contain; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .45)); transition: filter var(--dur-medium) var(--ease); }
+.ap__icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; color: var(--text-secondary); background: var(--surface-tertiary); box-shadow: var(--shadow-icon); }
+.ap__icon svg { width: 21px; height: 21px; }
+.ap[data-art="yes"] .ap__vis img { display: block; }
+.ap[data-art="yes"] .ap__icon { display: none; }
+.ap[data-active="true"] .ap__icon { color: var(--accent); }
+.ap[data-state="off"] .ap__vis img, .ap[data-state="idle"] .ap__vis img { filter: grayscale(.5) brightness(.7) drop-shadow(0 6px 10px rgba(0, 0, 0, .45)); }
+.ap[data-state="unavailable"] .ap__vis, .ap[data-state="unknown"] .ap__vis { opacity: var(--unavailable-opacity); filter: grayscale(1); }
+
+/* ---- identity + status ---- */
+.ap__id { grid-area: id; min-width: 0; }
+.ap__name { margin: 0; font-size: 14px; font-weight: var(--iq-fw-title); line-height: 1.22; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ap__sub { margin: 1px 0 0; font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ap__sub[hidden], .ap__meta[hidden], .ap__prog[hidden] { display: none !important; }
+.ap__status { grid-area: status; margin: 1px 0 0; display: flex; align-items: baseline; gap: 6px; min-width: 0; font-size: 12px; line-height: 1.3; white-space: nowrap; }
+.ap__status-t { font-weight: var(--iq-fw-status); color: var(--ap-tone); }
+.ap__dot { flex: none; width: 7px; height: 7px; border-radius: 50%; align-self: center; background: var(--ap-tone); }
+.ap[data-state="unavailable"] .ap__dot, .ap[data-state="unknown"] .ap__dot { background: transparent; box-shadow: inset 0 0 0 1.5px var(--text-muted); }
+.ap[data-state="unavailable"] .ap__name, .ap[data-state="unknown"] .ap__name { color: var(--text-muted); }
+.ap__meta { grid-area: meta; margin: 0; font-size: 12px; line-height: 1.3; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* compact: the subtitle gives way to programme · time */
+.ap__sub { display: none; }
+
+/* ---- progress rail ---- */
+.ap__prog { grid-area: prog; display: flex; align-items: center; gap: 8px; margin-top: 4px; min-width: 0; }
+.ap__bar { position: relative; flex: 1 1 auto; height: 6px; border-radius: 3px; overflow: hidden; background: var(--control-well); box-shadow: var(--control-well-shadow); }
+.ap__bar i { position: absolute; inset: 0 auto 0 0; width: calc(var(--ap-p, 0) * 100%); border-radius: inherit; background: linear-gradient(90deg, color-mix(in srgb, var(--ap-tone) 55%, var(--surface-tertiary)), var(--ap-tone)); transition: width var(--dur-slow) var(--ease); }
+.ap__pct { flex: none; font-size: 11.5px; line-height: 1.2; font-weight: var(--iq-fw-display); font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+
+/* ---- configured actions ---- */
+.ap__acts { grid-area: acts; display: flex; gap: 6px; align-self: start; }
+.ap[data-has-actions="false"] .ap__acts { display: none; }
+.ap__act {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: var(--hit-min);
+  height: var(--hit-min);
+  padding: 0 10px;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+  font: var(--iq-fw-control) 12px var(--font);
+  color: var(--text-secondary);
+  background: var(--control-raised);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, .45), inset 0 1px 0 var(--edge-highlight);
+  transition: transform var(--dur-press) var(--ease);
+}
+.ap__act svg { width: 14px; height: 14px; flex: none; }
+.ap__act span { display: none; }
+.ap__act:active:not(:disabled) { transform: translateY(1px); }
+.ap__act:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.ap__act:disabled { cursor: not-allowed; opacity: var(--disabled-opacity); }
+/* in a compact tile only the first configured action fits beside the device */
+.ap__act:nth-child(n + 2) { display: none; }
+
+/* ---------------------------------------------------------------- standard: 260–479px */
+@container ap (min-width: 260px) {
+  .ap__in {
+    padding: 14px 16px;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+    grid-template-areas: "vis id id" "vis status status" "vis meta meta" "vis . ." "prog prog acts";
+    column-gap: 14px;
+  }
+  .ap__vis { height: auto; align-self: stretch; max-height: calc(100cqh - 28px - 46px); }
+  .ap[data-art="yes"] .ap__vis { grid-row: 1 / 5; }
+  .ap__vis img { height: 100%; max-height: 92px; }
+  .ap__icon { width: 44px; height: 44px; }
+  .ap__name { font-size: 15px; }
+  .ap__status { font-size: 13px; }
+  .ap__status-t { font-size: 15px; }
+  .ap__sub { display: block; }
+  .ap__acts { align-self: end; }
+  .ap__act:nth-child(n + 2) { display: inline-flex; }
+  .ap__act span { display: inline; }
+  .ap__prog { align-self: center; margin-top: 0; }
+  .ap[data-has-progress="false"] .ap__in { grid-template-areas: "vis id acts" "vis status acts" "vis meta acts" "vis . acts" "vis . acts"; }
+  .ap[data-has-progress="false"] .ap__acts { align-self: center; }
+}
+
+/* standard but short (h3 on a phone): the subtitle gives way so status, programme and controls fit */
+@container ap (min-width: 260px) and (max-width: 479px) and (max-height: 159px) {
+  .ap__sub { display: none; }
+}
+
+/* ---------------------------------------------------------------- wide: ≥ 480px */
+@container ap (min-width: 480px) and ((max-height: 239px) or (min-aspect-ratio: 2 / 1)) {
+  .ap__in {
+    padding: 12px 18px;
+    grid-template-columns: auto minmax(0, 1fr) minmax(120px, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr) auto auto minmax(0, 1fr);
+    grid-template-areas: "vis . . acts" "vis id prog acts" "vis status meta acts" "vis . . acts";
+    column-gap: 18px;
+    row-gap: 2px;
+  }
+  .ap[data-has-progress="false"] .ap__in { grid-template-areas: "vis . . acts" "vis id meta acts" "vis status meta acts" "vis . . acts"; }
+  .ap__meta { padding-left: 18px; border-left: 1px solid var(--border-subtle); align-self: start; }
+  .ap[data-has-progress="false"] .ap__meta { align-self: center; }
+  .ap__vis { grid-row: 1 / -1; align-self: center; max-height: calc(100cqh - 20px); }
+  .ap[data-art="yes"] .ap__vis { grid-row: 1 / -1; }
+  .ap__vis img { max-height: calc(100cqh - 24px); }
+  .ap__acts { align-self: center; }
+  .ap__prog { align-self: center; padding-left: 18px; border-left: 1px solid var(--border-subtle); }
+  .ap__bar { height: 8px; border-radius: 4px; }
+  .ap__pct { font-size: 15px; }
+}
+
+/* ---------------------------------------------------------------- tall: ≥ 300px tall, not a strip
+   The device is the identity: it takes the free middle and grows with the box (both axes). */
+@container ap ((min-height: 300px) or ((max-width: 259px) and (min-height: 240px))) and (max-aspect-ratio: 2 / 1) {
+  .ap__in, .ap[data-has-progress="false"] .ap__in {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr) auto auto auto auto;
+    grid-template-areas: "vis vis" "id id" "status status" "meta meta" "prog acts";
+    column-gap: 14px;
+    row-gap: 3px;
+  }
+  .ap__vis, .ap[data-art="yes"] .ap__vis {
+    grid-area: vis; align-self: center; justify-self: center; margin-bottom: 10px;
+    height: clamp(40px, calc(100cqh - 210px), 280px); max-height: none;
+  }
+  .ap__vis img { height: 100%; max-height: none; max-width: calc(100cqw - 32px); }
+  .ap:not([data-art="yes"]) .ap__vis { height: auto; }
+  .ap__icon { width: clamp(44px, 18cqmin, 72px); height: clamp(44px, 18cqmin, 72px); }
+  .ap__icon svg { width: 48%; height: 48%; }
+  .ap__acts { align-self: end; }
+  .ap__prog { align-self: center; margin-top: 6px; }
+}
+@container ap (max-width: 259px) and (min-height: 240px) {
+  .ap[data-art="yes"] .ap__vis { height: clamp(40px, calc(100cqh - 170px), 240px); }
+}
+
+/* ==========================================================================
+   PROFILE: WASHING MACHINE (.apw) — the Generic appliance above is untouched.
+   Artwork layers (shared IniqVisuals stack, all aligned on the porthole of a 100 × 120 machine):
+     body (cabinet, panel, bezel) → drum (turns on its own) → door / glass (foreground) → effect (status emphasis)
+     + the shared ProgressRing round the porthole (only with a real percentage) + a door Badge.
+   Colours are semantic tokens (a later theme changes the tokens, not this file).
+   Arrangements (data-fit-arr, the widget's OWN box):
+     artwork  micro (mini porthole + state) · small (machine + state / progress) · stack / stack-l (machine above)
+              · side / side-l (machine beside the information)
+     compact  tiny (porthole + state) · small (+ progress · time left) · wide (+ programme, secondary)
+   ========================================================================== */
+.apw {
+  --apw-body-top: color-mix(in srgb, #8a8f9b 55%, var(--surface-interactive));
+  --apw-body: color-mix(in srgb, #5b5f69 60%, var(--surface-interactive));
+  --apw-body-low: color-mix(in srgb, #3a3c44 75%, var(--surface-secondary));
+  --apw-edge: color-mix(in srgb, #000 55%, transparent);
+  --apw-panel-top: #2a2c32;
+  --apw-panel: #15161a;
+  --apw-btn: #3b3e46;
+  --apw-knob-bg: #23252b;
+  --apw-knob: #c9ccd4;
+  --apw-drum-core: #0e0f12;
+  --apw-drum: #3a3d45;
+  --apw-drum-rim: #9aa0ab;
+  --apw-hole: #0b0c0e;
+  --apw-lifter: #aeb3bd;
+  --apw-cloth-a: color-mix(in srgb, #7c8aa6 70%, #1a1d24);
+  --apw-cloth-b: color-mix(in srgb, #b5835a 60%, #1a1d24);
+  --apw-tone: var(--text-muted);
+  background: linear-gradient(165deg, var(--surface-primary-top), var(--surface-primary) 55%, var(--surface-secondary));
+  box-shadow: var(--shadow-primary), inset 0 0 0 1px var(--border-subtle);
+}
+.apw[data-active="true"] { --apw-tone: var(--accent); }
+.apw[data-state="finished"] { --apw-tone: var(--success); }
+.apw[data-state="paused"] { --apw-tone: var(--warning); }
+.apw[data-state="error"] { --apw-tone: var(--danger); }
+.apw:is([data-state="idle"], [data-state="off"], [data-state="other"]) { --apw-tone: var(--text-secondary); }
+
+.apw__in {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto auto auto auto auto auto;
+  grid-template-areas: "art" "id" "state" "meta" "more" "ctl" "msg";
+  row-gap: 3px;
+}
+
+/* ---- artwork ---- */
+/* the art area fills its grid cell; the machine inside is CONTAINED in it (100 : 120, centred) — every layer shares that box */
+.apw__art { grid-area: art; position: relative; container-type: size; width: 100%; height: 100%; min-height: 0; min-width: 0; }
+.apw__frame { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(100cqw, 100cqh * 100 / 120); height: min(100cqh, 100cqw * 1.2); }
+.apw__frame .iqv-stack { position: absolute; inset: 0; }
+.apw__body svg, .apw__door svg, .apw__drum svg { display: block; width: 100%; height: 100%; }
+.apw__body { filter: drop-shadow(0 8px 14px rgba(0, 0, 0, .35)); }
+/* the porthole: centre (50, 71), radius 36 in the 100 × 120 body */
+.apw__drum, .apw__door { inset: auto; left: 14%; top: 29.17%; width: 72%; height: 60%; }
+.apw__door { left: 13%; top: 28.33%; width: 74%; height: 61.67%; }
+.apw__effect { inset: auto; left: 12%; top: 27.5%; width: 76%; height: 63.33%; border-radius: 50%; }
+.apw__ring { position: absolute; left: 9%; top: 25%; width: 82%; height: 68.33%; }
+.apw__ring .iqv-ring__track { stroke: color-mix(in srgb, var(--border-primary) 70%, transparent); }
+.apw__lcd { fill: var(--apw-panel); }
+.apw[data-active="true"] .apw__lcd, .apw[data-state="paused"] .apw__lcd, .apw[data-state="finished"] .apw__lcd { fill: color-mix(in srgb, var(--apw-tone) 55%, var(--apw-panel)); }
+.apw__laundry { opacity: .9; }
+.apw:is([data-state="off"], [data-state="idle"], [data-state="other"]) .apw__laundry { opacity: .55; }
+/* water behind the glass while a cycle runs (static tint, no loop) */
+.apw[data-state="finished"] .apw__effect { box-shadow: 0 0 0 2px color-mix(in srgb, var(--success) 55%, transparent), 0 0 18px color-mix(in srgb, var(--success) 35%, transparent); }
+.apw[data-state="error"] .apw__effect { box-shadow: 0 0 0 2px color-mix(in srgb, var(--danger) 60%, transparent); }
+.apw:is([data-state="unavailable"], [data-state="unknown"]) :is(.apw__art, .apw__mini) { opacity: var(--unavailable-opacity); filter: grayscale(1); }
+.apw__frame .iqv-badge { --iqv-anchor: 64px; top: 27%; right: 6%; bottom: auto; left: auto; }
+
+/* ---- mini porthole (compact, micro): drum + door + ring ---- */
+.apw__mini { display: none; grid-area: mini; position: relative; width: var(--apw-mini, 52px); height: var(--apw-mini, 52px); align-self: center; }
+.apw__mini-ring { position: absolute; inset: 0; }
+.apw__mini-drum, .apw__mini-door { position: absolute; inset: 15%; border-radius: 50%; overflow: hidden; }
+.apw__mini-door { inset: 13%; }
+.apw__mini svg { display: block; width: 100%; height: 100%; }
+.apw__mini::before { content: ""; position: absolute; inset: 9%; border-radius: 50%; background: #0b0b0d; box-shadow: var(--shadow-icon), inset 0 0 0 2px #9aa0ab; }
+
+/* ---- text ---- */
+.apw__id { grid-area: id; min-width: 0; }
+.apw__name { margin: 0; font-size: 14px; font-weight: var(--iq-fw-title); line-height: 1.22; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.apw__sub { margin: 1px 0 0; font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.apw__sub[hidden] { display: none; }
+.apw__state { grid-area: state; margin: 2px 0 0; min-width: 0; display: flex; align-items: baseline; gap: 6px; font-size: 13px; white-space: nowrap; }
+.apw__dot { flex: none; width: 8px; height: 8px; border-radius: 50%; align-self: center; background: var(--apw-tone); box-shadow: 0 0 8px color-mix(in srgb, var(--apw-tone) 50%, transparent); }
+.apw__state-t { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-weight: var(--iq-fw-status); color: var(--apw-tone); }
+.apw:is([data-state="other"], [data-state="idle"], [data-state="off"]) .apw__state-t { color: var(--text-secondary); }
+.apw__pct { flex: none; font-variant-numeric: tabular-nums; font-weight: var(--iq-fw-display); color: var(--text-secondary); }
+.apw__pct[hidden] { display: none; }
+.apw__meta { grid-area: meta; margin: 0; min-width: 0; display: flex; gap: 0 10px; font-size: 12.5px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; }
+.apw__meta[hidden], .apw__meta span[hidden], .apw__more[hidden], .apw__msg[hidden] { display: none; }
+.apw__meta span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.apw__rem { flex: none; font-variant-numeric: tabular-nums; font-weight: var(--iq-fw-subtitle); color: var(--text-primary); max-width: 55%; }
+.apw__more { grid-area: more; margin: 0; padding: 0; list-style: none; min-width: 0; display: flex; flex-wrap: wrap; gap: 2px 10px; font-size: 12px; color: var(--text-muted); max-height: 3.2em; overflow: hidden; }
+.apw__row { min-width: 0; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.apw__row[data-na] { font-style: italic; }
+.apw__row-b { all: unset; cursor: pointer; border-radius: 6px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.apw__row-b:hover { color: var(--text-secondary); }
+.apw__row-b:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.apw[data-door="open"] .apw__row--door { color: var(--warning); }
+.apw__msg { grid-area: msg; margin: 0; font-size: 11.5px; color: var(--warning); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---- controls: shared ControlStrip (buttons) + the shared select / Flyout (programme) ---- */
+.apw__ctl { grid-area: ctl; min-width: 0; display: flex; gap: 8px; margin-top: 6px; }
+.apw__ctl:empty { display: none; }
+.apw__ctl .iqv-strip { display: flex; gap: 8px; min-width: 0; flex: 1 1 auto; }
+.apw__btn { min-height: 44px; min-width: 44px; }
+.apw__sel { flex: 1 1 auto; min-width: 0; order: 2; }
+.apw__pick { flex: 1 1 auto; min-width: 0; min-height: 44px; justify-content: flex-start; border-radius: 14px; }
+.apw__pick-k { display: none; }
+.apw__pick-v { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ================================================================ ARTWORK arrangements */
+/* micro: no whole machine — the mini porthole beside the state */
+.apw[data-variant="artwork"]:is([data-fit-arr="side"], [data-fit-arr="side-l"]) .apw__art { width: auto; aspect-ratio: 100 / 120; height: 100%; max-width: 42cqw; }
+.apw[data-variant="artwork"][data-fit-arr="side"] .apw__name { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.apw[data-variant="artwork"][data-fit-arr="micro"] .apw__in { padding: 10px; column-gap: 10px; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto auto auto minmax(0, 1fr);
+  grid-template-areas: "mini ." "mini id" "mini state" "mini meta" "mini ."; }
+.apw[data-variant="artwork"][data-fit-arr="micro"] .apw__art, .apw[data-variant="artwork"][data-fit-arr="micro"] :is(.apw__more, .apw__ctl, .apw__sub, .apw__prog) { display: none; }
+.apw[data-variant="artwork"][data-fit-arr="micro"] .apw__mini { display: block; --apw-mini: clamp(40px, 34cqh, 64px); }
+/* micro narrower than a sensible name: the porthole, the state word and the time left — the name stays in the accessible label */
+@container ap (max-width: 150px) { .apw[data-variant="artwork"][data-fit-arr="micro"] .apw__id { display: none; } .apw[data-variant="artwork"][data-fit-arr="micro"] .apw__state { font-size: 12.5px; } .apw[data-variant="artwork"][data-fit-arr="micro"] .apw__pct, .apw[data-variant="artwork"][data-fit-arr="micro"] .apw__prog { display: none; } .apw[data-variant="artwork"][data-fit-arr="micro"] .apw__mini { --apw-mini: clamp(30px, 32cqh, 44px); } .apw[data-variant="artwork"][data-fit-arr="micro"] .apw__in { column-gap: 7px; padding: 8px; } }
+/* small: the machine + state / progress */
+.apw[data-variant="artwork"][data-fit-arr="small"] .apw__in { padding: 12px; }
+.apw[data-variant="artwork"][data-fit-arr="small"] :is(.apw__more, .apw__ctl, .apw__sub, .apw__prog) { display: none; }
+/* stack: machine above the information (lower-priority lines give way as the height runs out) */
+@container ap (max-height: 300px) { .apw[data-variant="artwork"][data-fit-arr="stack"] :is(.apw__more, .apw__sub) { display: none; } }
+@container ap (max-height: 250px) { .apw[data-variant="artwork"][data-fit-arr="stack"] .apw__ctl { display: none; } }
+.apw[data-variant="artwork"][data-fit-arr="stack-l"] .apw__in { padding: 18px; row-gap: 5px; }
+.apw[data-variant="artwork"][data-fit-arr="stack-l"] .apw__name { font-size: 15.5px; }
+/* side: the machine beside the information */
+.apw[data-variant="artwork"]:is([data-fit-arr="side"], [data-fit-arr="side-l"]) .apw__in {
+  column-gap: 16px; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto auto auto auto auto auto minmax(0, 1fr);
+  grid-template-areas: "art ." "art id" "art state" "art meta" "art more" "art ctl" "art msg" "art .";
+}
+.apw[data-variant="artwork"][data-fit-arr="side-l"] .apw__in { padding: 18px; column-gap: 22px; }
+.apw[data-variant="artwork"][data-fit-arr="side-l"] .apw__name { font-size: 16px; }
+.apw[data-variant="artwork"][data-fit-arr="side-l"] .apw__state { font-size: 15px; }
+@container ap (max-height: 170px) { .apw[data-variant="artwork"][data-fit-arr="side"] :is(.apw__more, .apw__sub) { display: none; } }
+@container ap (max-height: 210px) { .apw[data-variant="artwork"][data-fit-arr="side"] .apw__ctl { display: none; } }
+
+/* ================================================================ COMPACT: porthole + state first; progress, time, programme, extras */
+.apw[data-variant="compact"] .apw__art { display: none; }
+.apw[data-variant="compact"] .apw__mini { display: block; --apw-mini: clamp(36px, 62cqh, 58px); }
+.apw[data-variant="compact"] .apw__in { padding: 10px 12px; column-gap: 12px; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto auto auto auto auto minmax(0, 1fr);
+  grid-template-areas: "mini ." "mini id" "mini state" "mini meta" "mini more" "mini msg" "mini ."; }
+.apw[data-variant="compact"] :is(.apw__ctl) { display: none; }
+.apw[data-variant="compact"] .apw__name { font-size: 13px; color: var(--text-secondary); }
+.apw[data-variant="compact"] .apw__state { margin: 0; }
+.apw[data-variant="compact"][data-fit-arr="tiny"] .apw__in { padding: 8px 10px; column-gap: 8px; }
+.apw[data-variant="compact"][data-fit-arr="tiny"] :is(.apw__id, .apw__meta, .apw__more, .apw__msg) { display: none; }
+.apw[data-variant="compact"][data-fit-arr="tiny"] .apw__mini { --apw-mini: clamp(30px, 70cqh, 44px); }
+.apw[data-variant="compact"][data-fit-arr="small"] :is(.apw__more, .apw__sub, .apw__prog) { display: none; }
+@container ap (max-height: 96px) { .apw[data-variant="compact"] :is(.apw__more, .apw__sub, .apw__msg) { display: none; } }
+@container ap (max-height: 74px) { .apw[data-variant="compact"] .apw__id { display: none; } }
+/* the smallest layouts: the state in words comes first — the percentage stays in the ring and the accessible label */
+.apw:is([data-fit-arr="tiny"], [data-fit-arr="micro"]) .apw__pct { display: none; }
+/* the live server's "Demo" tag (top right of an unlinked widget) keeps clear of the name */
+.iqdemo > .apw .apw__name { padding-right: 44px; }
+.apw[data-variant="compact"][data-fit-arr="wide"] .apw__more { max-height: 1.6em; }
+/* strip (one grid row, wide): porthole · state % · time left · programme on ONE line */
+.apw[data-variant="compact"][data-fit-arr="strip"] .apw__in { display: flex; align-items: center; gap: 10px; padding: 6px 14px 6px 8px; }
+.apw[data-variant="compact"][data-fit-arr="strip"] .apw__mini { --apw-mini: clamp(28px, 80cqh, 40px); flex: none; }
+.apw[data-variant="compact"][data-fit-arr="strip"] :is(.apw__id, .apw__more, .apw__msg) { display: none; }
+.apw[data-variant="compact"][data-fit-arr="strip"] .apw__state { flex: 0 1 auto; min-width: 0; }
+.apw[data-variant="compact"][data-fit-arr="strip"] .apw__meta { flex: 1 1 0; }
+
+/* ================================================================ TEXT FIT (pass 2): a long friendly name wraps to two lines before it is cut; the state never gives way to it */
+.apw[data-variant="artwork"]:is([data-fit-arr="micro"], [data-fit-arr="side"], [data-fit-arr="side-l"]) .apw__name,
+.apw[data-variant="compact"]:is([data-fit-arr="micro"], [data-fit-arr="small"], [data-fit-arr="wide"], [data-fit-arr="normal"]) .apw__name { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+/* the percentage is secondary: in a narrow text column it makes way so the state word stays whole */
+@container ap (max-width: 290px) { .apw[data-variant="artwork"]:is([data-fit-arr="side"], [data-fit-arr="side-l"]) .apw__pct { display: none; } .apw[data-variant="artwork"][data-fit-arr="side"] .apw__art { max-width: 34cqw; } }
+@container ap (max-height: 140px) { .apw[data-variant="artwork"][data-fit-arr="micro"] .apw__name { -webkit-line-clamp: 1; } }
+@container ap (max-width: 215px) { .apw[data-variant="compact"] .apw__pct { display: none; } .apw[data-variant="compact"] .apw__name { -webkit-line-clamp: 1; } }
+/* centred small layouts sit below the Demo tag, so the name needs no reserve there */
+.iqdemo > .apw:is([data-fit-arr="micro"], [data-fit-arr="tiny"], [data-fit-arr="small"], [data-fit-arr="side"], [data-fit-arr="side-l"]) .apw__name { padding-right: 0; }
+@container ap (max-height: 112px) { .apw[data-variant="compact"] .apw__name { -webkit-line-clamp: 1; } }
+
+/* ================================================================ pass 2 — time left is the primary value of a running cycle */
+.apw[data-variant="artwork"]:is([data-fit-arr="side"], [data-fit-arr="side-l"], [data-fit-arr="stack"], [data-fit-arr="stack-l"]) .apw__rem { font-size: clamp(20px, 7.5cqmin, 32px); font-weight: var(--iq-fw-display); letter-spacing: -.01em; line-height: 1.1; color: var(--text-primary); max-width: none; }
+.apw[data-variant="artwork"]:is([data-fit-arr="side"], [data-fit-arr="side-l"]) .apw__meta { align-items: baseline; flex-wrap: wrap; row-gap: 0; }
+.apw[data-variant="artwork"]:is([data-fit-arr="side"], [data-fit-arr="side-l"]) .apw__state { font-size: 14px; }

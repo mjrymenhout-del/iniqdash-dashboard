@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "updates",
+  "name": "Updates",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "updates.js",
+  "style": "updates.css",
+  "assets": "assets/",
+  "api": "MaisonUpdates"
+}

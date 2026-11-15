@@ -1,0 +1,68 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* IniqIcons picker (components/icons/icons.js): a compact field [icon · mdi:name ▾]; the searchable list only while choosing */
+.iqi { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.iqi__field { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 40px; padding: 0 12px; border: 0; border-radius: 10px; cursor: pointer; text-align: left;
+  font: 500 13px var(--font); color: var(--text-primary); background: var(--control-well); box-shadow: var(--control-well-shadow); }
+.iqi__field:focus-visible { outline: 2px solid var(--ed-primary, var(--accent)); outline-offset: 2px; }
+.iqi__prev { flex: none; display: grid; place-items: center; width: 22px; height: 22px; color: var(--text-primary); }
+.iqi__prev svg, .iqi__ic svg { width: 100%; height: 100%; }
+.iqi__none { color: var(--text-muted); }
+.iqi__name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; }
+.iqi__name--none { font-family: var(--font); color: var(--text-muted); }
+.iqi__chev { flex: none; color: var(--text-muted); }
+.iqi__panel { display: flex; flex-direction: column; gap: 8px; padding: 10px; border-radius: 12px; background: var(--surface-secondary); box-shadow: 0 0 0 1px var(--border-primary) inset; min-width: 0; }
+.iqi__panel[hidden] { display: none; }
+.iqi__search { width: 100%; box-sizing: border-box; min-height: 38px; padding: 0 12px; border: 0; border-radius: 10px; font: 500 13px var(--font); color: var(--text-primary); background: var(--control-well); box-shadow: var(--control-well-shadow); }
+.iqi__search:focus-visible { outline: 2px solid var(--ed-primary, var(--accent)); outline-offset: 1px; }
+.iqi__info { margin: 0; font-size: 11.5px; color: var(--text-muted); }
+.iqi__list { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 4px; max-height: 232px; overflow-y: auto; overflow-x: hidden; min-width: 0; }
+.iqi__opt { display: flex; align-items: center; gap: 8px; min-width: 0; height: 36px; padding: 0 8px; border: 0; border-radius: 8px; cursor: pointer; text-align: left;
+  font: 500 12px var(--font); color: var(--text-secondary); background: none; }
+.iqi__opt:hover, .iqi__opt:focus-visible { background: var(--surface-tertiary); color: var(--text-primary); outline: none; }
+.iqi__opt[aria-selected="true"] { color: var(--text-primary); background: var(--accent-soft); box-shadow: 0 0 0 1px var(--accent-line) inset; }
+.iqi__ic { flex: none; display: grid; place-items: center; width: 20px; height: 20px; }
+.iqi__on { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ICON ANIMATIONS (IniqIcons.animate): only the icon element moves — restrained, continuous, compositor-only (transform / opacity) */
+[data-iqi-anim] { transform-origin: 50% 50%; will-change: transform, opacity; }
+[data-iqi-anim="rotate"]  { animation: iqi-rotate 2.4s linear infinite; }
+[data-iqi-anim="pulse"]   { animation: iqi-pulse 1.6s ease-in-out infinite; }
+[data-iqi-anim="breathe"] { animation: iqi-breathe 3.6s ease-in-out infinite; }
+[data-iqi-anim="shake"]   { animation: iqi-shake 2.4s ease-in-out infinite; }
+[data-iqi-anim="bounce"]  { animation: iqi-bounce 1.4s cubic-bezier(.3, 0, .4, 1) infinite; }
+[data-iqi-anim="swing"]   { animation: iqi-swing 2s ease-in-out infinite; transform-origin: 50% 8%; }
+[data-iqi-anim="flash"]   { animation: iqi-flash 1.8s ease-in-out infinite; }
+@keyframes iqi-rotate  { to { transform: rotate(360deg); } }
+@keyframes iqi-pulse   { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.12); opacity: .82; } }
+@keyframes iqi-breathe { 0%, 100% { transform: scale(.94); opacity: .72; } 50% { transform: scale(1.04); opacity: 1; } }
+@keyframes iqi-shake   { 0%, 60%, 100% { transform: translateX(0); } 66% { transform: translateX(-1.5px); } 72% { transform: translateX(1.5px); } 78% { transform: translateX(-1px); } 84% { transform: translateX(1px); } 90% { transform: translateX(0); } }
+@keyframes iqi-bounce  { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-14%); } 60% { transform: translateY(0); } 70% { transform: translateY(-4%); } }
+@keyframes iqi-swing   { 0%, 100% { transform: rotate(-9deg); } 50% { transform: rotate(9deg); } }
+@keyframes iqi-flash   { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+/* ICON BACKGROUND (IniqIcons.background): a fallback icon's own surface — none (the bare icon) · subtle (a restrained rounded
+   surface) · accent (a restrained accent-tinted surface). The widget sizes and places the icon box; this only draws its surface and
+   sizes the glyph in it. An icon with a background animates its GLYPH only (never its surface, never the widget's positioning). */
+[data-iqi-bg] { box-sizing: border-box; }
+[data-iqi-bg][data-iqi-bg] > svg { width: 76%; height: 76%; }
+[data-iqi-bg="subtle"][data-iqi-bg] > svg, [data-iqi-bg="accent"][data-iqi-bg] > svg { width: 56%; height: 56%; }
+[data-iqi-bg="subtle"] { border-radius: 24%; background: var(--surface-tertiary, #26272c); box-shadow: inset 0 0 0 1px var(--border-subtle, rgba(255, 255, 255, .08)), inset 0 1px 0 var(--edge-highlight, rgba(255, 255, 255, .05)); }
+[data-iqi-bg="accent"] { border-radius: 24%; background: color-mix(in srgb, var(--accent, #ff7a1a) 14%, var(--surface-tertiary, #26272c)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent, #ff7a1a) 34%, transparent), inset 0 1px 0 var(--edge-highlight, rgba(255, 255, 255, .05)); }
+[data-iqi-bg][data-iqi-anim] { animation: none; }
+[data-iqi-bg][data-iqi-anim] > svg { transform-origin: 50% 50%; }
+[data-iqi-bg][data-iqi-anim="rotate"] > svg  { animation: iqi-rotate 2.4s linear infinite; }
+[data-iqi-bg][data-iqi-anim="pulse"] > svg   { animation: iqi-pulse 1.6s ease-in-out infinite; }
+[data-iqi-bg][data-iqi-anim="breathe"] > svg { animation: iqi-breathe 3.6s ease-in-out infinite; }
+[data-iqi-bg][data-iqi-anim="shake"] > svg   { animation: iqi-shake 2.4s ease-in-out infinite; }
+[data-iqi-bg][data-iqi-anim="bounce"] > svg  { animation: iqi-bounce 1.4s cubic-bezier(.3, 0, .4, 1) infinite; }
+[data-iqi-bg][data-iqi-anim="swing"] > svg   { animation: iqi-swing 2s ease-in-out infinite; transform-origin: 50% 8%; }
+[data-iqi-bg][data-iqi-anim="flash"] > svg   { animation: iqi-flash 1.8s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { [data-iqi-anim], [data-iqi-anim] > svg { animation: none !important; will-change: auto; } }
+
+/* a STANDALONE icon (the icon component in its own box, IniqIcons compose): the glyph is --iqi-size; a background is padding around it */
+.iqi-solo { display: grid; place-items: center; width: var(--iqi-size, 40px); height: var(--iqi-size, 40px); color: var(--text-secondary); flex: none; }
+.iqi-solo > svg { width: 100%; height: 100%; }
+.iqi-solo[data-iqi-bg] { box-sizing: content-box; padding: calc(var(--iqi-size, 40px) * .22); }
+.iqi-solo[data-iqi-bg][data-iqi-bg] > svg { width: 100%; height: 100%; }

@@ -1,0 +1,37 @@
+<!doctype html>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/.
+   - Copyright © 2026 Marcel Rymenhout and IniqDash contributors -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dashboard Grid</title>
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../components/container/container.css">
+<link rel="stylesheet" href="../components/grid/grid.css">
+<link rel="stylesheet" href="../assets/css/template.css">
+<link rel="stylesheet" href="../components/showroom-nav/showroom-nav.css">
+</head>
+<body>
+<div data-showroom-nav></div>
+<main class="show show--wide">
+  <header class="show-head">
+    <h1>Dashboard grid</h1>
+    <p>Explicit x / y / w / h placement per breakpoint. 12 columns on desktop, 8 on tablet, 4 on mobile. Placeholders only.</p>
+  </header>
+  <div class="toolbar">
+    <button type="button" class="tb-btn" id="toggle-grid" aria-pressed="false">Show grid</button>
+    <span class="tb-read" id="bp-read" aria-live="polite"></span>
+    <a class="tb-link tb-link--next" href="../">Back to the dashboard</a>
+  </div>
+  <div id="dashboard"></div>
+</main>
+<script src="../components/container/container.js"></script>
+<script src="../components/grid/grid.js"></script>
+<script src="../assets/js/demo-icons.js"></script>
+<script src="../assets/js/grid-demo.js"></script>
+<script src="../components/showroom-nav/showroom-nav.js"></script>
+</body>
+</html>

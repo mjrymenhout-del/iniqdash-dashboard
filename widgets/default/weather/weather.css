@@ -1,0 +1,239 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Weather Widget V1 — widget-specific CSS only (theme from assets/css/tokens.css).
+
+   Identity: a drawn weather glyph and a large temperature; a faint sky tint that follows the
+   condition; details as quiet label/value pairs; a short forecast strip on wide tiles.
+   The sky colours below are specific to this widget (they describe weather, not the UI theme).
+
+   Arrangements (container "wx" = the widget's own box):
+     compact   < 260px   glyph + temperature, condition, place · H/L  — current weather only
+     standard  260–479   current block on the left, details on the right
+     wide     >= 480px   current | details | forecast (as many days as fit; needs ≥ 140px height)
+     tall     ≥ 300px tall, not a strip (any width): current (larger) on top, details under it, then
+                         the forecast — tiles in a row (≥ 360 wide) or one day per line (narrower);
+                         as many days as fit, never a cut-off entry
+   ========================================================================== */
+
+.wx {
+  --wx-sun: var(--accent);
+  --wx-cloud: #c9ced8;
+  --wx-cloud-back: #8d93a0;
+  --wx-rain: #6fb3ff;
+  --wx-snow: #e8f1ff;
+  --wx-sky: transparent;
+  --wx-glow: transparent;
+  position: relative;
+  container: wx / size;
+  min-width: 0;
+  min-height: 92px;
+  overflow: hidden;
+  border-radius: var(--radius-device);
+  color: var(--text-primary);
+  font-family: var(--font);
+  background: radial-gradient(80% 60% at 92% 108%, var(--wx-glow), transparent 72%), radial-gradient(130% 100% at 0% 0%, var(--wx-sky), transparent 70%), var(--wx-stars, linear-gradient(transparent, transparent)), var(--device-surface);
+  box-shadow: var(--device-shadow);
+}
+.wx[data-condition="clear"], .wx[data-condition="partly-cloudy"], .wx[data-condition="showers"] { --wx-sky: color-mix(in srgb, var(--accent) 20%, transparent); }
+.wx[data-condition="rain"], .wx[data-condition="thunder"], .wx[data-condition="sleet"] { --wx-sky: color-mix(in srgb, var(--wx-rain) 18%, transparent); }
+.wx[data-condition="cloudy"], .wx[data-condition="fog"], .wx[data-condition="wind"] { --wx-sky: color-mix(in srgb, var(--wx-cloud-back) 16%, transparent); }
+.wx[data-condition="clear"], .wx[data-condition="partly-cloudy"] { --wx-glow: color-mix(in srgb, var(--warning) 22%, transparent); }
+.wx[data-condition="showers"] { --wx-glow: color-mix(in srgb, var(--wx-rain) 14%, transparent); }
+.wx[data-condition="clear-night"], .wx[data-condition="partly-cloudy-night"] { --wx-sky: rgba(110, 120, 255, .2); --wx-glow: rgba(90, 100, 220, .16);
+  --wx-stars: radial-gradient(1.2px 1.2px at 78% 18%, rgba(255, 255, 255, .7), transparent), radial-gradient(1px 1px at 88% 34%, rgba(255, 255, 255, .55), transparent), radial-gradient(1px 1px at 64% 12%, rgba(255, 255, 255, .5), transparent), radial-gradient(1.4px 1.4px at 94% 10%, rgba(255, 255, 255, .7), transparent), radial-gradient(1px 1px at 70% 40%, rgba(255, 255, 255, .4), transparent); }
+.wx[data-condition="rain"], .wx[data-condition="thunder"], .wx[data-condition="sleet"] { --wx-glow: color-mix(in srgb, var(--wx-rain) 16%, transparent); }
+
+/* glyph parts */
+.wx svg { overflow: visible; }
+.wx-sun circle { fill: var(--wx-sun); }
+.wx-sun line { stroke: var(--wx-sun); stroke-width: 3; stroke-linecap: round; }
+.wx-moon { fill: #e6e2c8; }
+.wx-cloud { fill: var(--wx-cloud); }
+.wx-cloud--back { fill: var(--wx-cloud-back); }
+.wx-cloud--unknown { fill: var(--text-muted); }
+.wx-rain line { stroke: var(--wx-rain); stroke-width: 3; stroke-linecap: round; }
+.wx-snow, .wx-snow circle { fill: var(--wx-snow); }
+.wx-bolt { fill: var(--accent); }
+.wx-fog line, .wx-wind path { fill: none; stroke: var(--wx-cloud); stroke-width: 3; stroke-linecap: round; }
+
+.wx__in {
+  height: 100%;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "now";
+  column-gap: 18px;
+}
+.wx__now {
+  grid-area: now;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  grid-template-areas: "glyph temp" ". ." "cond cond" "loc loc";
+  column-gap: 8px;
+  min-width: 0;
+}
+.wx__glyph { grid-area: glyph; width: 46px; height: 46px; display: block; }
+.wx__svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .35)); }
+.wx__temp { grid-area: temp; justify-self: end; margin: 0; font-size: 32px; font-weight: var(--iq-fw-display); line-height: 1.25; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.wx__cond { grid-area: cond; margin: 0; font-size: 13.5px; font-weight: 600; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wx__loc { grid-area: loc; margin: 1px 0 0; font-size: 12px; line-height: 1.3; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wx[data-state="unavailable"] .wx__temp, .wx[data-state="unavailable"] .wx__cond { color: var(--text-muted); font-weight: var(--iq-fw-display); }
+.wx[data-state="unavailable"] .wx__glyph { opacity: var(--unavailable-opacity); }
+
+.wx__stats, .wx__fc { display: none; margin: 0; padding: 0; }
+.wx__stat { display: flex; justify-content: space-between; gap: 10px; min-width: 0; padding: 5px 0; border-bottom: 1px solid var(--border-subtle); font-size: 12px; line-height: 1.25; }
+.wx__stat:last-child { border-bottom: 0; }
+.wx__stat dt { color: var(--text-muted); white-space: nowrap; }
+.wx__stat dd { margin: 0; font-weight: 600; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
+
+/* forecast entries (the strip itself appears only where there is room: wide, or tall) */
+.wx__day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+  padding: 6px 2px;
+  border-radius: 12px;
+  background: var(--control-well);
+  box-shadow: var(--control-well-shadow);
+  font-size: 11.5px;
+  text-align: center;
+}
+.wx__day-k { font-weight: var(--iq-fw-subtitle); color: var(--text-secondary); }
+.wx__day-svg { width: 28px; height: 28px; }
+.wx__day-t { font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.wx__day-p { color: var(--wx-rain); font-size: 11px; min-height: 1em; }
+.wx__fc-note { grid-column: 1 / -1; align-self: center; margin: 0; font-size: 12px; line-height: 1.3; text-align: center; color: var(--text-muted); }
+
+/* ---------------------------------------------------------------- standard: 260–479px */
+@container wx (min-width: 260px) {
+  .wx__in { padding: 14px 18px; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); grid-template-areas: "now stats"; }
+  .wx[data-has-stats="false"] .wx__in { grid-template-columns: minmax(0, 1fr); grid-template-areas: "now"; }
+  .wx__now { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "glyph temp" ". ." "cond cond" "loc loc"; }
+  .wx__glyph { width: 56px; height: 56px; }
+  .wx__temp { justify-self: start; align-self: center; font-size: 40px; }
+  .wx__cond { font-size: 14.5px; }
+  .wx__stats { display: block; align-self: center; overflow: hidden; max-height: 100%; }
+}
+
+/* ---------------------------------------------------------------- wide: ≥ 480px */
+@container wx (min-width: 480px) {
+  .wx__in { grid-template-columns: minmax(150px, 1fr) minmax(120px, .9fr) minmax(0, 1.6fr); grid-template-areas: "now stats fc"; }
+  .wx[data-has-stats="false"] .wx__in { grid-template-columns: minmax(150px, 1fr) minmax(0, 2fr); grid-template-areas: "now fc"; }
+  .wx[data-has-forecast="false"] .wx__in { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); grid-template-areas: "now stats"; }
+  .wx__fc {
+    grid-area: fc;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(54px, 1fr));
+    grid-template-rows: 100%;
+    grid-auto-rows: 100%;                    /* entries that do not fit in the first row wrap below… */
+    column-gap: 6px;
+    row-gap: 40px;                           /* …out of sight (the strip clips at one row) */
+    overflow: hidden;
+    list-style: none;
+    align-self: center;
+    height: min(100%, 110px);
+  }
+}
+@container wx (min-width: 480px) and (max-height: 139px) {
+  .wx__fc { display: none; }
+  .wx[data-has-forecast="true"] .wx__in { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); grid-template-areas: "now stats"; }
+}
+
+/* ---------------------------------------------------------------- tall: ≥ 300px tall, not a strip */
+@container wx (min-height: 300px) and (max-aspect-ratio: 2 / 1) {
+  .wx__in, .wx[data-has-stats] .wx__in, .wx[data-has-forecast] .wx__in {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-areas: "now" "stats" "fc";
+    row-gap: 14px;
+  }
+  .wx__now { grid-template-rows: auto auto auto; grid-template-areas: "glyph temp" "cond cond" "loc loc"; column-gap: 12px; }
+  .wx__glyph { width: clamp(56px, 20cqmin, 112px); height: clamp(56px, 20cqmin, 112px); }
+  .wx__temp { justify-self: start; align-self: center; font-size: clamp(36px, 14cqmin, 76px); }
+  .wx__cond { margin-top: 6px; font-size: clamp(14px, 4.4cqmin, 19px); }
+  .wx__loc { font-size: clamp(12px, 3.4cqmin, 14px); }
+  .wx__stats { display: block; align-self: start; }
+  .wx__fc {
+    grid-area: fc; display: grid; list-style: none; overflow: hidden; min-height: 0; align-self: stretch;
+    /* one day per line; days that do not fit flow into a second column, out of sight */
+    grid-template-columns: 100%; grid-auto-columns: 100%; grid-auto-flow: column;
+    grid-template-rows: repeat(auto-fill, 44px); row-gap: 6px; column-gap: 40px;
+  }
+  .wx__day { flex-direction: row; justify-content: flex-start; gap: 10px; padding: 0 12px; }
+  .wx__day-k { flex: 0 0 3.2em; text-align: left; }
+  .wx__day-svg { width: 26px; height: 26px; flex: none; }
+  .wx__day-t { flex: 1 1 auto; text-align: left; }
+  .wx__day-p { flex: none; min-height: 0; }
+  .wx__fc-note { grid-row: 1; }
+}
+/* tall and ≥ 360 wide: the forecast as a row of tiles (as many days as fit) */
+@container wx (min-height: 300px) and (min-width: 360px) and (max-aspect-ratio: 2 / 1) {
+  .wx__fc {
+    grid-template-columns: repeat(auto-fill, minmax(62px, 1fr)); grid-auto-columns: auto; grid-auto-flow: row;
+    grid-template-rows: min(100%, 124px); grid-auto-rows: 124px; row-gap: 40px; column-gap: 8px; align-self: start;
+    height: min(100%, 124px);
+  }
+  .wx__day { flex-direction: column; justify-content: center; gap: 4px; padding: 8px 2px; }
+  .wx__day-k, .wx__day-t { flex: none; text-align: center; }
+  .wx__day-svg { width: 32px; height: 32px; }
+}
+/* a narrow tall box: the precipitation chance gives way so day · sky · high/low stay whole */
+@container wx (min-height: 300px) and (max-width: 219px) {
+  .wx__day { gap: 8px; padding: 0 10px; }
+  .wx__day-k { flex-basis: 2.6em; }
+  .wx__day-p { display: none; }
+}
+
+/* fine-tune 1 — MICRO (narrow): the glyph above, the temperature as the hero beside the condition; nothing overlaps */
+@container wx (max-width: 140px) {
+  .wx__now { grid-template-columns: minmax(0, 1fr); grid-template-areas: "glyph" "temp" "cond" "loc"; row-gap: 0; }
+  .wx__glyph { width: 30px; height: 30px; }
+  .wx__temp { justify-self: start; font-size: 26px; font-weight: var(--iq-fw-display); line-height: 1.1; }
+  .wx__cond { font-size: 12px; }
+  .wx__loc { display: none; }
+}
+@container wx (min-width: 141px) and (max-width: 259px) { .wx__temp { font-size: 34px; font-weight: var(--iq-fw-display); } }
+
+/* pass 2: the glyph sits in the light — a soft shadow under the cloud, a warm halo behind the sun (static) */
+.wx__glyph { filter: drop-shadow(0 6px 8px rgba(0, 0, 0, .35)); }
+.wx[data-condition="clear"] .wx__glyph, .wx[data-condition="partly-cloudy"] .wx__glyph { filter: drop-shadow(0 0 10px color-mix(in srgb, var(--warning) 40%, transparent)) drop-shadow(0 6px 8px rgba(0, 0, 0, .3)); }
+
+/* ---------------------------------------------------------------- PRESETS (variants). Standard: everything above, unchanged. */
+/* CURRENT CONDITIONS: now + details, never a forecast */
+.wx[data-variant="current"] .wx__fc { display: none !important; }
+/* COMPACT FORECAST: now + the next three days (no details) */
+.wx[data-variant="compact"] .wx__stats { display: none !important; }
+.wx[data-variant="compact"] .wx__in { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); grid-template-areas: "now fc"; }
+.wx[data-variant="compact"] .wx__fc { grid-area: fc; display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: auto; column-gap: 6px; list-style: none; align-self: center; height: auto; overflow: hidden; }
+.wx[data-variant="compact"] .wx__day:nth-child(n+4) { display: none; }
+@container wx (max-width: 259px) { .wx[data-variant="compact"] .wx__in { grid-template-columns: minmax(0, 1fr); grid-template-areas: "now"; } .wx[data-variant="compact"] .wx__fc { display: none !important; } }
+/* DAILY / DETAILED FORECAST: a header row (now) above the forecast LIST; the list scrolls inside the widget (never over a neighbour) */
+.wx:is([data-variant="daily"], [data-variant="detailed"]) .wx__in { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+.wx[data-variant="daily"] .wx__stats { display: none !important; }
+.wx[data-variant="detailed"] .wx__stats { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); column-gap: 14px; flex: none; }
+.wx:is([data-variant="daily"], [data-variant="detailed"]) .wx__now { flex: none; grid-template-columns: auto auto minmax(0, 1fr); grid-template-areas: "glyph temp cond" "glyph temp loc"; column-gap: 12px; row-gap: 0; align-items: center; }
+.wx:is([data-variant="daily"], [data-variant="detailed"]) .wx__glyph { width: 44px; height: 44px; }
+.wx:is([data-variant="daily"], [data-variant="detailed"]) .wx__temp { font-size: 30px; justify-self: start; }
+.wx .wx__fc.wx__fc--list { display: flex !important; flex-direction: column; gap: 5px; flex: 1 1 auto; min-height: 0; height: auto; overflow: auto; list-style: none; overscroll-behavior: contain; scrollbar-width: thin; }
+.wx__row { display: grid; grid-template-columns: 30px minmax(3.4em, 1fr) minmax(0, 1.3fr) 3em auto; align-items: center; column-gap: 10px; min-height: 42px; padding: 4px 12px; box-sizing: border-box;
+  border-radius: 12px; background: var(--control-well); box-shadow: var(--control-well-shadow); font-size: 12.5px; }
+.wx__row[hidden] { display: none; }
+.wx__row-svg { width: 28px; height: 28px; }
+.wx__row-d { display: grid; line-height: 1.2; min-width: 0; }
+.wx__row-d b { font-weight: 600; color: var(--text-primary); white-space: nowrap; }
+.wx__row-d small { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+.wx__row-d small:empty { display: none; }
+.wx__row-c { color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.wx__row-p { color: var(--wx-rain); font-size: 11.5px; text-align: right; font-variant-numeric: tabular-nums; }
+.wx__row-t { display: inline-flex; align-items: baseline; gap: 6px; justify-content: flex-end; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.wx__row-t b { font-weight: 700; }
+.wx__row-t small { color: var(--text-muted); }
+.wx__fc--list + .iqx { flex: none; align-self: center; }
+@container wx (max-width: 300px) { .wx__row { grid-template-columns: 26px minmax(0, 1fr) auto; } .wx__row-c, .wx__row-p { display: none; } }

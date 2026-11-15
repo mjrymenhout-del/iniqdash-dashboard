@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "robot",
+  "name": "Robot",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "robot.js",
+  "style": "robot.css",
+  "assets": "assets/",
+  "api": "MaisonRobot"
+}

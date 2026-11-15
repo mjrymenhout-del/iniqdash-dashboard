@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "weather",
+  "name": "Weather",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "weather.js",
+  "style": "weather.css",
+  "assets": "assets/",
+  "api": "MaisonWeather"
+}

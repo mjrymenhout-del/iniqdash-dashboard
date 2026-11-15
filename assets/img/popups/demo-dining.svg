@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 760" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d1b33"/><stop offset=".7" stop-color="#16294a"/><stop offset="1" stop-color="#0a1222"/></linearGradient>
+    <linearGradient id="wall" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1a1714"/><stop offset=".55" stop-color="#2b2119"/><stop offset="1" stop-color="#1b1612"/></linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c1612"/><stop offset="1" stop-color="#0a0807"/></linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3c3f47"/><stop offset="1" stop-color="#191a1e"/></linearGradient>
+    <linearGradient id="strip" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb35c" stop-opacity=".9"/><stop offset="1" stop-color="#ff8a2a" stop-opacity="0"/></linearGradient>
+    <radialGradient id="glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffd08a" stop-opacity=".8"/><stop offset=".45" stop-color="#ffab52" stop-opacity=".22"/><stop offset="1" stop-color="#ff9a3c" stop-opacity="0"/></radialGradient>
+    <radialGradient id="pool" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffc77a" stop-opacity=".35"/><stop offset="1" stop-color="#ffc77a" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1600" height="760" fill="url(#wall)"/>
+  <!-- large night window on the left -->
+  <rect x="0" y="40" width="720" height="560" fill="url(#sky)"/>
+  <g fill="#070b14"><rect x="0" y="40" width="720" height="14"/><rect x="236" y="40" width="12" height="560"/><rect x="478" y="40" width="12" height="560"/><rect x="0" y="330" width="720" height="10"/></g>
+  <path d="M0 520c60-30 120-10 180-40 70 30 120 0 200 20 80-40 150-10 220-30 50 10 90 0 120-10v140H0z" fill="#060a12"/>
+  <g fill="#cfe0ff" opacity=".55"><circle cx="120" cy="140" r="2"/><circle cx="330" cy="110" r="1.6"/><circle cx="600" cy="170" r="2"/><circle cx="420" cy="230" r="1.4"/></g>
+  <!-- warm wall slats on the right -->
+  <g fill="#000" opacity=".22"><rect x="980" y="0" width="4" height="600"/><rect x="1060" y="0" width="4" height="600"/><rect x="1140" y="0" width="4" height="600"/><rect x="1220" y="0" width="4" height="600"/><rect x="1300" y="0" width="4" height="600"/></g>
+  <rect x="820" y="80" width="620" height="10" fill="url(#strip)"/>
+  <rect x="1440" y="80" width="10" height="520" fill="#ff9a3c" opacity=".35"/>
+  <!-- floor and sideboard -->
+  <rect y="600" width="1600" height="160" fill="url(#floor)"/>
+  <rect x="980" y="470" width="460" height="130" rx="6" fill="#241b14"/>
+  <rect x="980" y="470" width="460" height="8" fill="#3a2a1d"/>
+  <path d="M1470 600c-20-70-10-140 40-200 30 50 30 130 10 200z" fill="#203424"/><path d="M1500 600c10-80 50-130 90-150-10 70-40 120-80 150z" fill="#2b4430"/>
+  <!-- pendant lamps -->
+  <g>
+    <g transform="translate(560 0)"><rect x="-2" y="0" width="4" height="250" fill="#2a2a2e"/><path d="M-62 330c0-48 28-80 62-80s62 32 62 80z" fill="url(#shade)"/><ellipse cy="330" rx="62" ry="7" fill="#ffe3b0"/><ellipse cy="380" rx="150" ry="110" fill="url(#glow)"/></g>
+    <g transform="translate(700 0)"><rect x="-2" y="0" width="4" height="200" fill="#2a2a2e"/><path d="M-62 280c0-48 28-80 62-80s62 32 62 80z" fill="url(#shade)"/><ellipse cy="280" rx="62" ry="7" fill="#ffe3b0"/><ellipse cy="330" rx="150" ry="110" fill="url(#glow)"/></g>
+    <g transform="translate(860 0)"><rect x="-2" y="0" width="4" height="170" fill="#2a2a2e"/><path d="M-62 250c0-48 28-80 62-80s62 32 62 80z" fill="url(#shade)"/><ellipse cy="250" rx="62" ry="7" fill="#ffe3b0"/><ellipse cy="300" rx="150" ry="110" fill="url(#glow)"/></g>
+    <g transform="translate(1020 0)"><rect x="-2" y="0" width="4" height="210" fill="#2a2a2e"/><path d="M-62 290c0-48 28-80 62-80s62 32 62 80z" fill="url(#shade)"/><ellipse cy="290" rx="62" ry="7" fill="#ffe3b0"/><ellipse cy="340" rx="150" ry="110" fill="url(#glow)"/></g>
+  </g>
+  <!-- the table under them -->
+  <ellipse cx="790" cy="560" rx="460" ry="90" fill="url(#pool)"/>
+  <rect x="470" y="540" width="640" height="18" rx="6" fill="#3a2717"/>
+  <g fill="#1f150d"><rect x="510" y="556" width="14" height="140"/><rect x="1056" y="556" width="14" height="140"/></g>
+</svg>

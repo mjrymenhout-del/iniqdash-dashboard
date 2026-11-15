@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "todo",
+  "name": "To-do list",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "todo.js",
+  "style": "todo.css",
+  "assets": "assets/",
+  "api": "MaisonTodo"
+}

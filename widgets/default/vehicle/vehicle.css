@@ -1,0 +1,63 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* Vehicle V1 — the picture at the top, the battery bar and range below, charging animated, status chips at the bottom.
+   Own size (container "veh"): narrow → the picture shrinks; short → compact (no picture). Reduced motion: no animation. */
+.iq-veh {
+  container: veh / size; position: relative; overflow: hidden; height: 100%; box-sizing: border-box;
+  display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto; gap: 8px; padding: 14px 16px;
+  border-radius: var(--radius-device); color: var(--text-primary); font-family: var(--font);
+  background: var(--device-surface); box-shadow: var(--device-shadow);
+  --iq-veh-c: var(--success); --iq-veh-car: color-mix(in srgb, var(--accent) 70%, #9fb3c8);
+}
+.iq-veh__head { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.iq-veh__name { margin: 0; font-size: 14px; font-weight: var(--iq-fw-title); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iq-veh__tabs { display: flex; gap: 4px; flex: none; }
+.iq-veh__tabs[hidden] { display: none; }
+.iq-veh__tab { border: 1px solid var(--border-subtle); background: transparent; color: var(--text-secondary); border-radius: 999px; padding: 3px 10px; font: 600 11.5px/1.2 var(--font); cursor: pointer; }
+.iq-veh__tab[aria-selected="true"] { background: var(--accent); color: var(--page-bg); border-color: transparent; }
+.iq-veh__pic { min-height: 0; display: grid; place-items: center; color: var(--iq-veh-car); }
+.iq-veh__art { width: 100%; height: 100%; max-height: 160px; }
+.iq-veh__img { width: 100%; height: 100%; max-height: 180px; object-fit: contain; }
+.iq-veh__main { display: grid; gap: 6px; }
+.iq-veh__lvl { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.iq-veh__pct { font-size: clamp(24px, 9cqmin, 40px); font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.iq-veh__range { display: inline-flex; align-items: center; gap: 5px; font-size: clamp(13px, 4.2cqmin, 18px); font-weight: 600; color: var(--text-secondary); }
+.iq-veh__range[hidden] { display: none; }
+.iq-veh__range svg { width: 1.1em; height: 1.1em; opacity: .7; }
+.iq-veh__bar { position: relative; height: 12px; border-radius: 999px; background: var(--surface-tertiary); overflow: visible; }
+.iq-veh__fill { position: absolute; inset: 0 auto 0 0; border-radius: inherit; background: var(--iq-veh-c); transition: width .6s ease; overflow: hidden; }
+.iq-veh__bar[data-tone="mid"] .iq-veh__fill { background: var(--warning); }
+.iq-veh__bar[data-tone="low"] .iq-veh__fill { background: var(--danger); }
+.iq-veh[data-charging="true"] .iq-veh__fill::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .45), transparent); background-size: 40% 100%; background-repeat: no-repeat; animation: iq-veh-flow 1.8s linear infinite; }
+.iq-veh__tgt { position: absolute; top: -4px; bottom: -4px; width: 3px; margin-left: -1.5px; border-radius: 2px; background: var(--text-primary); opacity: .8; }
+.iq-veh__tgt[hidden] { display: none; }
+.iq-veh__state { margin: 0; display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--text-secondary); min-height: 1.3em; }
+.iq-veh__state[hidden] { display: none; }
+.iq-veh__bolt { display: inline-grid; width: 16px; height: 16px; color: var(--iq-veh-c); animation: iq-veh-pulse 1.4s ease-in-out infinite; }
+.iq-veh__bolt svg { width: 100%; height: 100%; }
+.iq-veh__target { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
+.iq-veh__target[hidden] { display: none; }
+.iq-veh__target > span { flex: 1; }
+.iq-veh__tval { min-width: 3ch; text-align: center; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.iq-veh__step { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border-subtle); background: var(--surface-tertiary); color: var(--text-primary); font: 600 15px/1 var(--font); cursor: pointer; }
+.iq-veh__step:disabled { opacity: .35; cursor: default; }
+.iq-veh__chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.iq-veh__chips[hidden] { display: none; }
+.iq-veh__chip { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--border-subtle); background: transparent; color: var(--text-secondary); font: 600 11.5px/1.2 var(--font); }
+button.iq-veh__chip { cursor: pointer; }
+.iq-veh__chip svg { width: 14px; height: 14px; }
+.iq-veh__chip[data-on="true"] { color: var(--text-primary); border-color: color-mix(in srgb, var(--iq-veh-c) 60%, transparent); background: color-mix(in srgb, var(--iq-veh-c) 14%, transparent); }
+.iq-veh__chip[data-k="lock"][data-on="false"] { color: var(--warning); border-color: color-mix(in srgb, var(--warning) 55%, transparent); }
+.iq-veh__chip[data-armed="true"] { color: var(--page-bg); background: var(--warning); border-color: transparent; }
+.iq-veh button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.iq-veh[data-available="false"] .iq-veh__pic, .iq-veh[data-available="false"] .iq-veh__bar { opacity: var(--unavailable-opacity, .45); filter: grayscale(1); }
+/* compact (configured) or a short box: no picture */
+.iq-veh[data-variant="compact"] { grid-template-rows: auto auto auto; }
+.iq-veh[data-variant="compact"] .iq-veh__pic { display: none; }
+@container veh (max-height: 250px) { .iq-veh__pic { display: none; } .iq-veh { grid-template-rows: auto auto auto; } }
+@container veh (max-width: 240px) { .iq-veh__tabs { display: none; } .iq-veh__chip span { display: none; } }
+@keyframes iq-veh-flow { from { background-position: -40% 0; } to { background-position: 140% 0; } }
+@keyframes iq-veh-pulse { 50% { opacity: .45; transform: scale(.9); } }
+@media (prefers-reduced-motion: reduce) { .iq-veh__fill::after, .iq-veh__bolt { animation: none !important; } .iq-veh__fill { transition: none; } }

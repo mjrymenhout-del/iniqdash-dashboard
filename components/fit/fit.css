@@ -1,0 +1,47 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   MaisonFit — the CSS half of widget responsiveness (see fit.js).
+
+   A widget root with [data-fit] is a size container. Its DIRECT children get three scales,
+   computed from the root's own box (container query units — layout size, so the editor's
+   visual zoom never changes them):
+
+     --fit    = clamp(min, min(width / ref-w, height / ref-h), max)   the "fits in the box" scale
+     --fit-w  = clamp(min, width  / ref-w, max)                       width-only scale
+     --fit-h  = clamp(min, height / ref-h, max)                       height-only scale
+
+   Each is 1px at the widget's reference size, so a design value is written as
+       font-size: calc(15 * var(--fit));          (= 15px at the reference size)
+   and grows / shrinks with the widget, inside [--fit-min, --fit-max].
+   The properties are registered as <length>: the value is resolved to px where it is declared
+   and inherited as px, so nested size containers (a dial, a stage) do not re-interpret it.
+
+   A widget sets its reference box (and, optionally, the clamp) on its root, per arrangement:
+       .cw { --fit-ref-w: 320; --fit-ref-h: 360; }
+       .cw[data-fit-arr="mini"] { --fit-ref-h: 150; }
+   Arrangement switches and low-priority hiding use the attributes MaisonFit writes:
+       [data-fit-w="xs|s|m|l|xl"]  [data-fit-h="…"]  [data-fit-shape="wide|tall|square"]  [data-fit-arr]
+   Legibility floors stay with the widget, e.g. font-size: max(11px, calc(15 * var(--fit))).
+   ========================================================================== */
+
+@property --fit   { syntax: '<length>'; inherits: true; initial-value: 1px; }
+@property --fit-w { syntax: '<length>'; inherits: true; initial-value: 1px; }
+@property --fit-h { syntax: '<length>'; inherits: true; initial-value: 1px; }
+
+[data-fit] { --fit-ref-w: 320; --fit-ref-h: 240; --fit-min: .72px; --fit-max: 1.3px; }
+
+[data-fit] > * {
+  --fit-w: clamp(var(--fit-min), 100cqw / var(--fit-ref-w), var(--fit-max));
+  --fit-h: clamp(var(--fit-min), 100cqh / var(--fit-ref-h), var(--fit-max));
+  --fit: clamp(var(--fit-min), min(100cqw / var(--fit-ref-w), 100cqh / var(--fit-ref-h)), var(--fit-max));
+}
+
+/* opt-in priority helpers (any widget, factory or custom — no rules of its own needed):
+     data-fit-priority="low"     hidden when the widget is compact or micro (its shorter side < 190px)
+     data-fit-priority="medium"  hidden when the widget is micro (< 110px)
+   Essential content carries no attribute. */
+:is([data-fit-tier="micro"], [data-fit-tier="compact"]) [data-fit-priority="low"],
+[data-fit-tier="micro"] [data-fit-priority="medium"] { display: none !important; }

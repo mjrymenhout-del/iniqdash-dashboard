@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "climategroup",
+  "name": "Climate group",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "climategroup.js",
+  "style": "climategroup.css",
+  "assets": "assets/",
+  "api": "MaisonClimateGroup"
+}

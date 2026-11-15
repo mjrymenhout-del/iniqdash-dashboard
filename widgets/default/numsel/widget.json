@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "numsel",
+  "name": "Number & Select",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "numsel.js",
+  "style": "numsel.css",
+  "assets": "assets/",
+  "api": "MaisonNumSel"
+}

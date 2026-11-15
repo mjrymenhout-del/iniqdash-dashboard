@@ -1,0 +1,251 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Switch Widget V1 — binary device control. Its own identity: a physical POWER KEY sitting in a
+   recessed well, with an LED ring that lights when the device is on.
+
+   <article class="xw" data-state="on|off|unavailable|unknown" data-art="none|yes|failed">  ← size container "xw"
+     <div class="xw__in">                          ← arrangement grid
+       .xw__icon      icon well (hidden when artwork is shown)
+       .xw__art       optional PNG device artwork (replaces the icon)
+       .xw__id        name + optional subtitle
+       .xw__state     LED · state text (On / Off / Unavailable) · optional secondary status
+       .xw__key       the power key (button role="switch")
+
+   Arrangements (by the widget's own width):
+     compact   < 260px   icon/art top-left, key top-right, name (+subtitle) and state below
+     standard  260–479   icon + name on top, large state underneath, key on the right;
+                         artwork (if any) takes the left side at full height
+     wide     >= 480px   one control-panel line: identity | state | key; fits h2 (92–96px) —
+                         only while the box is a strip (< 240px tall, or ≥ 2 : 1)
+     tall     >= 240px tall (not a strip), any width: identity on top, the power key centred
+                         in the room left and growing with it (up to 132px), the state underneath
+   ========================================================================== */
+
+.xw {
+  --xw-key: 46px;
+  --xw-art-ratio: .99;
+  position: relative;
+  container: xw / size;
+  min-width: 0;
+  min-height: 92px;                         /* = smallest grid area it accepts (wide strip, h2) */
+  overflow: hidden;
+  border-radius: var(--radius-device);
+  color: var(--text-primary);
+  font-family: var(--font);
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(255, 255, 255, .03), transparent 60%),
+    linear-gradient(165deg, var(--surface-primary-top) 0%, var(--surface-primary) 58%, var(--surface-secondary) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .055),
+    inset 0 0 0 1px rgba(255, 255, 255, .03),
+    0 12px 26px -16px rgba(0, 0, 0, .75);
+}
+
+.xw__in {
+  height: 100%;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  grid-template-areas: "icon key" ". ." "id id" "state state";
+  row-gap: 3px;
+}
+
+/* ---- icon well / artwork ---- */
+.xw__icon {
+  grid-area: icon;
+  align-self: start;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--text-secondary);
+  background: var(--surface-tertiary);
+  box-shadow: var(--shadow-icon), 0 1px 0 rgba(255, 255, 255, .04);
+  transition: color var(--dur-medium) var(--ease);
+}
+.xw__icon svg { width: 17px; height: 17px; }
+.xw__art { grid-area: icon; display: none; align-self: start; height: 58px; aspect-ratio: var(--xw-art-ratio); margin: -4px 0 0 -4px; }
+.xw__art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .45));
+  transition: filter .35s ease;
+}
+.xw[data-art="yes"] .xw__art { display: block; }
+.xw[data-art="yes"] .xw__icon { display: none; }
+.xw[data-state="off"] .xw__art img { filter: grayscale(.55) brightness(.68) drop-shadow(0 6px 10px rgba(0, 0, 0, .45)); }
+.xw[data-state="unavailable"] .xw__art img, .xw[data-state="unknown"] .xw__art img { filter: grayscale(1) brightness(.5); opacity: .55; }
+
+/* ---- identity ---- */
+.xw__id { grid-area: id; min-width: 0; }
+.xw__name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: var(--iq-fw-title);
+  line-height: 1.22;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.xw[data-has-sub="true"] .xw__name { -webkit-line-clamp: 1; white-space: nowrap; display: block; text-overflow: ellipsis; }
+.xw__sub { margin: 1px 0 0; font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xw__sub[hidden], .xw__sec[hidden] { display: none; }
+
+/* ---- state: never colour alone — always the word ---- */
+.xw__state {
+  grid-area: state;
+  margin: 4px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.xw__state-t { font-size: 11.5px; font-weight: var(--iq-fw-status); letter-spacing: .1em; text-transform: uppercase; }
+.xw__sec { color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.xw__sec::before { content: "·"; margin-right: 6px; color: var(--text-muted); }
+.xw__led { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--surface-interactive); box-shadow: inset 0 1px 1px rgba(0, 0, 0, .5); }
+.xw[data-state="on"] .xw__led { background: var(--accent); box-shadow: 0 0 7px color-mix(in srgb, var(--accent) 75%, transparent); }
+.xw[data-state="on"] .xw__state-t { color: var(--accent); }
+.xw[data-state="on"] .xw__icon { color: var(--accent); }
+.xw[data-state="unavailable"] .xw__led, .xw[data-state="unknown"] .xw__led { background: transparent; box-shadow: inset 0 0 0 1.5px var(--text-muted); }
+.xw[data-state="unavailable"] .xw__state-t, .xw[data-state="unknown"] .xw__state-t { color: var(--text-muted); letter-spacing: .04em; text-transform: none; font-size: 12px; font-weight: var(--iq-fw-status); }
+.xw[data-state="unavailable"] .xw__name, .xw[data-state="unknown"] .xw__name { color: var(--text-muted); }
+.xw[data-state="unavailable"] .xw__icon, .xw[data-state="unknown"] .xw__icon { opacity: .5; }
+
+/* ---- the power key ---- */
+.xw__key {
+  grid-area: key;
+  align-self: start;
+  justify-self: end;
+  position: relative;
+  width: var(--xw-key);
+  height: var(--xw-key);
+  margin: 6px 6px 0 0;                      /* room for the well around it */
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  background: var(--surface-interactive);
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, .55),
+    inset 0 1px 0 rgba(255, 255, 255, .11),
+    0 0 0 4px var(--control-well);
+  transition: box-shadow var(--dur-medium) var(--ease), color var(--dur-medium) var(--ease), background var(--dur-medium) var(--ease), transform var(--dur-press) var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.xw__cap { display: grid; place-items: center; width: 44%; height: 44%; }
+.xw__cap svg { width: 100%; height: 100%; }
+.xw__key:active:not(:disabled) { transform: scale(.96); }
+.xw__key:focus-visible { outline: var(--focus-ring); outline-offset: 9px; }
+.xw[data-state="on"] .xw__key {
+  color: var(--accent-on);
+  background: linear-gradient(180deg, var(--accent-hot), var(--accent));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .28),
+    0 0 0 4px var(--control-well);
+}
+.xw__key:disabled {
+  cursor: not-allowed;
+  color: var(--text-muted);
+  background: var(--surface-secondary);
+  box-shadow: 0 0 0 4px var(--control-well);
+}
+
+/* ---------------------------------------------------------------- standard: 260–479px */
+@container xw (min-width: 260px) {
+  .xw__in {
+    --xw-key: 54px;
+    padding: 16px 18px;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-areas: "icon id key" ". . key" "state state key";
+    column-gap: 12px;
+  }
+  .xw__key { align-self: center; margin: 0 7px; }
+  .xw__icon { width: 36px; height: 36px; }
+  .xw__icon svg { width: 19px; height: 19px; }
+  .xw__name, .xw[data-has-sub="true"] .xw__name { font-size: 15px; display: -webkit-box; white-space: normal; -webkit-line-clamp: 2; }
+  .xw__state { margin: 0; flex-wrap: wrap; row-gap: 2px; }
+  .xw__state-t { font-size: 22px; font-weight: var(--iq-fw-status); letter-spacing: -.01em; text-transform: none; color: var(--text-secondary); }
+  .xw[data-state="on"] .xw__state-t { color: var(--text-primary); }
+  .xw__led { width: 9px; height: 9px; margin-right: 2px; }
+  .xw__sec { flex-basis: 100%; padding-left: 17px; font-size: 12px; }
+  .xw__sec::before { content: none; }
+  /* artwork: full height on the left */
+  .xw[data-art="yes"] .xw__in { grid-template-areas: "icon id key" "icon . key" "icon state key"; }
+  .xw__art { height: calc(100cqh - 32px); max-height: 120px; margin: 0; align-self: center; }
+}
+
+/* ---------------------------------------------------------------- wide: ≥ 480px, one control-panel line */
+@container xw (min-width: 480px) and ((max-height: 239px) or (min-aspect-ratio: 2 / 1)) {
+  .xw__in {
+    --xw-key: 52px;
+    padding: 12px 20px;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-areas: "icon id state key";
+    column-gap: 16px;
+    align-items: center;
+  }
+  .xw[data-art="yes"] .xw__in { grid-template-areas: "icon id state key"; }
+  .xw__icon, .xw__art { align-self: center; }
+  .xw__icon { width: 40px; height: 40px; }
+  .xw__art { height: min(calc(100cqh - 20px), 96px); }
+  .xw__name, .xw[data-has-sub="true"] .xw__name { font-size: 16px; -webkit-line-clamp: 2; }
+  .xw__state {
+    align-self: center;
+    flex-wrap: wrap;
+    min-width: 132px;
+    padding: 0 22px;
+    border-inline: 1px solid var(--border-subtle);
+    row-gap: 1px;
+  }
+  .xw__state-t { font-size: 20px; }
+  .xw__sec { flex-basis: 100%; padding-left: 17px; }
+  .xw__key { margin: 0 8px 0 4px; }
+}
+
+/* ---------------------------------------------------------------- tall: ≥ 240px tall and not a strip
+   The key is the control: it takes the free middle of the box and grows with it (both axes), so a
+   large or tall switch is not an empty card with a small button in a corner. */
+@container xw (min-height: 240px) and (max-aspect-ratio: 2 / 1) {
+  .xw__in, .xw[data-art="yes"] .xw__in {
+    --xw-key: clamp(54px, min(38cqw, calc(100cqh - 190px)), 132px);
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-areas: "icon id" "key key" "state state";
+    column-gap: 12px;
+  }
+  .xw__key { align-self: center; justify-self: center; margin: 0; }
+  .xw__art { height: clamp(58px, 18cqh, 110px); max-height: none; align-self: start; margin: 0; }
+}
+@container xw (max-width: 259px) and (min-height: 240px) {
+  .xw__in, .xw[data-art="yes"] .xw__in {
+    --xw-key: clamp(46px, min(44cqw, calc(100cqh - 200px)), 110px);
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    grid-template-areas: "icon icon" "key key" "id id" "state state";
+  }
+}
+@container xw (min-width: 260px) and (min-height: 240px) and (max-aspect-ratio: 2 / 1) {
+  .xw__state-t { font-size: clamp(22px, 6.5cqmin, 30px); }
+}
+
+/* micro (pass 2): name + the state word; the room line gives way */
+@container xw (max-height: 119px) { .xw__sub { display: none; } }
+@container xw (max-height: 119px) { .xw__in { --xw-key: 38px; padding: 10px 12px; row-gap: 2px; } .xw__key { margin: 2px 4px 0 0; } }

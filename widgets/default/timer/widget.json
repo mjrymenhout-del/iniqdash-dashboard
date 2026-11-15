@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "timer",
+  "name": "Timer",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "timer.js",
+  "style": "timer.css",
+  "assets": "assets/",
+  "api": "MaisonTimer"
+}

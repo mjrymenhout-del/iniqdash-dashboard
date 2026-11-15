@@ -1,0 +1,202 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   IniqControls — the shared control BUTTON and SEGMENTED control (components/controls/controls.js). Allow-listed data attributes and
+   a few custom properties only (sizes in px, colours as resolved token / #rrggbb values) — never CSS from a configuration.
+   A widget may set:  --iqc-auto   the control's automatic colour (e.g. a light's own colour; else the theme accent)
+                      --iqc-max    the largest size its space allows at its current MaisonFit size (a configured size is capped by it)
+   ========================================================================== */
+
+/* ---------------------------------------------------------------- the control BUTTON */
+.iqc-btn {
+  --iqc-c: var(--iqc-color, var(--iqc-auto, var(--accent)));
+  --iqc-s: min(var(--iqc-size, 44px), var(--iqc-max, 999px));
+  /* the glyph: its own size (never derived from a background); automatic: in proportion to the button; never larger than the button */
+  --iqc-g: min(var(--iqc-icon, calc(var(--iqc-s) * .46)), calc(var(--iqc-s) * .8));
+  position: relative; display: inline-grid; place-items: center; box-sizing: border-box; flex: none;
+  width: var(--iqc-s); height: var(--iqc-s); padding: 0; border: 0; border-radius: 50%; cursor: pointer;
+  font: inherit; color: var(--control-off-fg, var(--text-muted)); background: var(--control-off-bg, var(--surface-tertiary));
+  box-shadow: inset 0 0 0 1px var(--border-subtle), inset 0 1px 0 var(--edge-highlight, rgba(255, 255, 255, .05)), 0 6px 14px -8px rgba(0, 0, 0, .7);
+  transition: background var(--dur-medium, .2s) var(--ease, ease), box-shadow var(--dur-medium, .2s) var(--ease, ease), color var(--dur-medium, .2s) var(--ease, ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.iqc-btn__k { display: contents; }
+.iqc-btn__i { display: grid; width: var(--iqc-g); height: var(--iqc-g); pointer-events: none; }
+.iqc-btn__i > svg { width: 100%; height: 100%; }
+.iqc-btn[data-shape="rounded"] { border-radius: calc(var(--iqc-s) * .3); }
+.iqc-btn[data-shape="pill"] { width: calc(var(--iqc-s) * 1.6); border-radius: 999px; }          /* an icon-only pill: a wide capsule */
+/* a VISIBLE label (opt-in, look.showLabel): icon · label side by side; the button grows to hold them (icon-only buttons never have one) */
+.iqc-btn[data-labelled] { grid-auto-flow: column; width: auto; min-width: var(--iqc-s); padding: 0 calc(var(--iqc-s) * .3); gap: var(--iqc-lgap, calc(var(--iqc-s) * .16)); border-radius: 999px; }
+.iqc-btn[data-labelled][data-shape="rounded"] { border-radius: calc(var(--iqc-s) * .3); }
+.iqc-btn__l { font-size: var(--iqc-lsize, max(11px, calc(var(--iqc-s) * .3))); font-weight: 600; line-height: 1.1; white-space: nowrap; pointer-events: none; }
+.iqc-btn:focus-visible { outline: var(--focus-ring); outline-offset: 3px; }
+.iqc-btn:disabled { cursor: not-allowed; opacity: .5; }
+/* ON — in its colour; the icon in its own colour, else readable on it (filled: black or white by the colour's lightness) */
+.iqc-btn[data-on="true"][data-style="filled"], .iqc-btn[data-look="fixed"][data-style="filled"] {
+  background: var(--iqc-c); color: var(--iqc-icolor, #1a1206);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), 0 0 18px -4px color-mix(in srgb, var(--iqc-c) 55%, transparent), 0 6px 14px -8px rgba(0, 0, 0, .6); }
+@supports (color: oklch(from red l c h)) {
+  .iqc-btn[data-on="true"][data-style="filled"], .iqc-btn[data-look="fixed"][data-style="filled"] { color: var(--iqc-icolor, oklch(from var(--iqc-c) clamp(0, (.68 - l) * 1000, 1) 0 0)); }
+}
+.iqc-btn[data-on="true"][data-style="soft"], .iqc-btn[data-look="fixed"][data-style="soft"] {
+  color: var(--iqc-icolor, var(--iqc-c)); background: color-mix(in srgb, var(--iqc-c) 22%, var(--surface-tertiary));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--iqc-c) 30%, transparent), 0 6px 14px -8px rgba(0, 0, 0, .6); }
+.iqc-btn[data-style="outline"] { background: transparent; box-shadow: inset 0 0 0 1.5px var(--border-strong, rgba(255, 255, 255, .22)); }
+.iqc-btn[data-on="true"][data-style="outline"], .iqc-btn[data-look="fixed"][data-style="outline"] { color: var(--iqc-icolor, var(--iqc-c)); box-shadow: inset 0 0 0 2px var(--iqc-c); }
+.iqc-btn[data-style="bare"] { background: transparent; box-shadow: none; }
+.iqc-btn[data-on="true"][data-style="bare"], .iqc-btn[data-look="fixed"][data-style="bare"] { color: var(--iqc-icolor, var(--iqc-c)); }
+.iqc-btn[data-on="true"][data-style="bare"] .iqc-btn__i > svg { filter: drop-shadow(0 0 8px color-mix(in srgb, var(--iqc-icolor, var(--iqc-c)) 55%, transparent)); }
+/* OFF (automatic): restrained — the surface stays, the colour goes (a configured icon colour stays recognisable, dimmed) */
+.iqc-btn[data-look="auto"][data-on="false"] .iqc-btn__i { opacity: .9; }
+.iqc-btn[data-look="auto"][data-on="false"][style*="--iqc-icolor"] { color: color-mix(in srgb, var(--iqc-icolor) 55%, var(--text-muted)); }
+/* FIXED: the same look ON and OFF — the state is the ring around it (ON) and the icon's strength (OFF: dimmed) */
+.iqc-btn[data-look="fixed"][data-on="true"] { outline: 2px solid var(--iqc-c); outline-offset: 3px; }
+.iqc-btn[data-look="fixed"][data-on="false"] .iqc-btn__i { opacity: .42; }
+.iqc-btn[data-look="fixed"][data-on="false"] { filter: saturate(.55); }
+.iqc-btn[data-look="fixed"][data-on="true"]:focus-visible { outline: var(--focus-ring); }
+
+/* ---------------------------------------------------------------- the SEGMENTED control */
+.iqc-seg {
+  --iqc-c: var(--iqc-color, var(--iqc-auto, var(--accent)));
+  --iqc-H: min(var(--iqc-h, 44px), var(--iqc-max, 999px));
+  --iqc-in: max(3px, calc(var(--iqc-H) * .09));                         /* the inset around the options */
+  --iqc-oh: calc(var(--iqc-H) - var(--iqc-in) * 2);                      /* an option's height */
+  --iqc-g: min(var(--iqc-icon, calc(var(--iqc-oh) * .55)), var(--iqc-oh));
+  display: inline-flex; align-items: center; gap: var(--iqc-gap, 4px); box-sizing: border-box; flex: none; max-width: 100%;
+  height: var(--iqc-H); padding: var(--iqc-in); border-radius: 999px;
+  background: var(--control-well, #16171b); box-shadow: var(--control-well-shadow, inset 0 1px 3px rgba(0, 0, 0, .55)), inset 0 0 0 1px var(--border-subtle);
+}
+.iqc-seg[data-shape="rounded"] { border-radius: calc(var(--iqc-H) * .3); }
+.iqc-seg[data-fill] { display: flex; width: 100%; max-width: none; }                         /* filling its container (a composed widget's box): the options share it */
+.iqc-seg[data-fill] > .iqc-seg__o { flex: 1 1 0; min-width: 0; }
+.iqc-seg[data-inactive="soft"] { background: color-mix(in srgb, var(--text-primary, #fff) 7%, transparent); box-shadow: inset 0 0 0 1px var(--border-subtle); }
+.iqc-seg[data-inactive="minimal"] { background: transparent; box-shadow: none; padding-inline: 0; }
+.iqc-seg__o {
+  --iqc-oc: var(--iqc-ocolor, var(--iqc-color, var(--iqc-oauto, var(--iqc-auto, var(--accent)))));   /* option · control · option automatic · widget · theme */
+  display: inline-flex; align-items: center; justify-content: center; gap: .45em; box-sizing: border-box; min-width: var(--iqc-oh); height: var(--iqc-oh);
+  padding: 0 var(--iqc-padx, 0px); border: 0; border-radius: 999px; cursor: pointer; font: 600 var(--iqc-text, max(11px, calc(var(--iqc-oh) * .34))) / 1.25 var(--font, inherit);
+  color: var(--text-muted); background: transparent; white-space: nowrap; min-height: 0;
+  transition: background var(--dur-medium, .2s) var(--ease, ease), color var(--dur-medium, .2s) var(--ease, ease), box-shadow var(--dur-medium, .2s) var(--ease, ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.iqc-seg[data-labels="true"] .iqc-seg__o { padding: 0 var(--iqc-padx, calc(var(--iqc-oh) * .38)); }
+.iqc-seg[data-shape="rounded"] .iqc-seg__o { border-radius: calc(var(--iqc-oh) * .3); }
+.iqc-seg[data-inactive="soft"] .iqc-seg__o[aria-checked="false"] { color: var(--text-secondary); }
+.iqc-seg__i { display: grid; flex: none; width: var(--iqc-g); height: var(--iqc-g); pointer-events: none; }
+.iqc-seg__o[data-icon="false"] .iqc-seg__i { display: none; }
+.iqc-seg__i > svg { width: 100%; height: 100%; }
+.iqc-seg__l { overflow: clip visible; text-overflow: ellipsis; min-width: 0; }
+.iqc-seg__o:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.iqc-seg__o:disabled { cursor: not-allowed; opacity: .5; }
+.iqc-seg__o[aria-checked="false"]:not(:disabled):hover { color: var(--text-secondary); }
+/* the SELECTED option — its own colour, else the control's, else automatic */
+.iqc-seg[data-style="filled"] .iqc-seg__o[aria-checked="true"] { background: var(--iqc-oc); color: #1a1206;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3), 0 0 14px -3px color-mix(in srgb, var(--iqc-oc) 60%, transparent), 0 3px 8px -4px rgba(0, 0, 0, .6); }
+@supports (color: oklch(from red l c h)) { .iqc-seg[data-style="filled"] .iqc-seg__o[aria-checked="true"] { color: oklch(from var(--iqc-oc) clamp(0, (.68 - l) * 1000, 1) 0 0); } }
+.iqc-seg[data-style="soft"] .iqc-seg__o[aria-checked="true"] { color: var(--iqc-oc); background: color-mix(in srgb, var(--iqc-oc) 24%, var(--surface-tertiary, #26272c));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--iqc-oc) 32%, transparent), 0 3px 8px -4px rgba(0, 0, 0, .6); }
+.iqc-seg[data-style="outline"] .iqc-seg__o[aria-checked="true"] { color: var(--iqc-oc); box-shadow: inset 0 0 0 2px var(--iqc-oc); }
+.iqc-seg[data-style="minimal"] .iqc-seg__o[aria-checked="true"] { color: var(--iqc-oc); }
+.iqc-seg[data-style="minimal"] .iqc-seg__o[aria-checked="true"] .iqc-seg__i > svg { filter: drop-shadow(0 0 6px color-mix(in srgb, var(--iqc-oc) 60%, transparent)); }
+.iqc-seg[data-style="minimal"] .iqc-seg__o[aria-checked="true"] { text-decoration: underline 2px; text-underline-offset: .3em; }
+
+/* GLOW finish (filled): a lit, radial surface in the control's colour */
+.iqc-btn[data-finish="glow"][data-style="filled"]:is([data-on="true"], [data-look="fixed"]) {
+  background: radial-gradient(circle at 40% 32%, color-mix(in srgb, var(--iqc-c) 22%, #fff), color-mix(in srgb, var(--iqc-c) 90%, #fff) 60%, color-mix(in srgb, var(--iqc-c) 82%, #000));
+  box-shadow: 0 0 18px -2px color-mix(in srgb, var(--iqc-c) 45%, transparent), 0 6px 14px -8px rgba(0, 0, 0, .6); }
+
+/* SWITCH: a track (its height = the size) with the glyph on a sliding knob; ON slides the knob over and lights it in the colour */
+.iqc-btn[data-style="switch"] { width: calc(var(--iqc-s) * 1.7); border-radius: 999px; background: var(--control-well, #16171b);
+  --iqc-g: min(var(--iqc-icon, calc((var(--iqc-s) - 8px) * .52)), calc((var(--iqc-s) - 8px) * .85));
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, .6), inset 0 0 0 1px rgba(255, 255, 255, .04), 0 1px 0 rgba(255, 255, 255, .04); }
+.iqc-btn[data-style="switch"] .iqc-btn__k { display: grid; place-items: center; position: absolute; top: 4px; left: 4px; width: calc(var(--iqc-s) - 8px); height: calc(var(--iqc-s) - 8px);
+  border-radius: 50%; color: #8a8f9b; background: var(--control-raised, #2c2e34); box-shadow: 0 2px 5px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .09);
+  transition: transform .32s cubic-bezier(.3, 1.4, .5, 1), background var(--dur-medium, .2s) var(--ease, ease), color var(--dur-medium, .2s) var(--ease, ease); }
+.iqc-btn[data-style="switch"]:is([data-on="true"], [data-look="fixed"]) { background: color-mix(in srgb, var(--iqc-c) 22%, var(--control-well, #16171b));
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, .45), inset 0 0 0 1px color-mix(in srgb, var(--iqc-c) 35%, transparent); }
+.iqc-btn[data-style="switch"]:is([data-on="true"], [data-look="fixed"]) .iqc-btn__k { color: var(--iqc-icolor, #2a1804); background: var(--iqc-c);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--iqc-c) 55%, transparent), 0 2px 4px rgba(0, 0, 0, .4); }
+.iqc-btn[data-style="switch"][data-on="true"] .iqc-btn__k { transform: translateX(calc(var(--iqc-s) * .7)); }
+.iqc-btn[data-style="switch"][data-finish="glow"]:is([data-on="true"], [data-look="fixed"]) .iqc-btn__k {
+  background: radial-gradient(circle at 40% 35%, color-mix(in srgb, var(--iqc-c) 20%, #fff), color-mix(in srgb, var(--iqc-c) 90%, #fff) 55%, color-mix(in srgb, var(--iqc-c) 80%, #000)); }
+.iqc-btn[data-style="switch"][data-look="auto"][data-on="false"][style*="--iqc-icolor"] .iqc-btn__k { color: color-mix(in srgb, var(--iqc-icolor) 55%, #8a8f9b); }
+
+/* ---------------------------------------------------------------- REGIONS (IniqControls.regions): nine regions + three lines + two edge lines */
+.iqc-regions { display: grid; grid-template-columns: auto 1fr auto; grid-template-rows: auto auto auto minmax(0, 1fr) auto auto auto auto;
+  grid-template-areas: "et et et" "tl tc tr" "lt lt lt" "cl cc cr" "lc lc lc" "bl bc br" "lb lb lb" "eb eb eb"; column-gap: var(--iqc-rgap, 10px); min-width: 0; min-height: 0; }
+.iqc-region, .iqc-line { display: flex; flex-wrap: wrap; align-items: center; gap: var(--iqc-rgap, 10px); min-width: 0; min-height: 0; pointer-events: none; }
+.iqc-region > *, .iqc-line > * { pointer-events: auto; }
+.iqc-region:empty, .iqc-line:empty { display: none; }
+.iqc-region:not(:has(> .iqc-fill)) { min-width: min-content; }             /* controls never shrink under a neighbour (they wrap) */
+.iqc-region[data-place="top-left"] { grid-area: tl; } .iqc-region[data-place="top-center"] { grid-area: tc; } .iqc-region[data-place="top-right"] { grid-area: tr; }
+.iqc-region[data-place="center-left"] { grid-area: cl; } .iqc-region[data-place="center-center"] { grid-area: cc; } .iqc-region[data-place="center-right"] { grid-area: cr; }
+.iqc-region[data-place="bottom-left"] { grid-area: bl; } .iqc-region[data-place="bottom-center"] { grid-area: bc; } .iqc-region[data-place="bottom-right"] { grid-area: br; }
+.iqc-line[data-line="edge-top"] { grid-area: et; } .iqc-line[data-line="edge-bottom"] { grid-area: eb; }
+.iqc-line[data-line="top"] { grid-area: lt; } .iqc-line[data-line="center"] { grid-area: lc; justify-content: center; } .iqc-line[data-line="bottom"] { grid-area: lb; }
+.iqc-region[data-place^="top-"] { align-self: start; align-content: flex-start; }
+.iqc-region[data-place^="center-"] { align-self: center; align-content: center; }
+.iqc-region[data-place^="bottom-"] { align-self: end; align-content: flex-end; }
+.iqc-region[data-place$="-left"] { justify-content: flex-start; }
+.iqc-region[data-place$="-center"] { justify-content: center; text-align: center; }
+.iqc-region[data-place$="-right"] { justify-content: flex-end; text-align: right; }
+.iqc-region[data-place^="center-"], .iqc-region[data-place^="bottom-"], .iqc-line { margin-top: var(--iqc-rgap-y, 8px); }
+.iqc-line[data-line="edge-top"] { margin-top: 0; margin-bottom: var(--iqc-rgap-y, 8px); }
+.iqc-region > .iqc-fill { flex: 1 1 100%; min-width: 0; }                 /* a node that takes a whole line of its region (a title) */
+
+@media (prefers-reduced-motion: reduce) { .iqc-btn, .iqc-btn__k, .iqc-seg__o { transition: none; } }
+
+/* NUMBER STEPPER (IniqControls.stepper): the shared control button on each side of the value */
+.iqc-step { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; height: 100%; box-sizing: border-box; }
+.iqc-step__v { flex: 1; min-width: 0; text-align: center; font-size: var(--iqc-st-fs, 22px); font-weight: var(--iq-fw-display, 700); color: var(--text-primary); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* SELECT / DROPDOWN (IniqControls.select): the native select in the control look */
+.iqc-sel { display: flex; flex-direction: column; justify-content: center; gap: 4px; width: 100%; height: 100%; box-sizing: border-box; font-family: var(--font); }
+.iqc-sel__l { font-size: 12px; color: var(--text-secondary); }
+.iqc-sel__l[hidden] { display: none; }
+.iqc-sel__s { width: 100%; min-height: 34px; padding: 0 10px; border: 0; border-radius: var(--radius-md, 12px); font: inherit; font-size: 14px; color: var(--text-primary);
+  background: var(--control-well); box-shadow: var(--control-well-shadow, inset 0 1px 3px rgba(0, 0, 0, .55)), inset 0 0 0 1px var(--border-subtle); }
+.iqc-sel__s:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.iqc-sel__s:disabled { opacity: var(--disabled-opacity, .4); }
+
+/* ---------------------------------------------------------------- OWN COLOURS (a Studio control's look fields; data attributes set by
+   controls.js only when a colour is chosen — the theme look otherwise) */
+.iqc-btn.iqc-btn[data-c-bg]:not([data-on="true"]) { background: var(--iqc-bg); }
+.iqc-btn.iqc-btn[data-c-bgon][data-on="true"] { background: var(--iqc-bg-on); }
+.iqc-btn.iqc-btn[data-c-fg]:not([data-on="true"]), .iqc-btn.iqc-btn[data-c-fg]:not([data-on="true"]) .iqc-btn__k { color: var(--iqc-fg); }
+.iqc-btn.iqc-btn[data-c-fgon][data-on="true"], .iqc-btn.iqc-btn[data-c-fgon][data-on="true"] .iqc-btn__k { color: var(--iqc-fg-on); }
+.iqc-btn.iqc-btn[data-c-border] { border: var(--iqc-bw) solid var(--iqc-bd, var(--border-primary)); }
+.iqc-btn.iqc-btn[data-c-glow][data-on="true"] { filter: drop-shadow(0 0 var(--iqc-glow) color-mix(in srgb, var(--iqc-glowc, var(--iqc-c)) 70%, transparent)); }
+.iqc-btn.iqc-btn[data-style="switch"] { width: calc(var(--iqc-s) * var(--iqc-sw, 1.7)); }
+.iqc-btn.iqc-btn[data-style="switch"][data-on="true"] .iqc-btn__k { transform: translateX(calc(var(--iqc-s) * (var(--iqc-sw, 1.7) - 1))); }
+.iqc-btn.iqc-btn[data-style="switch"][data-c-track]:not([data-on="true"]) { background: var(--iqc-track); box-shadow: inset 0 1px 3px rgba(0, 0, 0, .35); }
+.iqc-btn.iqc-btn[data-style="switch"][data-c-trackon][data-on="true"] { background: var(--iqc-track-on); box-shadow: inset 0 1px 3px rgba(0, 0, 0, .25); }
+.iqc-btn.iqc-btn[data-style="switch"][data-c-knob]:not([data-on="true"]) .iqc-btn__k { background: var(--iqc-knob); }
+.iqc-btn.iqc-btn[data-style="switch"][data-c-knobon][data-on="true"] .iqc-btn__k { background: var(--iqc-knob-on); }
+
+/* SEGMENTED: a column · icon above / label below a round icon · own surfaces and texts · no well · a wheel emphasis */
+.iqc-seg[data-dir="column"] { flex-direction: column; height: 100%; }
+.iqc-seg[data-dir="column"][data-fill] > .iqc-seg__o { width: 100%; height: auto; flex: 1 1 0; }
+.iqc-seg[data-olayout="stacked"] .iqc-seg__o, .iqc-seg[data-olayout="below"] .iqc-seg__o { flex-direction: column; gap: .4em; height: 100%; padding-block: .3em; }
+.iqc-seg[data-c-nowell] { background: transparent; box-shadow: none; padding: 0; }
+.iqc-seg[data-c-wellbg] { background: var(--iqc-wbg); }
+.iqc-seg.iqc-seg[data-c-optionbg] .iqc-seg__o[aria-checked="false"] { background: var(--iqc-obg); }
+.iqc-seg.iqc-seg[data-c-optionfg] .iqc-seg__o[aria-checked="false"] { color: var(--iqc-ofg); }
+.iqc-seg.iqc-seg[data-c-optionborder] .iqc-seg__o[aria-checked="false"] { box-shadow: inset 0 0 0 1px var(--iqc-obd); }
+.iqc-seg.iqc-seg[data-c-activebg] .iqc-seg__o[aria-checked="true"] { background: var(--iqc-abg); }
+.iqc-seg.iqc-seg[data-c-activefg] .iqc-seg__o[aria-checked="true"] { color: var(--iqc-afg); }
+.iqc-seg.iqc-seg[data-c-activeborder] .iqc-seg__o[aria-checked="true"] { box-shadow: inset 0 0 0 1px var(--iqc-abd); }
+.iqc-seg.iqc-seg[data-c-aglow] .iqc-seg__o[aria-checked="true"] { filter: drop-shadow(0 0 var(--iqc-aglow) color-mix(in srgb, var(--iqc-abg, var(--iqc-oc)) 60%, transparent)); }
+.iqc-seg.iqc-seg[data-c-orad] .iqc-seg__o { border-radius: var(--iqc-orad); }
+/* label below a ROUND icon: the option has no surface — its icon is the disc */
+.iqc-seg.iqc-seg[data-olayout="below"] .iqc-seg__o { background: transparent; box-shadow: none; filter: none; }
+.iqc-seg[data-olayout="below"] .iqc-seg__i { display: grid; place-items: center; box-sizing: border-box; width: var(--iqc-ib, calc(var(--iqc-g) * 2.2)); height: var(--iqc-ib, calc(var(--iqc-g) * 2.2));
+  padding: calc((var(--iqc-ib, calc(var(--iqc-g) * 2.2)) - var(--iqc-g)) / 2); border-radius: 50%; background: var(--iqc-obg, var(--surface-tertiary)); box-shadow: inset 0 0 0 1px var(--iqc-obd, var(--border-subtle)); }
+.iqc-seg[data-olayout="below"] .iqc-seg__o[aria-checked="true"] .iqc-seg__i { background: var(--iqc-abg, var(--iqc-oc)); box-shadow: inset 0 0 0 1px var(--iqc-abd, transparent);
+  filter: drop-shadow(0 0 var(--iqc-aglow, 0px) color-mix(in srgb, var(--iqc-abg, var(--iqc-oc)) 60%, transparent)); }
+.iqc-seg.iqc-seg[data-olayout="below"] .iqc-seg__o[aria-checked="true"] { color: var(--iqc-afg, var(--text-primary)); text-decoration: none; }
+/* WHEEL: the selected option large and bright, the others small and faded (a picker wheel) */
+.iqc-seg.iqc-seg[data-emphasis="wheel"] .iqc-seg__o.iqc-seg__o { background: transparent; box-shadow: none; text-decoration: none; transition: font-size .2s ease, opacity .2s ease; }
+.iqc-seg.iqc-seg[data-emphasis="wheel"] .iqc-seg__o[aria-checked="false"] { opacity: .32; font-weight: 500; }
+.iqc-seg.iqc-seg[data-emphasis="wheel"] .iqc-seg__o[aria-checked="true"] { font-size: calc(var(--iqc-text, 14px) * 1.3); font-weight: 600; color: var(--iqc-afg, var(--text-primary)); }
+.iqc-btn.iqc-btn[data-c-width] { width: var(--iqc-w); justify-content: center; justify-items: center; }

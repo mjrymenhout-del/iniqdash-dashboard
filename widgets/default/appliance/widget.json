@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "appliance",
+  "name": "Appliance",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "appliance.js",
+  "style": "appliance.css",
+  "assets": "assets/",
+  "api": "MaisonAppliance"
+}

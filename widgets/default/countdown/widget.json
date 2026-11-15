@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "countdown",
+  "name": "Countdown",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "countdown.js",
+  "style": "countdown.css",
+  "assets": "assets/",
+  "api": "MaisonCountdown"
+}

@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "id": "custom.sunrise-sunset",
+  "name": "Sunrise / Sunset",
+  "source": "custom",
+  "version": "1.0.0",
+  "entry": "sunrise-sunset.js",
+  "style": "sunrise-sunset.css",
+  "assets": "assets/",
+  "api": "IniqSunriseSunset",
+  "ha": {
+    "domains": [
+      "sun"
+    ]
+  }
+}

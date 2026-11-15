@@ -1,0 +1,27 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+.iq-dev { container: iq-dev / size; position: relative; isolation: isolate; overflow: hidden; height: 100%; box-sizing: border-box; padding: 14px 16px 16px;
+  display: flex; flex-direction: column; justify-content: space-between; border-radius: var(--radius-device, 22px); color: var(--text-primary); background: var(--surface-tertiary, #2a2c34); transition: background .25s; }
+.iq-dev[data-on="true"] { background: linear-gradient(150deg, var(--dev-a), var(--dev-b)); color: #ffffff; box-shadow: 0 10px 30px color-mix(in srgb, var(--dev-b) 35%, transparent); }
+.iq-dev__pic { position: absolute; right: -8%; bottom: -6%; width: 70%; height: 70%; z-index: -1; background: center / contain no-repeat; opacity: .28; filter: grayscale(.4); }
+.iq-dev[data-on="true"] .iq-dev__pic { opacity: .5; filter: none; mix-blend-mode: multiply; }
+.iq-dev__top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.iq-dev__word { font-size: 11px; font-weight: 600; letter-spacing: .06em; color: var(--text-muted); }
+.iq-dev[data-on="true"] .iq-dev__word { color: rgba(255, 255, 255, .85); }
+.iq-dev__sw { all: unset; box-sizing: border-box; position: relative; width: 40px; height: 22px; border-radius: 11px; cursor: pointer; flex: none; background: rgba(255, 255, 255, .12); transition: background .2s; }
+.iq-dev__knob { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #5b5e69; transition: left .2s, background .2s; }
+.iq-dev[data-on="true"] .iq-dev__sw { background: rgba(255, 255, 255, .55); }
+.iq-dev[data-on="true"] .iq-dev__knob { left: 21px; background: #ffffff; }
+.iq-dev__sw:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
+.iq-dev__sw:disabled { cursor: not-allowed; opacity: .5; }
+.iq-dev__body { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; }
+.iq-dev__ic { display: grid; place-items: center; width: 38px; height: 38px; margin-bottom: 4px; border-radius: 50%; color: var(--accent); background: rgba(255, 255, 255, .06); }
+.iq-dev__ic svg { width: 22px; height: 22px; }
+.iq-dev[data-on="true"] .iq-dev__ic { color: #ffffff; background: rgba(255, 255, 255, .22); }
+.iq-dev__name { font-size: 15px; font-weight: 700; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iq-dev__since { font-size: 11.5px; color: var(--text-muted); }
+.iq-dev[data-on="true"] .iq-dev__since { color: rgba(255, 255, 255, .8); }
+@container iq-dev (max-height: 130px) { .iq-dev__ic { display: none; } }
+@media (prefers-reduced-motion: reduce) { .iq-dev, .iq-dev__knob, .iq-dev__sw { transition: none; } }

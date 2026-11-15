@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "cover",
+  "name": "Cover",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "cover.js",
+  "style": "cover.css",
+  "assets": "assets/",
+  "api": "MaisonCover"
+}

@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "radial",
+  "name": "Radial menu",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "radial.js",
+  "style": "radial.css",
+  "assets": "assets/",
+  "api": "MaisonRadial"
+}

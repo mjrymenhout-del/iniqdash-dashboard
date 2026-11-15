@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "id": "custom.probe-roles",
+  "name": "Probe (roles test fixture)",
+  "source": "custom",
+  "version": "1.0.0",
+  "entry": "probe-roles.js",
+  "style": "probe-roles.css",
+  "assets": "assets/",
+  "api": "IniqProbeRoles",
+  "category": "sensors",
+  "ha": {
+    "binding": "roles",
+    "roles": {
+      "inside": { "label": "Inside sensor", "domains": ["sensor"], "required": true },
+      "outside": { "label": "Outside sensor", "domains": ["sensor"] },
+      "doors": { "label": "Door", "domains": ["binary_sensor"], "multiple": true, "max": 3 }
+    },
+    "actionSlots": {
+      "power": { "label": "Power switch", "domains": ["switch"], "actions": ["turn_on", "turn_off"], "max": 1 }
+    }
+  }
+}

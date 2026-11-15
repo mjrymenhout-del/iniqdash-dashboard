@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "inbox",
+  "name": "Notification centre",
+  "source": "default",
+  "version": "1.0.0",
+  "entry": "inbox.js",
+  "style": "inbox.css",
+  "assets": "assets/",
+  "api": "MaisonInbox"
+}

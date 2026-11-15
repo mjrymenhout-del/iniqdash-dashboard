@@ -1,0 +1,17 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Free surface (Floating Container content, popup content): children are absolutely positioned
+   by their px frame, relative to the surface. The surface fills the area it is given and clips
+   anything outside it (a frame is never rewritten because the surface got smaller).
+   ========================================================================== */
+.mf { position: relative; flex: 1 1 auto; width: 100%; min-height: 0; height: 100%; overflow: hidden; }
+.mf__item { position: absolute; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.mf__item > * { flex: 1 1 auto; min-width: 0; min-height: 0; overflow: hidden; }
+/* the Floating Container's content area hands its whole height to the surface */
+.mc--floating > .mc__content { display: flex; flex-direction: column; min-height: 0; }
+.mc--floating > .mc__content > .mf { flex: 1 1 auto; }
+/* a hidden-on-mobile floating container, shown only while editing */
+.mf-hidden { flex: 1 1 auto; display: grid; place-items: center; padding: 12px; text-align: center; font: 500 12px var(--font); color: var(--text-muted); border: 1px dashed var(--border-primary); border-radius: 14px; }

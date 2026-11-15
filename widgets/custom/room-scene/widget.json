@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "id": "custom.room-scene",
+  "name": "Room / Scene",
+  "source": "custom",
+  "version": "1.5.0",
+  "entry": "room-scene.js",
+  "style": "room-scene.css",
+  "assets": "assets/",
+  "api": "IniqRoomScene",
+  "category": "navigation",
+  "ha": {
+    "binding": "roles",
+    "roles": {
+      "lights": { "label": "Light", "domains": ["light"], "multiple": true, "max": 8, "area": true }
+    },
+    "actionSlots": {
+      "scenes": { "label": "Scene", "domains": ["scene", "script", "button", "input_button"], "actions": ["trigger"], "max": 8, "section": "Scene {n}" }
+    }
+  }
+}

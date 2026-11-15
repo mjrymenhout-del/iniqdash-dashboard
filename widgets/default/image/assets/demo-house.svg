@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <!-- original IniqDash artwork (MPL-2.0): a house at dusk -->
+  <defs>
+    <linearGradient id="h-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#17264a"/><stop offset=".6" stop-color="#584a72"/><stop offset="1" stop-color="#e09062"/></linearGradient>
+    <linearGradient id="h-hill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a3a32"/><stop offset="1" stop-color="#121815"/></linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#h-sky)"/>
+  <circle cx="640" cy="120" r="34" fill="#ffe6c4" opacity=".9"/>
+  <path d="M0 360 Q 200 300 420 340 T 800 320 V500 H0Z" fill="url(#h-hill)"/>
+  <rect x="290" y="240" width="230" height="140" fill="#2a2830"/>
+  <path d="M270 248 L 405 160 L 540 248 Z" fill="#1d1b22"/>
+  <g fill="#ffcf86"><rect x="318" y="275" width="46" height="40" rx="3"/><rect x="446" y="275" width="46" height="40" rx="3"/></g>
+  <rect x="384" y="300" width="42" height="80" rx="3" fill="#3a3640"/>
+  <rect x="470" y="180" width="22" height="46" fill="#1d1b22"/>
+</svg>

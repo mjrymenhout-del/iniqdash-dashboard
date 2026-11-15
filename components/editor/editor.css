@@ -1,0 +1,925 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
+/* ==========================================================================
+   Dashboard Editor V2 — editor chrome only. Widgets, containers and the grid keep their own CSS.
+
+   The editor speaks a different colour from the dashboard (cool blue, --ed-ui) so its chrome —
+   selection, handles, grid overlay, panels — can never be mistaken for a widget.
+   ========================================================================== */
+.ed {
+  --ed-ui: #6ea8ff;
+  --ed-ui-box: #b49cff;               /* a selected container / panel (distinct from a widget selection) */
+  --ed-ui-soft: rgba(110, 168, 255, .14);
+  --ed-ui-line: rgba(110, 168, 255, .45);
+  --ed-bad: var(--danger);
+  --ed-chrome: var(--nav-bg);
+  --ed-chrome-2: var(--surface-tertiary);
+  --ed-primary: var(--accent);          /* active editing state: orange; selection and handles keep the cool editor blue so they can never be mistaken for a widget */
+  --ed-on-primary: var(--accent-on);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* ---------------------------------------------------------------- top bar */
+.ed-bar {
+  position: sticky; top: var(--ed-sticky-top, 0px); z-index: 30;   /* --ed-sticky-top: height of any sticky page header above the editor */
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px;
+  padding: 8px; border-radius: var(--radius-lg);
+  background: var(--ed-chrome); box-shadow: 0 0 0 1px var(--border-primary), 0 10px 24px -14px rgba(0, 0, 0, .8);
+}
+.ed-bar__main, .ed-bar__file { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ed-bar__file { margin-left: auto; }
+.ed-status { padding: 0 6px; font-size: 11.5px; color: var(--text-muted); white-space: nowrap; }
+.ed-bar__sep { width: 1px; height: 24px; margin: 0 2px; background: var(--border-primary); }
+.ed-bar__hist { display: inline-flex; gap: inherit; }
+/* an empty page: what to do next (editing only) */
+.ed-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 18px auto 8px; padding: 22px 18px; max-width: 420px; text-align: center;
+  border-radius: 16px; border: 1px dashed var(--ed-ui-line); background: rgba(110, 168, 255, .05); }
+.ed-empty__t { margin: 0; font-size: 15px; font-weight: 600; color: var(--text-primary); }
+.ed-empty__h { margin: 0 0 4px; font-size: 12.5px; color: var(--text-muted); }
+.ed-draft { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding: 10px 12px 10px 16px; border-radius: 14px; background: var(--ed-ui-soft); box-shadow: 0 0 0 1px var(--ed-ui-line) inset; font-size: 12.5px; color: var(--text-secondary); }
+.ed-draft[hidden] { display: none; }
+.ed-draft p { margin: 0; }
+.ed-draft b { color: var(--text-primary); }
+.ed-draft__btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.ed.is-dirty .ed-status { color: var(--ed-primary); }
+.ed.is-dirty .ed-status::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: var(--ed-primary); vertical-align: 1px; }
+
+.ed-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  min-height: 40px; min-width: 40px; padding: 0 14px; border: 0; border-radius: var(--radius-md); cursor: pointer;
+  font: var(--iq-fw-control) 12.5px var(--font); color: var(--text-primary); background: var(--ed-chrome-2);
+  box-shadow: 0 0 0 1px var(--border-primary) inset;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.ed-btn svg { width: 16px; height: 16px; flex: none; }
+.ed-btn:hover { background: var(--surface-interactive); }
+.ed-btn:focus-visible, .ed-seg__b:focus-visible, .ed-step:focus-visible, .ed-tile:focus-visible, .ed-layer-b:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ed-btn--primary { color: var(--ed-on-primary); background: var(--ed-primary); box-shadow: none; }
+.ed-btn--primary:hover { background: var(--accent-hot); }
+.ed-btn--edit[aria-pressed="true"] { color: var(--ed-on-primary); background: var(--ed-primary); box-shadow: none; }
+.ed-btn--ghost { background: transparent; box-shadow: none; color: var(--text-secondary); padding: 0 10px; }
+.ed-btn--danger { color: var(--danger); box-shadow: 0 0 0 1px rgba(255, 100, 100, .35) inset; }
+.ed-btn--icon { padding: 0; width: 40px; }
+.ed-btn:disabled { opacity: var(--disabled-opacity); cursor: default; background: var(--ed-chrome-2); }
+.ed-btn--icon[aria-pressed="true"] { color: var(--ed-primary); box-shadow: 0 0 0 1px var(--accent-line) inset; }
+.ed.is-dirty .ed-btn--save { box-shadow: 0 0 0 1px var(--ed-primary) inset; color: var(--ed-primary); }
+.ed-btn.is-armed { color: #fff; background: var(--danger); box-shadow: none; }
+
+.ed-seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: 13px; background: var(--control-well); box-shadow: var(--control-well-shadow); }
+.ed-seg__b {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 40px; min-width: 40px; padding: 0 12px; border: 0; border-radius: 10px; cursor: pointer;
+  font: 600 12px var(--font); color: var(--text-muted); background: transparent;
+}
+.ed-seg__b svg { width: 16px; height: 16px; }
+.ed-seg__b[aria-pressed="true"] { color: var(--text-primary); background: var(--ed-chrome-2); box-shadow: 0 0 0 1px var(--ed-ui-line) inset; }
+.ed-seg__b[aria-pressed="true"] svg { color: var(--ed-primary); }
+.ed:not(.ed--editing) .ed-only-edit { display: none; }
+
+/* "More": occasional dashboard-file operations (Revert, Export, Import, Reset) — always a small menu */
+.ed-more { position: relative; }
+.ed-more__btn svg { width: 14px; height: 14px; }
+.ed-more__menu { display: none; }
+.ed-more.is-open .ed-more__menu {
+  display: flex; flex-direction: column; gap: 4px; position: absolute; right: 0; top: calc(100% + 6px); z-index: 35; min-width: 190px;
+  padding: 6px; border-radius: 14px; background: var(--ed-chrome); box-shadow: 0 0 0 1px var(--border-primary), 0 18px 40px -12px #000;
+}
+.ed-more.is-open .ed-more__menu .ed-btn { justify-content: flex-start; width: 100%; background: transparent; box-shadow: none; }
+.ed-more.is-open .ed-more__menu .ed-btn:hover { background: var(--ed-chrome-2); }
+/* design aids: Grid · Snap · Guides (a compact segmented group next to Undo / Redo) */
+.ed-aidbox .ed-btn--aid { gap: 6px; }
+@media (max-width: 1199px) { .ed-aidbox .ed-btn--aid span { display: none !important; } .ed-aidbox .ed-btn--aid { padding: 0 9px; } }
+.ed-more__sep { height: 1px; margin: 4px 6px; background: var(--border-primary); }
+.ed-more.is-open .ed-more__menu .ed-btn--danger { color: var(--danger); }
+.ed-more.is-open .ed-more__menu .ed-btn.is-armed { color: #fff; background: var(--danger); }
+/* a failed save: the status says so in the danger colour until a save succeeds */
+.ed.is-save-error .ed-status { color: var(--danger); }
+.ed.is-save-error .ed-status::before { background: var(--danger); }
+.ed.is-save-error .ed-btn--save { color: var(--danger); box-shadow: 0 0 0 1px var(--danger) inset; }
+/* the working editor page: no page heading — the toolbar starts right under the compact app header */
+.show--editor { padding-top: 10px; gap: 10px; }
+@media (min-width: 700px) { .show--editor { padding-top: 12px; } }
+@media (max-width: 699px) {
+  .ed-bar { gap: 6px; padding: 6px; }
+  .ed-bar__main, .ed-bar__file { gap: 6px; }
+  .ed-seg__b span, .ed-btn--primary.ed-only-edit span, .ed-btn--edit svg { display: none; }
+  .ed-seg__b { padding: 0 10px; }
+  .ed-btn--edit { padding: 0 12px; }
+  .ed-bar__main .ed-btn--primary { padding: 0; width: 40px; }
+  .ed-bar__sep { display: none; }
+  .ed-bar__file { margin-left: 0; width: 100%; }
+  .ed-bar__file .ed-btn { padding: 0 11px; }
+  /* phones: the save state gets its own line (readable, never cut down to a few letters) */
+  .ed-status { flex: 1 1 100%; order: -1; min-width: 0; overflow: hidden; text-overflow: ellipsis; padding: 0 2px; }
+  .ed-btn--save svg { display: none; }
+}
+
+/* ---------------------------------------------------------------- body: stage + panel */
+.ed-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (min-width: 1400px) { .ed--editing .ed-body { grid-template-columns: minmax(0, 1fr) 300px; } }
+
+.ed-stage { position: relative; min-width: 0; padding-top: 24px; }
+.ed-frame-label { position: absolute; left: 2px; top: 2px; font: 600 10.5px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.ed--editing .ed-frame-label { color: var(--ed-ui); }
+.ed-frame { transform-origin: 0 0; }
+.ed-canvas {
+  position: relative;
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--page-bg);
+  box-shadow: 0 0 0 1px var(--border-subtle);
+}
+.ed[data-bp="desktop"] .ed-canvas { padding: 20px; }
+.ed--editing .ed-canvas { box-shadow: 0 0 0 1px var(--ed-ui-line), 0 0 0 6px rgba(110, 168, 255, .05); }
+.ed-dash-head { margin: 2px 2px 14px; }
+.ed-dash-title { margin: 0; font-size: 20px; font-weight: 600; }
+.ed-dash-sub { margin: 3px 0 0; font-size: 13px; color: var(--text-muted); }
+.ed-dash-sub[hidden] { display: none; }
+/* dashboard backdrop presets (shared theme tokens — no arbitrary CSS) */
+.ed-canvas[data-bg="darker"] { background: var(--page-bg-darker); }
+.ed-canvas[data-bg="lighter"] { background: var(--page-bg-lighter); }
+
+/* edit mode: the DESIGN GRID — every COLUMN is a faint band (the gutters stay clear) and every ROW starts with a hairline, drawn
+   UNDER the items from the grid's own variables (columns, row height, gap of the current breakpoint — nested grids included, which
+   share the page's rows and gaps), so it is exact at every geometry and scales with the dashboard. An item's edges always lie on a
+   band's edges: what you see is where things snap. Tile = one column pitch × one row pitch. */
+.ed--editing .ed-canvas .mg__grid::before {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--ed-col) 0 calc(100% - var(--mg-gap)), transparent 0),
+    linear-gradient(to bottom, var(--ed-rowline) 0 1px, transparent 1px);
+  background-size: calc((100% + var(--mg-gap)) / var(--mg-cols)) 100%, 100% calc(var(--mg-row, var(--grid-row)) + var(--mg-gap));
+  background-repeat: repeat-x, repeat-y;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+.ed--editing { --ed-col: rgba(110, 168, 255, .055); --ed-rowline: rgba(156, 192, 255, .10); }
+.ed--editing .ed-canvas .mg--nested > .mg__grid::before { --ed-col: rgba(150, 120, 255, .07); --ed-rowline: rgba(170, 150, 255, .10); }
+/* while dragging the grid comes forward: it is where things land */
+.ed--editing.is-dragging { --ed-col: rgba(110, 168, 255, .11); --ed-rowline: rgba(170, 204, 255, .2); }
+.ed--editing.is-dragging .ed-canvas .mg--nested > .mg__grid::before { --ed-col: rgba(150, 120, 255, .13); }
+/* the PAGE EDGE: where the page grid starts and ends (app.grid pad) — a dashed line around the usable area */
+.ed--editing .ed-slot > .mg--geo > .mg__grid { outline: 1px dashed rgba(110, 168, 255, .22); outline-offset: 0; }
+/* the COLUMN RULER above the page grid: numbered columns (every column, or every 2nd / 4th on a fine grid) */
+.ed-ruler { display: none; }
+.ed--editing .ed-ruler {
+  --r-cols: var(--mgc-m, 4); --r-gap: var(--mgg-m, var(--grid-gap-compact)); --r-pad: var(--mgp-m, 0px);
+  display: grid; position: absolute; left: var(--r-pad); right: var(--r-pad); top: calc(var(--r-pad) - 15px); height: 12px;
+  grid-template-columns: repeat(var(--r-cols), minmax(0, 1fr)); column-gap: var(--r-gap); pointer-events: none; z-index: 2;
+}
+@container mg (min-width: 560px) { .ed--editing .ed-ruler { --r-cols: var(--mgc-t, 8); --r-gap: var(--mgg-t, var(--grid-gap)); --r-pad: var(--mgp-t, 0px); } }
+@container mg (min-width: 960px) { .ed--editing .ed-ruler { --r-cols: var(--mgc-d, 12); --r-gap: var(--mgg-d, var(--grid-gap)); --r-pad: var(--mgp-d, 0px); } }
+.ed-ruler > i { position: relative; font: 600 9px/12px ui-monospace, SFMono-Regular, Menlo, monospace; color: rgba(156, 192, 255, .55); font-style: normal; text-align: left; white-space: nowrap; border-left: 1px solid rgba(156, 192, 255, .25); padding-left: 2px; }
+.ed-ruler > i:empty { border-left-color: rgba(156, 192, 255, .1); }
+.ed--nogrid .ed-ruler, .ed--nogrid .ed-screens { display: none !important; }
+/* SCREEN LIMITS: where each screen of the chosen size ends while scrolling (the first screen is what is seen without scrolling) */
+.ed-screens { position: absolute; left: 0; right: 0; top: 0; height: 0; pointer-events: none; z-index: 7; }
+.ed-screens[hidden] { display: none; }
+.ed-screen-end { position: absolute; left: -12px; right: -12px; height: 0; border-top: 1.5px dashed rgba(255, 196, 108, .75); }
+.ed-screen-end > span { position: absolute; right: 12px; top: -19px; padding: 1px 8px; border-radius: 6px; font: 600 10.5px/16px ui-monospace, SFMono-Regular, Menlo, monospace; color: #1b1406; background: rgba(255, 196, 108, .92); white-space: nowrap; }
+.ed--nogrid .ed-canvas .mg__grid::before { content: none; }
+.ed--editing .ed-slot > .mg > .mg__grid { padding-bottom: calc(var(--ed-extra, 3) * (var(--mg-row, var(--grid-row)) + var(--mg-gap))); }   /* workspace below the content; grows while dragging */
+
+/* edit mode: items are selectable objects; the widgets inside do not react */
+.ed--editing .ed-canvas .mg__item, .ed--editing .ed-canvas .mf__item { pointer-events: auto; cursor: pointer; border-radius: var(--radius-device); outline: 1px dashed rgba(110, 168, 255, .35); outline-offset: 2px; touch-action: manipulation; }
+.ed--editing .ed-canvas .mg__item > *, .ed--editing .ed-canvas .mf__item > * { pointer-events: none; }
+/* a container on a free surface: its own items stay selectable */
+.ed--editing .ed-canvas .mf__item .mg__item { pointer-events: auto; }
+.ed--editing .ed-canvas .mtabs__tab { pointer-events: auto; cursor: pointer; }   /* a tabbed container: pressing a tab chooses the tab to edit */
+.ed--editing .ed-canvas .mg.ed-tabs-empty { min-height: 120px; border-radius: 16px; outline: 1px dashed rgba(110, 168, 255, .3); outline-offset: -1px; }
+.ed--editing .ed-canvas .mg__item:hover, .ed--editing .ed-canvas .mf__item:hover { outline-color: var(--ed-ui-line); }
+.ed--editing .ed-canvas .mg__item:focus-visible, .ed--editing .ed-canvas .mf__item:focus-visible { outline: 2px solid var(--ed-ui); outline-offset: 3px; }
+.ed--editing .ed-canvas .mg__item.is-selected, .ed--editing .ed-canvas .mf__item.is-selected { outline: 0; }
+.ed.is-dragging, .ed.is-dragging * { cursor: grabbing !important; user-select: none; -webkit-user-select: none; }
+.ed.is-dragging:is([data-drag="n"], [data-drag="s"]), .ed.is-dragging:is([data-drag="n"], [data-drag="s"]) * { cursor: ns-resize !important; }
+.ed.is-dragging:is([data-drag="e"], [data-drag="w"]), .ed.is-dragging:is([data-drag="e"], [data-drag="w"]) * { cursor: ew-resize !important; }
+.ed.is-dragging:is([data-drag="nw"], [data-drag="se"]), .ed.is-dragging:is([data-drag="nw"], [data-drag="se"]) * { cursor: nwse-resize !important; }
+.ed.is-dragging:is([data-drag="ne"], [data-drag="sw"]), .ed.is-dragging:is([data-drag="ne"], [data-drag="sw"]) * { cursor: nesw-resize !important; }
+.ed.is-dragging .ed-panel { opacity: .12; pointer-events: none; }
+/* the dragged object floats above the dashboard and follows the pointer (its grid cell changes only on drop) */
+.ed--editing .ed-canvas .mf__item.is-floating { z-index: 6; opacity: .94; outline: 0; filter: drop-shadow(0 18px 26px rgba(0, 0, 0, .55)); }
+.ed--editing .ed-canvas .mg__item.is-floating { z-index: 6; opacity: .94; outline: 0; filter: drop-shadow(0 18px 26px rgba(0, 0, 0, .55)); }
+.ed--editing .ed-canvas .mg__item.is-returning { transition: transform var(--dur-fast) var(--ease); }
+/* smart reflow: the other items of the grid glide to their previewed cells; a displaced one is marked */
+.ed--editing .ed-canvas .mg__item.is-peer, .ed--editing .ed-canvas .mg__item.is-shifting { transition: transform 190ms cubic-bezier(.2, .8, .2, 1); }
+.ed--editing .ed-canvas .mg__item.is-displaced { outline: 1.5px dashed var(--ed-ui); outline-offset: 2px; }
+.ed--editing .ed-canvas .mg__item.is-displaced > * { filter: brightness(.82) saturate(.9); }
+/* Snap to Grid: the dragged item steps from cell to cell (a short glide, so it never flickers) */
+.ed--editing .ed-canvas .mg__item.is-floating.is-snapping { transition: transform 90ms ease-out; }
+.ed--editing .ed-canvas .mg__item.is-resizing { z-index: 6; outline: 0; }
+@media (prefers-reduced-motion: reduce) { .ed--editing .ed-canvas .mg__item.is-returning, .ed--editing .ed-canvas .mg__item.is-peer, .ed--editing .ed-canvas .mg__item.is-shifting, .ed--editing .ed-canvas .mg__item.is-floating.is-snapping { transition: none; } }   /* the inspector steps aside so the whole canvas is a drop area */
+@media (hover: hover) and (pointer: fine) { .ed--editing .ed-canvas .mg__item, .ed--editing .ed-canvas .mf__item { cursor: grab; } }
+/* a free surface while editing: a faint dot lattice shows it is a px design area */
+.ed--editing .ed-canvas .mf:not(.ed-floatlayer) { background-image: radial-gradient(rgba(110, 168, 255, .16) 1px, transparent 1px); background-size: 16px 16px; border-radius: 12px; }
+.ed--editing.ed--nogrid .ed-canvas .mf { background-image: none; }
+
+/* ---------------------------------------------------------------- overlay layer (unscaled) */
+.ed-layer { position: absolute; inset: 0; pointer-events: none; z-index: 10; }
+.ed-sel, .ed-parent { position: absolute; border-radius: calc(var(--radius-device) + 3px); }
+.ed-sel[hidden], .ed-parent[hidden] { display: none; }
+.ed-parent { outline: 1px dashed var(--ed-ui-line); outline-offset: 4px; }
+.ed-sel { box-shadow: 0 0 0 2px var(--ed-ui), 0 0 0 6px rgba(110, 168, 255, .16); transition: box-shadow var(--dur-fast) var(--ease); }
+.ed-sel.is-invalid { box-shadow: 0 0 0 2px var(--ed-bad), 0 0 0 6px rgba(255, 100, 100, .2); }
+.ed-sel__tag {
+  position: absolute; left: -2px; bottom: calc(100% + 6px);
+  max-width: min(360px, calc(100% + 120px)); padding: 4px 9px; border-radius: 8px;
+  font: 600 11px/1.3 var(--font); color: #0d1626; background: var(--ed-ui);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ed-sel.is-invalid .ed-sel__tag { color: #fff; background: var(--ed-bad); white-space: normal; max-width: min(280px, calc(100% + 120px)); }
+/* move grip: for touch (a mouse drags the item itself, so on a fine pointer it stays out of the widget's way) */
+.ed-sel__move {
+  position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 11px; cursor: grab;
+  display: none; place-items: center; pointer-events: auto; touch-action: none;
+  color: #0d1626; background: var(--ed-ui); box-shadow: 0 6px 14px -6px rgba(0, 0, 0, .8); opacity: .9;
+}
+.ed-sel__move svg { width: 17px; height: 17px; }
+@media (pointer: coarse) { .ed-sel__move { display: grid; } }
+.ed-sel.is-flow .ed-sel__move, .ed-sel.is-small .ed-sel__move, .ed-sel[data-active] .ed-sel__move { display: none; }
+/* 8 resize handles on the outline: corners = width + height, edges = one dimension (small squares / short bars) */
+.ed-sel__h {
+  position: absolute; z-index: 1; width: 10px; height: 10px; margin: 0; padding: 0; border: 0; border-radius: 3px;
+  translate: -50% -50%; pointer-events: auto; touch-action: none;
+  background: #f4f8ff; box-shadow: 0 0 0 1.5px var(--ed-ui), 0 1px 4px rgba(0, 0, 0, .55);
+  transition: transform var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease);
+}
+.ed-sel__h::after { content: ""; position: absolute; inset: -7px; }                       /* a 24px target around a 10px mark */
+.ed-sel__h:hover, .ed-sel[data-active] .ed-sel__h { transform: scale(1.25); background: var(--ed-ui); }
+.ed-sel__h:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.ed-sel__h--nw { left: 0; top: 0; } .ed-sel__h--n { left: 50%; top: 0; } .ed-sel__h--ne { left: 100%; top: 0; }
+.ed-sel__h--w { left: 0; top: 50%; } .ed-sel__h--e { left: 100%; top: 50%; }
+.ed-sel__h--sw { left: 0; top: 100%; } .ed-sel__h--s { left: 50%; top: 100%; } .ed-sel__h--se { left: 100%; top: 100%; }
+.ed-sel__h--n, .ed-sel__h--s { width: 18px; height: 7px; border-radius: 4px; }
+.ed-sel__h--e, .ed-sel__h--w { width: 7px; height: 18px; border-radius: 4px; }
+@media (pointer: coarse) {
+  .ed-sel__h { width: 14px; height: 14px; }
+  .ed-sel__h--n, .ed-sel__h--s { width: 24px; height: 10px; } .ed-sel__h--e, .ed-sel__h--w { width: 10px; height: 24px; }
+  .ed-sel__h::after { inset: -12px; }
+}
+/* mobile flow (structured order): only the width / height handles; a tiny item: corners only */
+.ed-sel.is-flow :is(.ed-sel__h--n, .ed-sel__h--w, .ed-sel__h--nw, .ed-sel__h--ne, .ed-sel__h--sw) { display: none; }
+.ed-sel.is-tiny :is(.ed-sel__h--n, .ed-sel__h--s, .ed-sel__h--e, .ed-sel__h--w) { display: none; }
+/* during a gesture only the handle in use stays */
+.ed-sel[data-active] .ed-sel__h { opacity: 0; }
+.ed-sel[data-active="n"] .ed-sel__h--n, .ed-sel[data-active="s"] .ed-sel__h--s, .ed-sel[data-active="e"] .ed-sel__h--e, .ed-sel[data-active="w"] .ed-sel__h--w,
+.ed-sel[data-active="nw"] .ed-sel__h--nw, .ed-sel[data-active="ne"] .ed-sel__h--ne, .ed-sel[data-active="sw"] .ed-sel__h--sw, .ed-sel[data-active="se"] .ed-sel__h--se { opacity: 1; }
+/* a selected CONTAINER / panel: its own colour and a double ring, so it never reads as one of its widgets */
+.ed-sel.is-container { box-shadow: 0 0 0 2px var(--ed-ui-box), 0 0 0 5px rgba(0, 0, 0, .35), 0 0 0 7px rgba(190, 160, 255, .28); }
+.ed-sel.is-container .ed-sel__h { box-shadow: 0 0 0 1.5px var(--ed-ui-box), 0 1px 4px rgba(0, 0, 0, .55); }
+.ed-sel.is-container .ed-sel__h:hover, .ed-sel.is-container[data-active] .ed-sel__h { background: var(--ed-ui-box); }
+.ed-sel.is-container .ed-sel__tag { background: var(--ed-ui-box); }
+.ed-sel.is-container.is-invalid, .ed-sel.is-invalid { box-shadow: 0 0 0 2px var(--ed-bad), 0 0 0 6px rgba(255, 100, 100, .2); }
+.ed-sel.is-away { opacity: .45; }
+/* cross-grid drag feedback: the receiving grid (editor blue) and where the item will land */
+.ed-target, .ed-ghost { position: absolute; }
+.ed-target[hidden], .ed-ghost[hidden] { display: none; }
+.ed-target { border-radius: calc(var(--radius-container) + 4px); box-shadow: 0 0 0 3px var(--ed-ui), 0 0 0 9px rgba(110, 168, 255, .18); background: rgba(110, 168, 255, .06); }
+.ed-target.is-invalid { box-shadow: 0 0 0 3px var(--ed-bad), 0 0 0 9px rgba(255, 100, 100, .18); background: rgba(255, 100, 100, .06); }
+.ed-target__tag { position: absolute; left: 10px; top: 10px; padding: 5px 10px; border-radius: 8px; font: 700 11.5px/1.3 var(--font); color: #0d1626; background: var(--ed-ui); white-space: nowrap; }
+.ed-target.is-invalid .ed-target__tag { color: #fff; background: var(--ed-bad); }
+.ed-ghost.is-invalid { background: repeating-linear-gradient(135deg, rgba(255, 100, 100, .26) 0 8px, rgba(255, 100, 100, .1) 8px 16px); box-shadow: 0 0 0 2px var(--ed-bad) inset; }
+.ed-aids { position: absolute; inset: 0; }
+.ed-ghost.is-waiting { box-shadow: 0 0 0 2px var(--ed-ui) inset, 0 0 0 4px rgba(110, 168, 255, .22); }
+.ed-conflict { position: absolute; border-radius: var(--radius-device); box-shadow: 0 0 0 2px var(--ed-bad) inset, 0 0 0 4px rgba(255, 100, 100, .25); background: rgba(255, 100, 100, .14); }
+.ed-conflict--wait { box-shadow: 0 0 0 2px var(--ed-ui-line) inset; background: rgba(110, 168, 255, .07); }   /* in the way — hold to make room */
+.ed-guide { position: absolute; background: #9fd0ff; box-shadow: 0 0 6px rgba(159, 208, 255, .8); border-radius: 1px; }
+.ed-guide--mid { background: repeating-linear-gradient(var(--ed-guide-dir, 180deg), #ffd48a 0 5px, transparent 5px 9px); box-shadow: none; }
+.ed-guide--h.ed-guide--mid { --ed-guide-dir: 90deg; }
+.ed-guide__mark { position: absolute; border-radius: var(--radius-device); box-shadow: 0 0 0 1px rgba(159, 208, 255, .55) inset; }
+/* crosshair through the active item, across the visible screen (subtle, dashed) */
+.ed-cross { position: absolute; pointer-events: none; }
+.ed-cross[hidden], .ed-dims[hidden] { display: none; }
+.ed-cross--v { background: repeating-linear-gradient(180deg, rgba(255, 196, 120, .7) 0 4px, transparent 4px 8px); }
+.ed-cross--h { background: repeating-linear-gradient(90deg, rgba(255, 196, 120, .7) 0 4px, transparent 4px 8px); }
+/* X / Y / W / H next to the landing area */
+.ed-dims {
+  position: absolute; display: flex; align-items: baseline; gap: 8px; padding: 4px 9px; border-radius: 8px; white-space: nowrap;
+  font: 600 11px/1.35 ui-monospace, SFMono-Regular, Menlo, monospace; color: #e3ecff; background: rgba(10, 18, 34, .92);
+  box-shadow: 0 0 0 1px rgba(110, 168, 255, .45), 0 6px 16px -8px rgba(0, 0, 0, .9); pointer-events: none;
+}
+.ed-dims span { font-weight: 500; color: #9fb4d8; }
+.ed-dims.is-invalid { box-shadow: 0 0 0 1px var(--ed-bad), 0 6px 16px -8px rgba(0, 0, 0, .9); }
+.ed-dims.is-invalid span { color: #ffb3b3; white-space: normal; max-width: 260px; }
+.ed--noguides :is(.ed-guide, .ed-guide__mark, .ed-cross, .ed-dims) { display: none !important; }
+.ed-ghost { border-radius: var(--radius-device); background: repeating-linear-gradient(135deg, rgba(110, 168, 255, .22) 0 8px, rgba(110, 168, 255, .1) 8px 16px); box-shadow: 0 0 0 2px var(--ed-ui) inset; }
+.ed-ghost.is-quiet { background: none; box-shadow: 0 0 0 1.5px var(--ed-ui-line); }
+
+.ed-toast {
+  position: fixed; left: 50%; top: calc(var(--ed-sticky-top, 0px) + var(--ed-bar-h, 70px) + 12px); z-index: 40; translate: -50% 0; pointer-events: none;
+  max-width: calc(100% - 24px); margin: 0; padding: 9px 14px; border-radius: 12px;
+  font-size: 12.5px; font-weight: 600; color: var(--text-primary);
+  background: var(--surface-interactive); box-shadow: 0 0 0 1px var(--border-primary), 0 12px 30px -10px rgba(0, 0, 0, .9);
+}
+.ed-toast[data-tone="warn"] { box-shadow: 0 0 0 1px rgba(255, 100, 100, .6), 0 12px 30px -10px rgba(0, 0, 0, .9); }
+.ed-toast[hidden] { display: none; }
+
+/* ---------------------------------------------------------------- inspector panel */
+.ed-panel {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 12px; border-radius: 16px;
+  background: var(--ed-chrome); box-shadow: 0 0 0 1px var(--border-primary);
+}
+@media (min-width: 1400px) { .ed-panel { position: sticky; top: calc(var(--ed-sticky-top, 0px) + var(--ed-bar-h, 70px) + 12px); max-height: calc(100vh - var(--ed-sticky-top, 0px) - var(--ed-bar-h, 70px) - 28px); overflow: auto; } }
+@media (max-width: 1399px) {
+  /* narrow screens: the inspector is a bottom sheet so the controls stay next to the canvas */
+  .ed-panel { position: sticky; bottom: 0; z-index: 25; max-height: 40vh; overflow: auto; box-shadow: 0 0 0 1px var(--border-primary), 0 -16px 30px -12px rgba(0, 0, 0, .85); }
+}
+.ed-sec { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.ed-panel__grip { display: none; }
+@media (max-width: 1399px) {
+  .ed-panel__grip::after { content: ""; position: absolute; inset: -6px 0; }   /* 40px target */
+  .ed-panel__grip { flex: none; display: grid; place-items: center; position: sticky; top: -12px; z-index: 2; height: 28px; min-height: 28px; margin: -12px -12px 0; border: 0; cursor: pointer; background: var(--ed-chrome); grid-column: 1 / -1; }
+  .ed-panel__grip-bar { width: 44px; height: 5px; border-radius: 3px; background: var(--border-primary); }
+  .ed-panel__grip:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .ed-panel.is-collapsed { max-height: 92px; overflow: hidden; }
+  .ed-panel.is-collapsed > .ed-sec:not(:first-of-type) { display: none; }
+}
+@media (min-width: 700px) and (max-width: 1399px) {
+  .ed-panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0 18px; align-items: start; max-height: 38vh; overflow: hidden; }
+  .ed-panel > .ed-sec { max-height: calc(38vh - 24px); overflow: auto; padding: 2px; }
+  .ed-panel > .ed-sec + .ed-sec { padding: 2px 2px 2px 18px; border-top: 0; border-left: 1px solid var(--border-primary); }
+}
+.ed-sec + .ed-sec { padding-top: 12px; border-top: 1px solid var(--border-primary); }
+.ed-sec__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.ed-sec__h { margin: 0; font-size: 14px; font-weight: 600; color: var(--ed-primary); }
+.ed-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.ed-actions .ed-btn { padding: 0 12px; }
+.ed-item-id { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.ed-item-id .ed-sec__h { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ed-glyph { flex: none; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; color: var(--ed-primary); background: var(--accent-soft); }
+.ed-glyph svg { width: 20px; height: 20px; }
+.ed-contents { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.ed-contents li { display: flex; align-items: center; gap: 4px; }
+.ed-contents__name { flex: 1; min-width: 0; min-height: 40px; display: flex; align-items: center; gap: 8px; padding: 0 10px; border: 0; border-radius: 10px; cursor: pointer; text-align: left; font: 500 12.5px var(--font); color: var(--text-secondary); background: var(--ed-chrome-2); }
+.ed-contents__name:hover { color: var(--text-primary); }
+.ed-mini-btn { flex: none; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 10px; cursor: pointer; color: var(--text-secondary); background: var(--ed-chrome-2); }
+.ed-mini-btn svg { width: 17px; height: 17px; }
+.ed-mini-btn--danger { color: var(--danger); }
+.ed-mini-btn.is-armed { color: #fff; background: var(--danger); }
+.ed-contents__name:focus-visible, .ed-mini-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ed-sub { margin: 4px 0 0; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+.ed-id { margin: 2px 0 0; font: 500 11px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--text-muted); overflow-wrap: anywhere; }
+.ed-hint { margin: 0; font-size: 11.5px; line-height: 1.45; color: var(--text-muted); }
+.ed-field { display: flex; flex-direction: column; gap: 5px; font-size: 11.5px; font-weight: 600; color: var(--text-secondary); }
+.ed-field input, .ed-field select, .ed-code {
+  min-height: 40px; padding: 0 12px; border: 0; border-radius: 10px;
+  font: 500 13px var(--font); color: var(--text-primary); background: var(--control-well); box-shadow: var(--control-well-shadow);
+}
+.ed-field input[type="file"] { padding: 9px 12px; font-size: 12px; }
+.ed-field input:focus-visible, .ed-field select:focus-visible, .ed-code:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.ed-pos { display: flex; flex-direction: column; gap: 8px; }
+.ed-sec--layout { gap: 8px; }
+.ed-pos__where, .ed-pos__read { margin: 0; font-size: 12px; color: var(--text-secondary); }
+.ed-pos__read { font: 600 12px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--text-primary); }
+.ed-pos__row { display: grid; grid-template-columns: repeat(4, minmax(40px, 1fr)); gap: 6px; }
+.ed-step {
+  display: grid; place-items: center; min-height: 40px; border: 0; border-radius: 10px; cursor: pointer;
+  font: 700 12.5px var(--font); color: var(--text-primary); background: var(--ed-chrome-2); box-shadow: 0 0 0 1px var(--border-primary) inset;
+}
+.ed-step svg { width: 18px; height: 18px; }
+.ed-step:hover { background: var(--surface-interactive); }
+.ed-step:disabled { opacity: var(--disabled-opacity); cursor: default; }
+.ed-layers { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.ed-layers li.is-child { padding-left: 16px; position: relative; }
+.ed-layers li.is-child::before { content: ""; position: absolute; left: 7px; top: 0; bottom: 0; width: 1px; background: var(--border-primary); }
+.ed-layer-b {
+  width: 100%; min-height: 40px; display: flex; align-items: center; gap: 8px; padding: 0 10px; border: 0; border-radius: 10px; cursor: pointer;
+  text-align: left; font: 500 12.5px var(--font); color: var(--text-secondary); background: transparent;
+}
+.ed-layer-b:hover { background: var(--ed-chrome-2); }
+.ed-layer-b[aria-pressed="true"] { color: var(--text-primary); background: var(--accent-soft); box-shadow: 0 0 0 1px var(--accent-line) inset; }
+.ed-layer-t { flex: none; min-width: 72px; font-size: 11px; font-weight: 700; color: var(--text-muted); }
+.ed-layer-n { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------------------------------------------------------------- dialogs */
+.ed-dlg {
+  width: min(680px, calc(100vw - 24px)); max-height: calc(100vh - 32px); padding: 0; border: 0; border-radius: var(--radius-xl);
+  font-family: var(--font); color: var(--text-primary); background: var(--ed-chrome); box-shadow: 0 0 0 1px var(--border-primary), 0 30px 80px -20px #000;
+}
+.ed-dlg::backdrop { background: rgba(4, 4, 6, .72); }
+.ed-dlg__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 12px 0 18px; }
+.ed-dlg__head h3 { margin: 0; font-size: 16px; font-weight: 600; }
+.ed-dlg__body { display: flex; flex-direction: column; gap: 12px; padding: 12px 18px; }
+.ed-dlg__foot { display: flex; justify-content: flex-end; gap: 8px; padding: 0 18px 16px; }
+.ed-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); gap: 8px; }
+.ed-tile {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 52px; padding: 9px 12px; border: 0; border-radius: 12px; cursor: pointer;
+  text-align: left; font: 600 13px var(--font); color: var(--text-primary); background: var(--ed-chrome-2); box-shadow: 0 0 0 1px var(--border-primary) inset;
+}
+.ed-tile small { font-size: 11px; font-weight: 500; color: var(--text-muted); }
+.ed-tile:hover { box-shadow: 0 0 0 1px var(--accent-line) inset; background: var(--surface-interactive); }
+.ed-code { min-height: 200px; padding: 10px 12px; resize: vertical; font: 500 12px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.ed-errors { margin: 0; padding-left: 18px; font-size: 12px; line-height: 1.5; color: var(--danger); }
+/* Settings · Home Assistant connection */
+.ed-dlg--ha { width: min(560px, calc(100vw - 24px)); }
+.ed-has__state { margin: 0; font-size: 13px; font-weight: 600; overflow-wrap: anywhere; }
+.ed-has__state[data-tone="ok"] { color: var(--success, #7fd99a); }
+.ed-has__state[data-tone="bad"] { color: var(--warning, #ffb86b); }
+.ed-has__live { margin: -4px 0 0; font-size: 12px; color: var(--text-muted); overflow-wrap: anywhere; }
+.ed-has__live:empty { display: none; }
+.ed-has__live[data-tone="bad"] { color: var(--warning, #ffb86b); }
+.ed-has__tok { display: flex; gap: 8px; min-width: 0; }
+.ed-has__tok input { flex: 1; min-width: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.ed-has__show { flex: none; min-width: 72px; }
+.ed-has__result { margin: 0; padding: 10px 12px; border-radius: 12px; font-size: 12.5px; line-height: 1.45; background: var(--ed-chrome-2); box-shadow: 0 0 0 1px var(--border-primary) inset; overflow-wrap: anywhere; }
+.ed-has__result[hidden] { display: none; }
+.ed-has__result[data-tone="ok"] { color: #fff; box-shadow: 0 0 0 1px rgba(127, 217, 154, .55) inset; background: rgba(127, 217, 154, .1); }
+.ed-has__result[data-tone="bad"] { color: #fff; box-shadow: 0 0 0 1px rgba(255, 100, 100, .55) inset; background: rgba(255, 100, 100, .1); }
+.ed-has__result[data-tone="busy"] { color: var(--text-secondary); }
+.ed-errors:empty { display: none; }
+.ed-errors li:first-child { list-style: none; margin-left: -18px; font-weight: 700; }
+
+.ed-seg__b[aria-checked="true"] { color: var(--text-primary); background: var(--ed-chrome-2); box-shadow: 0 0 0 1px var(--ed-ui-line) inset; }
+
+/* ---------------------------------------------------------------- pages: picker, settings, Pages dialog */
+.ed-pagebox { display: inline-flex; align-items: center; gap: 4px; padding: 3px; border-radius: 13px; background: var(--control-well); box-shadow: var(--control-well-shadow); min-width: 0; }
+.ed-page-sel {
+  min-height: 40px; max-width: 220px; min-width: 0; padding: 0 10px; border: 0; border-radius: 10px; cursor: pointer;
+  font: 600 12.5px var(--font); color: var(--text-primary); background: var(--ed-chrome-2); box-shadow: 0 0 0 1px var(--border-primary) inset;
+}
+.ed-page-sel:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ed-pagebox .ed-btn { min-height: 40px; background: transparent; box-shadow: none; padding: 0 10px; }
+.ed-check { display: flex; align-items: center; gap: 10px; min-height: 40px; font-size: 12.5px; color: var(--text-secondary); cursor: pointer; }
+.ed-check input { width: 18px; height: 18px; margin: 0; accent-color: var(--ed-primary); cursor: pointer; }
+.ed-check input:disabled { cursor: default; }
+.ed-dlg--settings .ed-sub, .ed-dlg--pages .ed-sub { margin-top: 6px; }
+.ed-pages { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.ed-pages__row {
+  display: grid; grid-template-columns: 40px minmax(120px, 1fr) 110px auto auto auto; align-items: center; gap: 8px;
+  padding: 6px; border-radius: 12px; background: var(--ed-chrome-2); box-shadow: 0 0 0 1px var(--border-primary) inset;
+}
+.ed-pages__row.is-current { box-shadow: 0 0 0 1px var(--accent-line) inset; background: var(--accent-soft); }
+.ed-pages__go { width: 40px; height: 40px; border: 0; border-radius: 10px; cursor: pointer; font: 700 12.5px var(--font); color: var(--text-secondary); background: var(--control-well); }
+.ed-pages__go[aria-pressed="true"] { color: var(--ed-on-primary); background: var(--ed-primary); }
+.ed-pages__name, .ed-pages__row select {
+  min-width: 0; min-height: 40px; padding: 0 10px; border: 0; border-radius: 10px;
+  font: 500 13px var(--font); color: var(--text-primary); background: var(--control-well); box-shadow: var(--control-well-shadow);
+}
+.ed-pages__go:focus-visible, .ed-pages__name:focus-visible, .ed-pages__row select:focus-visible, .ed-check input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ed-pages__btns { display: inline-flex; gap: 4px; }
+.ed-pages__btns .ed-mini-btn:disabled { opacity: var(--disabled-opacity); cursor: default; }
+.ed-pages .ed-check { min-height: 40px; gap: 6px; font-size: 12px; }
+@media (max-width: 699px) {
+  .ed-pages__row { display: flex; flex-wrap: wrap; }
+  .ed-pages__name { flex: 1 1 140px; }
+  .ed-pages__row select { flex: 1 1 100px; }
+  .ed-pages__btns { margin-left: auto; }
+  .ed-page-sel { max-width: 150px; }
+  .ed-pagebox .ed-btn span { display: none; }
+}
+
+/* the application shell inside the preview frame: the canvas takes the space beside / below the dock */
+.ed-frame > .msh .ed-canvas { min-width: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ed-btn, .ed-sel { transition: none; }
+}
+
+/* ---------------------------------------------------------------- free surfaces, popups, notifications (editor UI) */
+.ed-guide--centre { background: #ffd48a; box-shadow: 0 0 6px rgba(255, 212, 138, .8); }
+.ed-layers li.is-grandchild { padding-left: 30px; }
+.ed-layers li.is-grandchild::before { left: 21px; }
+.ed-pos__px { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.ed-field--num input { width: 100%; min-height: 40px; }
+.ed-btn--sm { min-height: 40px; padding: 0 12px; font-size: 12.5px; }
+.ed-designbar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.ed-designbar[hidden] { display: none; }
+.ed-canvas[data-design="popup"] { background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, .015) 0 12px, transparent 12px 24px); }
+.ed-popstage { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 24px 0 40px; }
+.ed-popstage[data-bp="mobile"] { padding: 12px 0; }
+.ed-popstage__panel { position: relative; overflow: visible; }
+.ed-popstage__panel > .mpop__body { overflow: hidden; }
+.ed-popstage__panel > .mpop__body.is-fit { flex: none; }
+.ed-popstage__panel > .mpop__body > .mf { min-height: 100%; }
+.ed-popstage__size { position: absolute; right: -14px; bottom: -14px; width: 40px; height: 40px; border: 0; border-radius: 12px; display: grid; place-items: center; color: #0d1626; background: var(--ed-ui); cursor: nwse-resize; touch-action: none; box-shadow: 0 6px 16px -6px rgba(0, 0, 0, .7); }
+.ed-popstage__size svg { width: 18px; height: 18px; }
+.ed-popstage__note { margin: 0; font: 500 11.5px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--text-muted); }
+.ed-popups__row { grid-template-columns: minmax(0, 1fr) auto auto; }
+.ed-popups__meta { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+.ed-notes__row { grid-template-columns: minmax(0, 1fr) auto; }
+.ed-notes__name { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding-left: 6px; }
+.ed-rules__row { grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr) auto; }
+.ed-rules__row select { min-width: 0; }
+.ed-rules__arrow { color: var(--text-muted); }
+.ed-events { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.ed-events__row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 10px; padding: 6px 6px 6px 12px; border-radius: 12px; background: var(--control-well); }
+.ed-events__row > span:first-child { display: flex; flex-direction: column; min-width: 0; font-size: 13px; }
+.ed-events__row code { font-size: 11px; color: var(--text-muted); }
+.ed-dlg--notes .ed-sub, .ed-dlg--popups .ed-sub { margin-top: 14px; }
+.ed-def__side { display: flex; flex-direction: column; gap: 10px; position: sticky; top: 0; }
+/* the popup settings' live preview: the popup's real header / picture / information at its Desktop size, scaled to the pane */
+.ed-poppv { align-items: flex-start; border-radius: 12px; }
+.ed-poppv__panel { flex: none; max-width: none; max-height: none; transform-origin: 50% 0; pointer-events: none; }
+.ed-poppv__content { display: grid; place-items: center; min-height: 120px; height: 100%; box-sizing: border-box; border-radius: 16px; font-size: 13px; color: var(--text-muted); outline: 1px dashed var(--border-primary); outline-offset: -1px; }
+.ed-notepv { position: relative; width: 340px; height: 212px; max-width: 100%; margin: 0 auto; border-radius: 10px; overflow: hidden; background: var(--surface-secondary); box-shadow: 0 0 0 1px var(--border-primary); }
+.ed-notepv__screen { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.ed-notepv-panel > [data-k="test-draft"] { align-self: stretch; justify-content: center; }
+/* Fire: what happened, in the Notifications dialog itself */
+.ed-fired { margin: 8px 0 0; padding: 9px 12px; border-radius: 12px; font-size: 12.5px; line-height: 1.45; color: var(--text-primary); background: var(--surface-secondary); box-shadow: inset 3px 0 0 var(--info); }
+.ed-fired[data-state="no-rule"], .ed-fired[data-state="rule-off"] { box-shadow: inset 3px 0 0 var(--warning); }
+.ed-fired[data-state="shown"] { box-shadow: inset 3px 0 0 var(--success); }
+/* SHOW IT: while a notification shown from a dialog is on the screen, the dialogs step aside (they and their unsaved values stay open) */
+dialog.ed-dlg.is-peek { background: transparent; box-shadow: none; pointer-events: none; }
+dialog.ed-dlg.is-peek::backdrop { background: transparent; }
+dialog.ed-dlg.is-peek > :not(.mscr):not(.ed-peek) { visibility: hidden; }
+.ed-peek { position: fixed; z-index: 950; left: 50%; translate: -50% 0; display: flex; align-items: center; gap: 12px; max-width: calc(100vw - 24px); padding: 6px 6px 6px 16px; border-radius: 999px;
+  font: 600 13px var(--font); color: var(--text-primary); background: var(--ed-chrome); box-shadow: 0 0 0 1px var(--accent-line), 0 16px 40px -12px #000; pointer-events: auto; }
+.ed-peek[data-at="bottom"] { bottom: 16px; }
+.ed-peek[data-at="top"] { top: 16px; }
+dialog.ed-dlg:not(.is-peek) > .ed-peek { display: none; }
+@media (max-width: 700px) {
+  .ed-rules__row { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .ed-rules__row .ed-rules__arrow { display: none; }
+  .ed-popups__row { display: flex; flex-wrap: wrap; }
+  .ed-pos__px { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* the float layer (floating radial buttons): over the dashboard, scrolls with it, takes no grid cells */
+.ed-slot { position: relative; }
+.mf.ed-floatlayer { position: absolute; inset: 0; height: auto; overflow: visible; pointer-events: none; z-index: 4; }
+.mf.ed-floatlayer > .mf__item { pointer-events: auto; }
+.mf.ed-floatlayer > .mf__item > * { overflow: visible; }
+
+/* ---------------------------------------------------------------- Preview Studio (editor UI only) */
+.ed-pv { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-top: 8px; padding: 8px 10px; border-radius: 14px; background: var(--ed-chrome); box-shadow: 0 0 0 1px var(--border-primary); font-size: 12.5px; }
+.ed-pv__label { font: 700 10.5px/1 var(--font); letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); }
+.ed-pv__device { min-height: 40px; max-width: 240px; padding: 0 10px; border: 0; border-radius: 11px; color: var(--text-primary); background: var(--control-well); font: 500 12.5px var(--font); }
+.ed-pv__size { display: inline-flex; align-items: center; gap: 4px; color: var(--text-muted); }
+.ed-pv__num { width: 76px; min-height: 40px; padding: 0 8px; border: 0; border-radius: 10px; color: var(--text-primary); background: var(--control-well); font: 600 12.5px ui-monospace, SFMono-Regular, Menlo, monospace; }
+.ed-pv__range { flex: 1 1 220px; min-width: 160px; accent-color: var(--ed-primary); }
+.ed-pv__range[hidden] { display: none; }
+.ed-pv__info { margin: 0 0 0 auto; padding: 6px 10px; border-radius: 10px; font: 600 12px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--ed-ui); background: var(--ed-ui-soft); white-space: nowrap; }
+.ed-pv__device:focus-visible, .ed-pv__num:focus-visible, .ed-pv__range:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ed-pv .ed-btn[aria-pressed="true"] { color: var(--ed-on-primary); background: var(--ed-primary); }
+.ed-frame { position: relative; }
+.ed-stage.is-wide { overflow-x: auto; }
+.ed-fold { position: absolute; left: 0; right: 0; height: 0; border-top: 2px dashed rgba(255, 196, 108, .7); pointer-events: none; z-index: 8; }
+.ed-fold > span { position: absolute; right: 8px; top: 4px; padding: 2px 8px; border-radius: 8px; font: 600 11px ui-monospace, SFMono-Regular, Menlo, monospace; color: #1b1406; background: rgba(255, 196, 108, .9); }
+.ed-scrub { position: absolute; z-index: 20; width: 22px; height: 56px; margin-left: 4px; border: 0; border-radius: 8px; cursor: ew-resize; touch-action: none; background: var(--ed-ui); box-shadow: 0 6px 16px -6px rgba(0, 0, 0, .7); }
+.ed-scrub > span { display: block; width: 2px; height: 26px; margin: 0 auto; border-radius: 1px; background: #0d1626; box-shadow: 4px 0 0 #0d1626, -4px 0 0 #0d1626; }
+.ed.is-scrubbing, .ed.is-scrubbing * { cursor: ew-resize !important; user-select: none; }
+.ed-main { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.ed-multi { padding: 12px; border-radius: 16px; background: var(--ed-chrome); box-shadow: 0 0 0 1px var(--border-primary); }
+.ed-multi[hidden] { display: none; }
+.ed-multi__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-bottom: 10px; }
+.ed-multi__head .ed-hint { margin: 0; }
+.ed-msel__row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; align-items: start; }
+.ed-mini { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.ed-mini__top { display: flex; gap: 6px; flex-wrap: wrap; }
+.ed-mini__top select { flex: 1 1 140px; min-width: 0; min-height: 40px; padding: 0 8px; border: 0; border-radius: 10px; color: var(--text-primary); background: var(--control-well); font: 500 12px var(--font); }
+.ed-mini__info { margin: 0; font: 600 11px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--text-muted); }
+.ed-mini__view { position: relative; overflow: hidden auto; overscroll-behavior: contain; border-radius: 12px; background: var(--page-bg); box-shadow: 0 0 0 1px var(--border-primary); }
+.ed-mframe { position: absolute; left: 0; top: 0; transform-origin: 0 0; pointer-events: none; }
+.ed-mini__sizer { width: 1px; pointer-events: none; }
+.ed-mcanvas { position: relative; padding: 16px; border-radius: 20px; background: var(--page-bg); }
+.ed-mcanvas[data-bp="desktop"] { padding: 20px; }
+.ed-mcanvas[data-bg="darker"] { background: var(--page-bg-darker); }
+.ed-mcanvas[data-bg="lighter"] { background: var(--page-bg-lighter); }
+.ed-mslot { position: relative; }
+.ed-presets { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.ed-presets li { display: flex; gap: 6px; align-items: center; }
+@media (max-width: 700px) { .ed-pv__info { margin-left: 0; } .ed-pv [data-k="pv-scrub"], .ed-pv [data-k="pv-multi"] { display: none; } }
+.ed-pv__zoom .ed-seg__b span { display: inline !important; }
+
+/* ---- device preview: a SIMULATED SCREEN of exactly w × h CSS px. The dashboard scrolls inside it
+        (the frame is the scroll container); the editor page never becomes the dashboard's scrollbar.
+        Like a touch device the scrollbar takes no width, so the logical viewport stays exactly w. */
+.ed-frame.is-device {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  background: var(--page-bg);
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .22), 0 0 0 7px #050506, 0 0 0 8px rgba(255, 255, 255, .08), 0 18px 40px -10px rgba(0, 0, 0, .8);
+}
+.ed-frame.is-device::-webkit-scrollbar { display: none; }
+/* the preview column is at least one window tall: the editor page's height no longer depends on the
+   inspector's content, so selecting / deselecting never shortens the page (and moves the screen)
+   under the pointer between press and release */
+.ed-main { min-height: calc(100vh - var(--ed-sticky-top, 0px) - var(--ed-bar-h, 70px)); }
+
+/* ---- Full screen control in the preview bar ---- */
+.ed-fswrap { position: relative; }
+.ed-fsmenu { position: absolute; z-index: 36; top: calc(100% + 6px); right: 0; display: flex; flex-direction: column; gap: 4px; min-width: 240px; padding: 6px; border-radius: 14px; background: var(--ed-chrome, var(--surface-primary)); box-shadow: 0 0 0 1px var(--ed-ui-line, rgba(255,255,255,.08)), 0 16px 40px -12px rgba(0, 0, 0, .8); }
+.ed-fsmenu[hidden] { display: none; }
+.ed-fsmenu__b { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; padding: 9px 12px; border: 0; border-radius: 10px; cursor: pointer; text-align: left; font: 600 13px var(--font); color: var(--text-primary); background: transparent; }
+.ed-fsmenu__b small { font-weight: 500; font-size: 11.5px; color: var(--text-muted); }
+.ed-fsmenu__b:hover, .ed-fsmenu__b:focus-visible { background: var(--surface-tertiary); outline: 0; }
+
+/* ---- Full-Screen TEST mode: only the dashboard, on the whole display ---- */
+html.iq-fs, html.iq-fs body { overflow: hidden !important; }
+.ed--fs .ed-stage { position: fixed; inset: 0; z-index: 850; height: auto !important; padding: 0; overflow: hidden; background: #000; }
+.ed--fs .ed-frame { border-radius: 0; box-shadow: none; }
+.ed--fs :is(.ed-frame-label, .ed-layer, .ed-scrub, .ed-fold) { display: none !important; }
+/* the editor chrome is not just covered by the black stage: it is out of sight and out of the tab order */
+.ed--fs :is(.ed-bar, .ed-pv, .ed-draft, .ed-panel) { visibility: hidden; }
+.ed--fs .ed-multi { display: none !important; }
+.ed-fs-exit {
+  position: fixed; z-index: 2; top: 10px; right: 10px;
+  display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px 0 9px;
+  border: 0; border-radius: 999px; cursor: pointer; font: 600 12px var(--font); color: #fff;
+  background: rgba(10, 11, 14, .55); box-shadow: 0 0 0 1px rgba(255, 255, 255, .14);
+  opacity: .45; transition: opacity .2s ease;
+}
+.ed-fs-exit svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
+.ed-fs-exit:hover, .ed-fs-exit:focus-visible { opacity: 1; outline: 2px solid var(--accent); outline-offset: 2px; }
+.ed--fs .ed-toast { top: 14px; }
+/* unsaved changes: a dot on Save as well as the status text */
+.ed-btn--save { position: relative; }
+.ed.is-dirty .ed-btn--save::after { content: ""; position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+/* compact editor chrome: the two toolbars (main + preview) at 36 px controls, so they stay one row each on
+   laptop widths and the dashboard preview gets the height (still wraps — never off-screen — when narrower) */
+.ed-bar { padding: 6px; gap: 6px 12px; border-radius: 14px; }
+.ed-bar__main, .ed-bar__file { gap: 6px; }
+.ed-bar .ed-btn, .ed-pv .ed-btn { min-height: 36px; min-width: 36px; padding: 0 12px; border-radius: 11px; }
+.ed-bar .ed-btn--icon { padding: 0; width: 36px; }
+.ed-bar .ed-seg__b, .ed-pv .ed-seg__b { min-height: 32px; padding: 0 10px; }
+.ed-bar .ed-pagebox .ed-btn { min-height: 32px; }
+.ed-bar__sep { height: 22px; }
+.ed-pv { margin-top: 6px; padding: 6px 8px; gap: 6px 8px; }
+.ed-pv__device, .ed-pv__num { min-height: 36px; }
+.ed-pv__num { width: 70px; }
+.ed-pv__info { padding: 4px 8px; }
+.ed-bar .ed-page-sel { min-height: 32px; }
+/* the size badge repeats the line above the preview (size · breakpoint · zoom): on laptop widths it is kept
+   for screen readers only, so the preview bar stays one row */
+.ed-pv { container: edpv / inline-size; }
+@container edpv (max-width: 1499px) {
+  .ed-pv__info { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+}
+.ed-more.is-open .ed-more__menu { min-width: 236px; }
+.ed-more__menu .ed-btn span { white-space: nowrap; }
+
+/* Dashboard settings · Grid: columns / row height / gap per breakpoint */
+.ed-gridset__body[hidden] { display: none; }
+.ed-gridset { display: grid; grid-template-columns: auto repeat(4, minmax(0, 1fr)); gap: 6px 8px; align-items: center; margin: 4px 0 2px; font-size: 12px; color: var(--text-secondary); }
+.ed-gridset b { font-weight: 600; font-size: 11px; color: var(--text-muted); }
+.ed-gridset input { width: 100%; min-width: 0; box-sizing: border-box; min-height: 36px; padding: 0 10px; border: 0; border-radius: 10px;
+  font: 500 13px var(--font); color: var(--text-primary); background: var(--control-well); box-shadow: var(--control-well-shadow); }
+.ed-gridset input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.ed-gridset__note.is-warn { color: var(--warning); }
+
+/* Dashboards (server storage) */
+.ed-dlg--dash { width: min(640px, calc(100vw - 24px)); }
+.ed-dash__new { display: flex; gap: 8px; flex-wrap: wrap; }
+.ed-dash__new input { flex: 1 1 200px; min-width: 0; min-height: 40px; padding: 0 12px; border: 0; border-radius: 10px; font: 500 13px var(--font); color: var(--text-primary); background: var(--control-well); box-shadow: var(--control-well-shadow); }
+.ed-dash__msg { margin: 0; font-size: 12.5px; color: var(--text-secondary); overflow-wrap: anywhere; }
+.ed-dash__msg:empty { display: none; }
+.ed-dash__msg[data-tone="bad"] { color: #ff8a8a; }
+.ed-dash__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.ed-dash__row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 12px; border-radius: 12px; background: var(--ed-chrome-2); box-shadow: 0 0 0 1px var(--border-primary) inset; }
+.ed-dash__row.is-current { box-shadow: 0 0 0 1px var(--ed-ui-line) inset; }
+.ed-dash__id { flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ed-dash__name { font-size: 13.5px; overflow-wrap: anywhere; }
+.ed-dash__meta { font-size: 11px; color: var(--text-muted); }
+.ed-dash__row.is-current .ed-dash__meta { color: var(--ed-primary); }
+.ed-dash__btns { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-width: 0; }
+.ed-dash__btns input { flex: 1 1 160px; min-width: 0; min-height: 36px; padding: 0 10px; border: 0; border-radius: 10px; font: 500 13px var(--font); color: var(--text-primary); background: var(--control-well); box-shadow: var(--control-well-shadow); }
+.ed-dash__confirm { flex: 1 1 100%; margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--text-secondary); overflow-wrap: anywhere; }
+.ed-dash__empty { padding: 12px; font-size: 12.5px; color: var(--text-muted); }
+.ed-legacy { margin-top: 8px; }
+.ed-fatal { max-width: 560px; margin: 40px auto; padding: 22px; border-radius: 16px; background: var(--ed-chrome, var(--surface-secondary)); box-shadow: 0 0 0 1px rgba(255, 100, 100, .45); color: var(--text-primary); }
+.ed-fatal h2 { margin: 0 0 8px; font-size: 18px; }
+.ed-fatal p { margin: 0 0 16px; font-size: 13.5px; line-height: 1.5; color: var(--text-secondary); }
+.ed-fatal .ed-btn { margin-right: 8px; display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; text-decoration: none; }
+
+/* edit mode: a container's own grid reaches the bottom of its content area, so its dot grid shows the empty space where
+   items can land (rows keep their fixed size; only the box is taller — nothing inside moves). View mode is unchanged. */
+.ed--editing .ed-canvas .mc__content:has(> .mg--nested) { display: flex; flex-direction: column; }
+.ed--editing .ed-canvas .mc__content > .mg--nested { flex: 1 1 auto; display: flex; flex-direction: column; }
+.ed--editing .ed-canvas .mc__content > .mg--nested > .mg__grid { flex: 1 1 auto; align-content: start; }
+
+/* a dashboard with a simulated home (app.simulated): always visible, out of the way (bottom LEFT — the bottom right is the corner
+   button's), a button that explains the simulation and leads to connecting Home Assistant */
+.ed-sim-badge { position: fixed; left: 12px; bottom: 12px; z-index: 905; display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 4px 12px; border: 0; border-radius: var(--radius-pill, 999px);
+  font: 600 11px/1.4 var(--font, system-ui); letter-spacing: .02em; color: var(--text-primary); background: color-mix(in srgb, var(--surface-tertiary) 88%, transparent);
+  box-shadow: 0 0 0 1px var(--border-primary); cursor: pointer; }
+.ed-sim-badge:hover { background: var(--surface-interactive, var(--surface-tertiary)); }
+.ed-sim-badge:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ed-sim-badge[hidden] { display: none; }
+.ed-sim-badge__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--info, #4aa8ff); }
+
+/* public demo deployment (<meta name="iniqdash-demo">): a plain, always-visible note that the data is simulated */
+.ed-demo-note { margin: 0; padding: 8px 16px; font: 500 12.5px/1.4 var(--font, system-ui); color: var(--text-primary, #f2f3f6); background: var(--accent-soft, rgba(255, 181, 71, .14)); border-bottom: 1px solid var(--accent-line, rgba(255, 181, 71, .32)); text-align: center; }
+
+/* ---- REPAIR: a dashboard whose links point at a popup / page / template it does not have (components/editor/repair.js) ---- */
+.ed-repair { max-width: 860px; margin: 24px auto; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; border-radius: var(--radius-xl); font-family: var(--font); color: var(--text-primary); background: var(--ed-chrome, var(--surface-primary)); box-shadow: 0 0 0 1px var(--border-primary); }
+.ed-dlg .ed-repair { margin: 0; padding: 0; box-shadow: none; background: none; }
+.ed-repair h2 { margin: 0; font-size: 18px; font-weight: 600; }
+.ed-repair__list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.ed-repair__row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(200px, 300px); gap: 12px; align-items: center; padding: 10px 12px; border-radius: 12px; background: var(--surface-secondary); box-shadow: inset 3px 0 0 var(--warning); }
+.ed-repair__what { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: 13px; }
+.ed-repair__what code { font: 500 11px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--text-muted); overflow-wrap: anywhere; }
+.ed-repair__row select { min-height: 40px; }
+.ed-repair__err { margin: 0; color: var(--danger); font-size: 13px; }
+.ed-repair__btns { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+@media (max-width: 640px) { .ed-repair__row { grid-template-columns: minmax(0, 1fr); } }
+.ed-dlg--repair { width: min(860px, calc(100vw - 24px)); }
+.ed-start-note { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 10px 16px 0; padding: 10px 14px; border-radius: 14px; font: 500 13px var(--font); color: var(--text-primary); background: var(--surface-secondary); box-shadow: inset 3px 0 0 var(--info); }
+.ed-start-note span { flex: 1 1 320px; }
+
+/* ---- THEME STUDIO (editor.js openThemes / openThemeEditor) ---- */
+
+/* ================================================================== VIEWING MODE (the application): the dashboard at the window's own size —
+   the editor's chrome stays out of sight until Edit; the discreet Edit control (components/editor/editaccess.js) in the top-right corner */
+html.iq-view [data-app-header] { display: none; }
+.ed--view .ed-stage { background: var(--page-bg, #0b0c0f); }
+/* the first-run note (no dashboard saved yet) and the public demo's "everything is simulated" note stay visible while viewing: a small
+   banner at the bottom of the screen, above the dashboard (never hidden — a demo must always say it is one) */
+html.iq-view :is(.ed-start-note, .ed-demo-note) { position: fixed; z-index: 901; left: 50%; bottom: max(84px, calc(env(safe-area-inset-bottom) + 84px)); transform: translateX(-50%);
+  width: min(720px, calc(100vw - 24px)); margin: 0; box-shadow: 0 14px 34px -14px rgba(0, 0, 0, .85); }
+.iqea { position: fixed; top: max(10px, env(safe-area-inset-top)); right: max(10px, env(safe-area-inset-right)); z-index: 900; display: flex; align-items: center; gap: 6px;
+  opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity .35s ease, transform .35s ease; }
+.iqea[data-shown="true"], .iqea[data-mode="always"], .iqea:focus-within { opacity: 1; transform: none; pointer-events: auto; }
+.iqea[data-mode="locked"] { display: none !important; }   /* ?noedit: a wall tablet with no way into the editor */
+.iqea__edit, .iqea__signout { display: inline-flex; align-items: center; gap: 7px; height: 38px; padding: 0 14px; border: 0; border-radius: 999px; cursor: pointer;
+  font: 600 13px var(--font, system-ui, sans-serif); color: var(--text-primary, #f2f2f2);
+  background: color-mix(in srgb, var(--surface-primary, #1b1d22) 88%, transparent); backdrop-filter: blur(10px);
+  box-shadow: 0 8px 22px -10px rgba(0, 0, 0, .8), inset 0 0 0 1px var(--border-subtle, rgba(255, 255, 255, .08)); }
+.iqea__edit svg { width: 17px; height: 17px; color: var(--accent, #ff7a1a); }
+.iqea__edit:hover, .iqea__edit:focus-visible { box-shadow: 0 8px 22px -10px rgba(0, 0, 0, .8), inset 0 0 0 1px color-mix(in srgb, var(--accent, #ff7a1a) 70%, transparent); }
+.iqea__signout { height: 34px; padding: 0 12px; font-weight: 500; font-size: 12px; color: var(--text-secondary, #b8b8b8); }
+.iqea :focus-visible { outline: var(--focus-ring, 2px solid var(--accent)); outline-offset: 3px; }
+.iqea__out { margin: 0; }
+@media (prefers-reduced-motion: reduce) { .iqea { transition: none; } }
+/* viewing mode: a TOP / BOTTOM dock stays reachable while the dashboard scrolls (sticky — at the end of the page it rests in its own
+   place, so it never hides the last widget). The editor keeps the dock in the flow, as before. */
+@container msh (max-width: 559.98px) {
+  .ed--view .msh[data-nav-mobile="bottom"] .msh__dock { position: sticky; bottom: max(10px, env(safe-area-inset-bottom)); z-index: 5; }
+  .ed--view .msh[data-nav-mobile="top"] .msh__dock { position: sticky; top: 10px; z-index: 5; }
+}
+@container msh (min-width: 560px) and (max-width: 959.98px) {
+  .ed--view .msh[data-nav-tablet="bottom"] .msh__dock { position: sticky; bottom: max(10px, env(safe-area-inset-bottom)); z-index: 5; }
+  .ed--view .msh[data-nav-tablet="top"] .msh__dock { position: sticky; top: 10px; z-index: 5; }
+}
+@container msh (min-width: 960px) {
+  .ed--view .msh[data-nav-desktop="bottom"] .msh__dock { position: sticky; bottom: 10px; z-index: 5; }
+  .ed--view .msh[data-nav-desktop="top"] .msh__dock { position: sticky; top: 10px; z-index: 5; }
+}
+
+/* ================================================================== DASHBOARD SETTINGS — sections as tabs (a side list on wide screens, a scrolling
+   row on narrow ones), the same field look as the widget configuration */
+.ed-dlg--settings { width: min(880px, calc(100vw - 24px)); }
+.ed-settings { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 20px; min-height: min(520px, 70vh); }
+.ed-tabs { display: flex; flex-direction: column; gap: 2px; align-self: start; position: sticky; top: 0; }
+.ed-tabs__t { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 10px; cursor: pointer;
+  font: 500 13.5px var(--font); color: var(--text-secondary); }
+.ed-tabs__t:hover { background: var(--surface-secondary, rgba(255, 255, 255, .04)); color: var(--text-primary); }
+.ed-tabs__t[aria-selected="true"] { background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--text-primary); box-shadow: inset 3px 0 0 var(--accent); }
+.ed-tabs__t:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.ed-settings__panels { min-width: 0; }
+.ed-tabsec { display: grid; gap: 14px; align-content: start; }
+.ed-tabsec[hidden] { display: none; }
+.ed-tabsec .ed-sub { margin: 8px 0 -4px; }
+.ed-tabsec__lead { margin: 0; }
+.ed-field--dock .ed-field__row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+/* a small live picture of the dock on each screen */
+.ed-dockpic { position: relative; flex: none; display: block; width: 46px; height: 32px; border-radius: 6px; background: var(--surface-secondary, #1d1f24); box-shadow: inset 0 0 0 1px var(--border-subtle); overflow: hidden; }
+.ed-dockpic--tablet { width: 40px; height: 32px; }
+.ed-dockpic--mobile { width: 20px; height: 34px; border-radius: 5px; }
+.ed-dockpic__bar { position: absolute; background: var(--accent); border-radius: 2px; opacity: .9; }
+.ed-dockpic__page { position: absolute; inset: 6px; border-radius: 3px; background: color-mix(in srgb, var(--text-secondary) 18%, transparent); }
+.ed-dockpic[data-edge="left"] .ed-dockpic__bar { left: 3px; top: 3px; bottom: 3px; width: 5px; } .ed-dockpic[data-edge="left"] .ed-dockpic__page { left: 11px; }
+.ed-dockpic[data-edge="right"] .ed-dockpic__bar { right: 3px; top: 3px; bottom: 3px; width: 5px; } .ed-dockpic[data-edge="right"] .ed-dockpic__page { right: 11px; }
+.ed-dockpic[data-edge="top"] .ed-dockpic__bar { top: 3px; left: 3px; right: 3px; height: 4px; } .ed-dockpic[data-edge="top"] .ed-dockpic__page { top: 10px; }
+.ed-dockpic[data-edge="bottom"] .ed-dockpic__bar { bottom: 3px; left: 3px; right: 3px; height: 4px; } .ed-dockpic[data-edge="bottom"] .ed-dockpic__page { bottom: 10px; }
+@media (max-width: 699px) {
+  .ed-settings { grid-template-columns: minmax(0, 1fr); gap: 12px; min-height: 0; }
+  .ed-tabs { flex-direction: row; overflow-x: auto; position: static; scrollbar-width: none; margin: 0 -2px; }
+  .ed-tabs__t { flex: none; padding: 8px 12px; }
+  .ed-tabs__t[aria-selected="true"] { box-shadow: inset 0 -2px 0 var(--accent); }
+}
+.iqea[hidden] { display: none; }
+/* the settings' segmented choices always keep their words (the toolbar's narrow rule shows icons only) */
+.ed-dlg--settings .ed-seg__b span { display: inline !important; }
+.ed-dlg--settings .ed-seg { flex-wrap: wrap; }
+
+/* ---- THE PAGE FRAME a dashboard theme may set (look: pagePad · pageMargin · pageRadius · titleSize · navStyle · pageFrame —
+   components/theme/theme.js); without them everything stays as above */
+.ed-frame .ed-canvas { padding: var(--page-pad, 16px); border-radius: var(--page-radius, 20px); margin: var(--page-margin, 0) var(--page-margin, 0) var(--page-margin, 0) 0; }
+.ed[data-bp="desktop"] .ed-frame .ed-canvas { padding: var(--page-pad, 20px); }
+.ed-frame .ed-dash-title { font-size: var(--page-title-size, 20px); line-height: 1.25; }
+.ed-frame .ed-dash-sub { line-height: 1.35; }
+.ed-frame .ed-dash-head { margin-bottom: var(--page-head-gap, 14px); }
+.ed-frame[data-theme-nav-icons] .msh__in { gap: 4px; }
+/* panel: the page is a panel on the navigation colour (the window around it, the dock on it) */
+.ed--view .ed-frame[data-theme-frame-panel] { background: var(--nav-bg); }
+.ed--view .ed-stage:has(> .ed-frame[data-theme-frame-panel]) { background: var(--nav-bg); }
+.ed-frame[data-theme-frame-panel] .ed-canvas { box-shadow: none; }
+.ed-frame[data-theme-frame-panel] .mnav { background: transparent; box-shadow: none; border: 0; }
+/* icons only: the navigation shows each page's icon (its name stays the button's accessible name) */
+.ed-frame[data-theme-nav-icons] .mnav__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.ed-frame[data-theme-nav-icons] .mnav__b { min-width: 56px; min-height: 56px; padding: 0; border-radius: 16px; }
+.ed-frame[data-theme-nav-icons] .mnav__icon { width: 26px; height: 26px; }
+.ed-frame[data-theme-nav-icons] .mnav__b[aria-current="page"] { box-shadow: inset 0 0 0 2px var(--nav-indicator, var(--accent)); }
+.ed-frame[data-theme-nav-icons] .mnav__b[aria-current="page"]::after { content: none; }
+/* the dashboard theme's FONT reaches everything in the dashboard: font-family inherits the COMPUTED value, so the body's (resolved at the
+   root) would otherwise win over a theme's --font set on the frame */
+.ed-frame { font-family: var(--font); }
+.ed--view .ed-canvas[data-head="off"] > .ed-dash-head { display: none; }
+
+/* exact position / size fields of the inspector's Layout (grid units) */
+.ed-pos__exact { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
+.ed-pos__num { display: grid; gap: 2px; font-size: 11px; color: var(--text-muted); }
+.ed-pos__num input { width: 100%; box-sizing: border-box; min-width: 0; }
+/* the badge never covers a bottom navigation dock: with one at this screen size it sits at the top-right instead */
+@media (max-width: 559.98px) { body:has(.msh[data-nav-mobile="bottom"]) .ed-sim-badge { top: 12px; bottom: auto; left: auto; right: 12px; } }
+@media (min-width: 560px) and (max-width: 959.98px) { body:has(.msh[data-nav-tablet="bottom"]) .ed-sim-badge { top: 12px; bottom: auto; left: auto; right: 12px; } }
+@media (min-width: 960px) { body:has(.msh[data-nav-desktop="bottom"]) .ed-sim-badge { top: 12px; bottom: auto; left: auto; right: 12px; } }
+/* viewing mode: a page shorter than the window still fills it — its own background (a gradient, an image) reaches the bottom of the
+   screen instead of stopping below the last widget */
+.ed--view .ed-frame > .msh { min-height: 100%; display: flex; }
+.ed--view .ed-frame > .msh > .msh__in { flex: 1 1 auto; }
+.ed--view .ed-frame > .msh .msh__main { display: flex; flex-direction: column; }
+.ed--view .ed-frame > .msh .msh__main > .ed-canvas { flex: 1 1 auto; box-shadow: none; }
+/* a radial menu pinned to a SCREEN CORNER (viewing): its own fixed layer, above the dashboard and above a bottom dock */
+/* the page leaves room under its last row for the corner button */
+.ed-slot--corner { padding-bottom: 92px; }
+/* a phone: the corner button sits above the bottom navigation dock — the last row stays clear of both */
+@media (max-width: 600px) { .ed-slot--corner { padding-bottom: 168px; } }
+.ed-cornerlayer { position: fixed !important; inset: 0 !important; width: auto !important; height: auto !important; z-index: 880; pointer-events: none; background: none !important; }
+.ed-cornerlayer > .mf__item { position: fixed !important; left: auto !important; top: auto !important; width: 76px !important; height: 76px !important; pointer-events: auto; transform: none !important; }
+.ed-cornerlayer > .mf__item[data-corner="bottom-right"] { right: max(24px, env(safe-area-inset-right)); bottom: max(24px, env(safe-area-inset-bottom)); }
+.ed-cornerlayer > .mf__item[data-corner="bottom-left"] { left: max(24px, env(safe-area-inset-left)) !important; bottom: max(24px, env(safe-area-inset-bottom)); }
+.ed-cornerlayer > .mf__item[data-corner="top-right"] { right: max(24px, env(safe-area-inset-right)); top: max(24px, env(safe-area-inset-top)) !important; }
+.ed-cornerlayer > .mf__item[data-corner="top-left"] { left: max(24px, env(safe-area-inset-left)) !important; top: max(24px, env(safe-area-inset-top)) !important; }
+/* a bottom dock (the navigation bar): the button sits above it */
+@media (max-width: 959.98px) { .ed-cornerlayer[data-dock="bottom"] > .mf__item[data-corner^="bottom"] { bottom: calc(96px + env(safe-area-inset-bottom)); } }
+@media (max-width: 559.98px) { .ed-cornerlayer > .mf__item { width: 64px !important; height: 64px !important; } .ed-cornerlayer > .mf__item[data-corner="bottom-right"] { right: 16px; } }
+.ed--editing .ed-slot > .mg { position: relative; }
+.ed-gridset--cells { grid-template-columns: auto repeat(4, minmax(0, 1fr)) minmax(0, 1.4fr); }
+.ed-gridset__cell { font: 600 11px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--text-secondary); line-height: 1.3; }
+.ed-gridset__cell.is-warn { color: #ffb45e; }
+@media (max-width: 560px) { .ed-gridset--cells { grid-template-columns: auto repeat(4, minmax(0, 1fr)); } .ed-gridset--cells > :is(b:last-of-type, .ed-gridset__cell) { grid-column: 2 / -1; } }
+/* MULTI-SELECTION: every selected item outlined; the inspector's group actions */
+.ed--editing .ed-canvas .mg__item.is-msel { outline: 2px solid var(--ed-ui); outline-offset: 3px; }
+.ed-msel__row { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 10px; }
+.ed-msel__row .ed-btn { min-height: 34px; padding: 0 12px; }
+/* GENERATE from Home Assistant: the areas to include */
+.ed-gen { display: flex; flex-direction: column; gap: 10px; min-width: min(560px, 80vw); }
+.ed-gen__areas { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px 14px; }
+
+/* WALL TABLET screensaver (viewing only — editor.js wall): a full-screen layer over everything; a touch wakes the screen */
+.iq-saver { position: fixed; inset: 0; z-index: 2147483000; background: #000; color: rgba(255, 255, 255, .5); cursor: none; touch-action: none; animation: iq-saver-in 1.2s ease; }
+.iq-saver__clk { position: absolute; transform: translate(-50%, -50%); text-align: center; transition: left 2s ease, top 2s ease; pointer-events: none; font-family: var(--font, system-ui); }
+.iq-saver__t { font-size: clamp(56px, 13vw, 190px); font-weight: 200; letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.iq-saver__d { font-size: clamp(15px, 2vw, 26px); margin-top: 8px; opacity: .8; }
+.iq-saver--black .iq-saver__clk { display: none; }
+@keyframes iq-saver-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .iq-saver { animation: none; } .iq-saver__clk { transition: none; } }
+
+/* Generate (wizard): rooms with their devices, the options, the preview */
+.ed-gen__area { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.ed-gen__devs summary { cursor: pointer; font-size: 12px; color: var(--text-secondary); }
+.ed-gen__devlist { max-height: 180px; overflow: auto; padding: 4px 0 6px 18px; display: grid; gap: 2px; }
+.ed-gen__devlist .ed-check span { font-size: 12px; }
+.ed-gen__row { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.ed-gen__opts[hidden], [data-k="gen-other-row"][hidden] { display: none; }
+.ed-gen__preview { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: var(--surface-tertiary, rgba(127, 127, 127, .1)); }
+.ed-gen__rooms { margin: 4px 0 0; padding-left: 18px; font-size: 12px; color: var(--text-secondary); max-height: 140px; overflow: auto; }
+
+/* ---- first-run wizard (steps 2–4; step 1 is login.php) */
+.ed-setup { position: fixed; inset: 0; z-index: 2000; display: grid; place-items: center; padding: 24px 16px; overflow-y: auto;
+  background: radial-gradient(1200px 600px at 80% -10%, #1b1e25 0%, rgba(8, 9, 11, .97) 60%) rgba(8, 9, 11, .97); }
+.ed-setup__card { width: min(100%, 720px); max-height: none; padding: 28px 28px 22px; border-radius: 24px; color: var(--text-primary, #f1f1f3);
+  background: linear-gradient(180deg, #1d1d21, #17171a); box-shadow: 0 1px 0 rgba(255, 255, 255, .06) inset, 0 18px 40px -18px rgba(0, 0, 0, .75); }
+.ed-setup__steps { display: flex; gap: 8px; margin: 0 0 18px; }
+.ed-setup__steps span { flex: 1; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, .08); }
+.ed-setup__steps span[data-on="true"] { background: var(--accent, #ff7a1a); }
+.ed-setup__title { margin: 0 0 6px; font-size: 20px; font-weight: 600; }
+.ed-setup__lead { margin: 0 0 16px; font-size: 13.5px; line-height: 1.5; color: var(--text-secondary, #a9aab3); }
+.ed-setup__body { display: grid; gap: 12px; }
+.ed-setup__body .ed-gen { max-height: none; }
+.ed-setup__result { margin: 0; min-height: 1.4em; font-size: 13px; color: var(--text-secondary, #a9aab3); }
+.ed-setup__result[data-state="ok"] { color: var(--success, #41c98a); }
+.ed-setup__result[data-state="error"] { color: var(--danger, #ff6b6b); }
+.ed-setup__alt { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, .07); font-size: 13px; color: var(--text-muted, #878891); }
+.ed-setup__msg { margin: 12px 0 0; min-height: 1.3em; font-size: 13px; color: var(--warning, #ffb938); }
+.ed-setup__foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.ed-setup__sum { display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; margin: 0; font-size: 14px; }
+.ed-setup__sum dt { color: var(--text-muted, #878891); }
+.ed-setup__sum dd { margin: 0; }
+@media (max-width: 560px) { .ed-setup { padding: 12px 10px; place-items: start center; } .ed-setup__card { padding: 22px 18px 18px; border-radius: 18px; } .ed-setup__foot .ed-btn { flex: 1; } }
+.ed-setup .ed-btn { height: 40px; padding: 0 18px; border-radius: 999px; }
+.ed-setup .ed-btn--primary { color: #1a0e04; background: linear-gradient(180deg, #ff9448, var(--accent, #ff7a1a)); border-color: transparent; box-shadow: 0 8px 20px -10px rgba(255, 181, 71, .7); }
+.ed-setup .ed-btn--primary:disabled { opacity: .45; box-shadow: none; }
+
+/* About → the Buy Me a Coffee button, in the service's own colours on every theme (yellow #FFDD00, black); a 44 px touch target */
+.ed-about__support { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.ed-bmc { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; max-width: 100%; box-sizing: border-box; padding: 6px 18px 6px 12px;
+  border-radius: 10px; background: #FFDD00; color: #000; text-decoration: none; font-weight: 700; font-size: 16px; letter-spacing: .01em;
+  border: 1px solid rgba(0, 0, 0, .12); box-shadow: 0 1px 2px rgba(0, 0, 0, .18); transition: transform .12s ease, box-shadow .12s ease, background .12s ease; }
+.ed-bmc:hover { background: #FFE433; box-shadow: 0 3px 10px rgba(0, 0, 0, .22); transform: translateY(-1px); }
+.ed-bmc:active { transform: translateY(0); box-shadow: 0 1px 2px rgba(0, 0, 0, .18); }
+.ed-bmc:focus-visible { outline: 3px solid var(--accent, #2563eb); outline-offset: 2px; }
+.ed-bmc__cup { width: 26px; height: 26px; flex: none; }
+.ed-bmc__body, .ed-bmc__lid { fill: #fff; stroke: #000; stroke-width: 1.4; stroke-linejoin: round; }
+.ed-bmc__fill { fill: #FFDD00; }
+@media (prefers-reduced-motion: reduce) { .ed-bmc, .ed-bmc:hover { transition: none; transform: none; } }
