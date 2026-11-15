@@ -44,7 +44,7 @@ const browser = await pw.chromium.launch();
 try {
   const files = execFileSync('unzip', ['-Z1', ZIP]).toString().split('\n').filter(Boolean);
   check(`the ZIP unpacks into one folder "iniqdash" (${files.length} entries) with no tests, Git data, secrets or private material`,
-    files.every((f) => f.startsWith('iniqdash/')) && !files.some((f) => /(^|\/)(tests|\.git|maintainers)\/|iniqdash-secrets\.php$|server\/local\.php$/.test(f)));
+    files.every((f) => f.startsWith('iniqdash/')) && !files.some((f) => /(^|\/)(tests|\.git)\/|iniqdash-secrets\.php$|server\/local\.php$/.test(f)));
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 860 }, extraHTTPHeaders: { 'X-Forwarded-Proto': 'https' } });
   const p = await ctx.newPage();
   const errors = [];

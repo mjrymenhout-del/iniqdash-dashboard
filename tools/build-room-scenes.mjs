@@ -3,8 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
 // Builds assets/demo/rooms/*.svg — IniqDash's OWN night-time room illustrations for the Maison demo's room cards (created here, so they
-// can ship with IniqDash). They are stand-ins for the photographs of the reference, NOT copies of them: simple shapes, gradients and
-// glows in the same mood (dark rooms, warm lamps, purple / blue LED light). Deterministic (no randomness): the same files every run.
+// can ship with IniqDash): simple shapes, gradients and glows in one mood (dark rooms, warm lamps, purple / blue LED light). Deterministic (no randomness): the same files every run.
 //   node tools/build-room-scenes.mjs
 import fs from 'node:fs';
 import path from 'node:path';

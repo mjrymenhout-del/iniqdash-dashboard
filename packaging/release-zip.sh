@@ -16,5 +16,5 @@ SNAP=${1:?snapshot repository}; OUT=${2:?output zip}
 VER=$(git -C "$SNAP" show HEAD:VERSION 2>/dev/null || echo snapshot)
 rm -f "$OUT"
 git -C "$SNAP" archive --format=zip --prefix=iniqdash/ -o "$(cd "$(dirname "$OUT")" && pwd)/$(basename "$OUT")" HEAD -- . \
-  ':!tests' ':!tools' ':!packaging' ':!.github' ':!dev' ':!docs/iniqdash-demo' ':!docs/theme-studio' ':!docs/screenshots' ':!docs/maintainers'
+  ':!tests' ':!tools' ':!packaging' ':!.github' ':!dev' ':!docs/iniqdash-demo' ':!docs/theme-studio' ':!docs/screenshots'
 echo "release zip: $OUT  version=$VER  files=$(unzip -Z1 "$OUT" | grep -v '/$' | wc -l)  sha256=$(sha256sum "$OUT" | awk '{print $1}')"

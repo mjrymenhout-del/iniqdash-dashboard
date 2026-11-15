@@ -31,7 +31,7 @@ You need **PHP 8.1+** (with `curl`, `mbstring`, `fileinfo`), **Node.js 20+**, **
 Chromium** for the browser tests:
 
 ```bash
-git clone <this repository> iniqdash && cd iniqdash
+git clone https://github.com/mjrymenhout-del/iniqdash-dashboard.git && cd iniqdash-dashboard
 npm install -g playwright && npx playwright install chromium
 tests/run-all.sh                 # every suite; or one: node tests/setup-wizard.mjs
 ```

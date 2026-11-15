@@ -6,7 +6,8 @@ The **code** of IniqDash is free software under the [Mozilla Public License 2.0]
 
 ## The official project
 - **Name:** IniqDash — one word, capital *I* and capital *D*.
-- **Official repository:** `mjrymenhout-del/iniqdash` on GitHub. Official releases are the ones published there by its maintainers.
+- **Official repository:** [`mjrymenhout-del/iniqdash-dashboard`](https://github.com/mjrymenhout-del/iniqdash-dashboard) on GitHub. Official releases are the
+  ones published there by its maintainers.
 - **Original creator and founder:** Marcel Rymenhout, who founded and originally developed IniqDash in 2026.
 - **What it is:** a web-based frontend for Home Assistant. *Home Assistant is the backend. IniqDash is the frontend.* IniqDash is not
   affiliated with or endorsed by Home Assistant / the Open Home Foundation, and it is a different project from IniqNode Studio.

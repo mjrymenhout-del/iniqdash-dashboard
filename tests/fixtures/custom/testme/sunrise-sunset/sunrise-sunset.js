@@ -41,7 +41,7 @@
   const t = (v) => { if (v === null || v === undefined || v === '') return null; const n = typeof v === 'number' ? v : Date.parse(v); return Number.isFinite(n) ? n : null; };
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
-  /** today's demo times (local): sunrise 08:12, sunset 18:41 — the reference's values */
+  /** today's demo times (local): sunrise 08:12, sunset 18:41 */
   function demoTimes(now) {
     const d = new Date(now), at = (h, m) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m).getTime();
     return { rise: at(8, 12), set: at(18, 41) };

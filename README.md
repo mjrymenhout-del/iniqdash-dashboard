@@ -108,8 +108,8 @@ Bug reports, ideas and pull requests are welcome. There is no build step — van
 the real PHP server with a simulated Home Assistant, so you need no Home Assistant of your own:
 
 ```bash
-git clone <this repository>
-cd iniqdash
+git clone https://github.com/mjrymenhout-del/iniqdash-dashboard.git
+cd iniqdash-dashboard
 tests/run-all.sh
 ```
 

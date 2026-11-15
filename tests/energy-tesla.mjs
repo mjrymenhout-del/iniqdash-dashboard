@@ -4,7 +4,7 @@
  * Copyright © 2026 Marcel Rymenhout and IniqDash contributors */
 // ENERGY FLOW — TESLA STYLE vs CONNECTED CIRCLES. Real editor, real PHP server, FAKE Home Assistant (tests/lib/live.mjs — not a real one).
 //   two presets of ONE engine (the same nodes, bindings, direction rules, IniqFlow connectors): Connected Circles (id 'circles', the
-//   approved design, unchanged) and Tesla Style (id 'tesla': the structured grid of the reference — large thin-outlined circles, dark
+//   approved design, unchanged) and Tesla Style (id 'tesla': a structured grid — large thin-outlined circles, dark
 //   inside, names above / below, thin coloured right-angle connections with sparse moving dots) · built from the configured nodes only
 //   (3 → 3, 4 → 4, 7 → 7; no placeholder) · no circle touches another, no connection runs through a circle · direction / 0 / unavailable ·
 //   compact sizes · switching presets in Configure keeps every node and binding · save + reload · nothing sent to Home Assistant.
@@ -61,7 +61,7 @@ try {
   const t3 = await st('t3'), t4 = await st('t4'), t7 = await st('t7'), tc = await st('tc'), tl = await st('tl'), cc = await st('cc');
   if (SHOTS) for (const id of ['t3', 't4', 't7', 'tc', 'tl', 'cc']) await (await page.$(`.ed-canvas [data-grid-id="${id}"]`)).screenshot({ path: path.join(SHOTS, `energy-${id}.png`) });
   const D = (s, id) => s.discs.find((d) => d.id === id);
-  check('TESLA STYLE, Home + Solar + Grid: exactly three circles — Solar above, Grid on the left, Home on the right of the same row (the reference\'s structure); no placeholder',
+  check('TESLA STYLE, Home + Solar + Grid: exactly three circles — Solar above, Grid on the left, Home on the right of the same row; no placeholder',
     t3.variant === 'tesla' && t3.discs.length === 3 && D(t3, 'solar').cy < D(t3, 'grid').cy - 20 && D(t3, 'grid').cx < D(t3, 'solar').cx && D(t3, 'home').cx > D(t3, 'solar').cx
       && Math.abs(D(t3, 'grid').cy - D(t3, 'home').cy) < 2 && !/Battery|EV|Gas|Water/.test(t3.text), JSON.stringify(t3.discs));
   check('…+ Battery: four circles, the battery BELOW, Solar\'s name above its circle, the others\' below; Home the largest circle',

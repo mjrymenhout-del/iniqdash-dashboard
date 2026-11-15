@@ -437,7 +437,7 @@
     co2: { label: 'CO₂', icon: 'mdi:molecule', tone: 'neutral', positive: 'toward', words: { toward: '', away: '' }, still: true },
     custom: { label: 'Measurement', icon: 'mdi:gauge', tone: 'accent', positive: 'toward', words: { toward: 'In', away: 'Out' } },
   };
-  /* Tesla Style: its own palette (the reference's colours — a user's colour per node still wins) and its places on the grid [col, row]
+  /* Tesla Style: its own palette (a user's colour per node still wins) and its places on the grid [col, row]
      (Home is [2, 1]; column 3 is right of Home) */
   const TESLA_TONE = { home: '#b0bec5', solar: '#ff9800', grid: '#488fc2', battery: '#f06292', ev: '#ab47bc', inverter: '#9e9e9e', circuit: '#ffc107', appliance: '#7e57c2',
     heatpump: '#ef5350', gas: '#b71c3c', water: '#26c6da', co2: '#0f9d58', custom: '#8d9bb0' };
@@ -636,7 +636,7 @@
     /* ---- automatic layout: Home in the middle; tier-1 nodes on a ring (an ellipse — wide boxes use their width), tier-2 nodes further
        out beside their parent. Slots: the type's own place first (circles: the diagonals, so connections curve in; cards: the cross),
        the rest evenly. The biggest node size that keeps every node and its caption inside the box WITHOUT TOUCHING wins; none → list. */
-    /* TESLA STYLE layout: a structured grid like the reference — Home at the right of the middle row, the grid at its left, solar above
+    /* TESLA STYLE layout: a structured grid — Home at the right of the middle row, the grid at its left, solar above
        between them, the battery below, gas / water straight above / below Home, consumers (EV, heat pump, appliances, circuits) in a column
        right of Home. Each type takes its own place first, the next free one otherwise; empty rows / columns are dropped, so three nodes
        make a small balanced diagram and seven a full one. Labels sit above the top row and below the others; too small → the list. */
@@ -677,7 +677,7 @@
         : Math.abs(d.cy - a[1]) < d.r + 3 && Math.min(a[0], b[0]) < d.cx + d.r && Math.max(a[0], b[0]) > d.cx - d.r)).length;
       const gridNode = nodes.find((m) => m.type === 'grid' && g.at[m.id]);
       const plans = nodes.filter((n) => g.at[n.id] && con[n.id]).map((n) => {
-        // a measurement that never flows (CO₂) joins the grid here, as in the reference — nothing moves on it either way
+        // a measurement that never flows (CO₂) joins the grid here — nothing moves on it either way
         const visual = typeOf(n).still && !n.link && gridNode ? gridNode.id : null;
         const x = g.at[n.id], tid = visual || (n.link && n.link !== 'home' ? n.link : 'home'), t = tid === 'home' ? g.home : g.at[tid];
         const dx = t.cx - x.cx, dy = t.cy - x.cy;

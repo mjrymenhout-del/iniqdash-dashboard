@@ -237,5 +237,3 @@ log proves the isolation. It checks:
 | ☑ | Original content (MPL-2.0); icons: Material Design Icons (Apache-2.0); photographs under free licences, credited in THIRD-PARTY-NOTICES.md; no new dependency | done |
 | ☑ | Desktop, tablet and phone layouts checked on every page (screenshots in `docs/iniqdash-demo/`, automated overlap / width check) | done |
 | ☑ | Existing dashboards and the "Studio Examples" collection are not touched | tested |
-| ☐ | Tried by the owner on the live installation after uploading this version (local tests do not prove the hosted installation) | **owner** |
-| ☐ | Merge into `main`, release notes, a release | **owner** |

@@ -35,7 +35,7 @@
 [data-widget="custom.light-switch"][data-state="on"] { --ls-bg: var(--ls-on-bg, #f7bd2e); --ls-op: var(--ls-on-op, 1); --ls-glow: var(--ls-on-glow, .8); }
 [data-widget="custom.light-switch"][data-state="unavailable"] { --ls-bg: #26282d; --ls-op: .22; --ls-glow: 0; color: #9aa0ab; }
 
-/* the lamp artwork: positioned by X / Y (% of the card), sized by % of the card height; may run off the edge like the reference */
+/* the lamp artwork: positioned by X / Y (% of the card), sized by % of the card height; may run off the edge */
 [data-widget="custom.light-switch"] .ls__art {
   position: absolute; z-index: 1; pointer-events: none;
   left: calc(var(--ls-img-x, 60) * 1%); top: calc(var(--ls-img-y, 36) * 1%);

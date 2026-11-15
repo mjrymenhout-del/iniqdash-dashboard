@@ -3,7 +3,7 @@ name: IniqDash
 version: "0.1.0-beta.1"
 slug: iniqdash
 description: Dashboards for Home Assistant, designed in the browser (alpha — untested as an App)
-url: https://github.com/mjrymenhout-del/iniqdash
+url: https://github.com/mjrymenhout-del/iniqdash-dashboard
 arch:
   - amd64
   - aarch64
