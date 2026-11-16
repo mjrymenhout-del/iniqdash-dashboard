@@ -23,7 +23,7 @@
 ## What is INIQDASH?
 
 INIQDASH is a dashboard for [Home Assistant](https://www.home-assistant.io/) that you host yourself on a normal PHP web server, including
-shared hosting. You design dashboards in the browser — pages, widgets, popups, themes — or let INIQDASH **generate a complete
+shared hosting. You design dashboards in the browser, pages, widgets, popups, themes or let INIQDASH **generate a complete
 dashboard** from the rooms and devices in your Home Assistant, then change anything you like. A new installation opens a fully working
 **demo home** (simulated, no Home Assistant needed), so you can explore before you connect anything.
 
@@ -31,30 +31,30 @@ dashboard** from the rooms and devices in your Home Assistant, then change anyth
 
 - **Visual editor** — drag, drop and resize on a responsive grid with separate desktop, tablet and phone layouts; undo / redo, copy /
   paste, alignment tools and a preview at any screen size.
-- **Standard widget library** — more than 40 widget types: lights, climate, sensors, energy flow, weather, alarm, locks, covers, media,
+- **Standard widget library**, more than 40 widget types: lights, climate, sensors, energy flow, weather, alarm, locks, covers, media,
   cameras, calendars, who's home, activity, charts, gauges and more, each with variants. A control appears only when Home Assistant says
   the device supports it.
-- **Dashboard generator** — reads your Home Assistant areas, devices and entities and builds Home, Lights, Climate, Rooms, Energy and
+- **Dashboard generator**, reads your Home Assistant areas, devices and entities and builds Home, Lights, Climate, Rooms, Energy and
   Security pages. Technical and diagnostic entities, hidden entities and duplicates are left out; you choose the rooms and pages.
-- **Rooms** — photographic room cards that open a compact room popup with tabs (Active, Lights, Heating, Media, Security, Sensors);
+- **Rooms** , photographic room cards that open a compact room popup with tabs (Active, Lights, Heating, Media, Security, Sensors);
   only the tabs a room needs are shown.
-- **Energy** — a house-centred energy flow (solar, grid, battery, gas and water rates) with direction, plus consumption charts.
-- **Widget Studio** — compose your own widgets from building blocks (shapes, text, values, gauges, sliders, buttons), bind them to
+- **Energy** , a house-centred energy flow (solar, grid, battery, gas and water rates) with direction, plus consumption charts.
+- **Widget Studio** , compose your own widgets from building blocks (shapes, text, values, gauges, sliders, buttons), bind them to
   entities and reuse them.
-- **Appearance and themes** — gradients, pictures, borders and glow per widget; Theme Studio for colours, fonts, corners and backgrounds.
-- **Popups, notifications and navigation** — your own popups, notification rules with a notification centre, a navigation dock and a
+- **Appearance and themes** , gradients, pictures, borders and glow per widget; Theme Studio for colours, fonts, corners and backgrounds.
+- **Popups, notifications and navigation** , your own popups, notification rules with a notification centre, a navigation dock and a
   radial quick-action menu.
-- **Installation wizard** — open the site and follow four steps: administrator account, Home Assistant connection, dashboard, finish.
-- **Self-hosted and private** — your Home Assistant token stays on your server and never reaches the browser.
+- **Installation wizard** , open the site and follow four steps: administrator account, Home Assistant connection, dashboard, finish.
+- **Self-hosted and private** , your Home Assistant token stays on your server and never reaches the browser.
 
 ## Screenshots
 
 | | |
 |---|---|
-| ![Lights](docs/screenshots/lights-desktop.jpg) **Lights** — every light, scenes and what is on | ![Climate](docs/screenshots/climate-desktop.jpg) **Climate** — the main thermostat and the other units |
-| ![Rooms](docs/screenshots/rooms-desktop.jpg) **Rooms** — photographic room cards | ![Room popup](docs/screenshots/room-popup.jpg) **Room popup** — compact tabs per room |
-| ![Energy](docs/screenshots/energy-desktop.jpg) **Energy** — house-centred flow and consumption | ![Security](docs/screenshots/security-desktop.jpg) **Security** — alarm, sensors, cameras, activity |
-| ![Editor](docs/screenshots/editor.jpg) **Editor** — select, configure, arrange | ![Widget Studio](docs/screenshots/widget-studio.jpg) **Widget Studio** — build your own widgets |
+| ![Lights](docs/screenshots/lights-desktop.jpg) **Lights** , every light, scenes and what is on | ![Climate](docs/screenshots/climate-desktop.jpg) **Climate** , the main thermostat and the other units |
+| ![Rooms](docs/screenshots/rooms-desktop.jpg) **Rooms** , photographic room cards | ![Room popup](docs/screenshots/room-popup.jpg) **Room popup** , compact tabs per room |
+| ![Energy](docs/screenshots/energy-desktop.jpg) **Energy** , house-centred flow and consumption | ![Security](docs/screenshots/security-desktop.jpg) **Security** , alarm, sensors, cameras, activity |
+| ![Editor](docs/screenshots/editor.jpg) **Editor** , select, configure, arrange | ![Widget Studio](docs/screenshots/widget-studio.jpg) **Widget Studio** — build your own widgets |
 
 <p align="center">
   <img src="docs/screenshots/mobile-home.jpg" alt="Phone — Home" width="24%">
@@ -62,7 +62,7 @@ dashboard** from the rooms and devices in your Home Assistant, then change anyth
   <img src="docs/screenshots/setup-wizard.jpg" alt="First-run wizard" width="44%">
 </p>
 
-All screenshots show the built-in **demo home** — fictional rooms, people and devices, simulated by the server.
+All screenshots show the built-in **demo home** , fictional rooms, people and devices, simulated by the server.
 
 ## Quick start
 
