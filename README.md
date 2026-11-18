@@ -9,7 +9,7 @@
 ![Version 0.1.0-beta.1](https://img.shields.io/badge/version-0.1.0--beta.1-informational.svg)
 ![PHP 8.1+](https://img.shields.io/badge/PHP-8.1%2B-777bb4.svg)
 
-[Download](../../releases) · [Install](docs/installation.md) · [Quick start](docs/quick-start.md) · [Documentation](docs/README.md) · [Report a problem](../../issues/new/choose)
+**[▶ Live demo](https://leap-it.be/demoiniqdash)** · [Download](../../releases) · [Install](docs/installation.md) · [Quick start](docs/quick-start.md) · [Documentation](docs/README.md) · [Report a problem](../../issues/new/choose)
 
 <a href="https://buymeacoffee.com/iniqdash"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy me a coffee — support INIQDASH" height="44"></a>
 
@@ -19,6 +19,20 @@
 
 > **Public beta (0.1.0-beta.1).** INIQDASH works and is ready to be tried, and it is early: expect rough edges, and tell us about them.
 > It has been tested against a simulated Home Assistant and synthetic installations; please report how it behaves with yours.
+
+## ▶ Try the live demo
+
+**INIQDASH now has a fully interactive online demo!** Want to try INIQDASH without downloading or installing anything? You can now
+explore the complete application directly in your browser.
+
+No registration. No installation. No Home Assistant connection required.
+
+Explore the dashboards, control simulated devices, customize layouts and even create your own widgets using Widget Studio. Every visitor
+gets their own private demo session, so feel free to experiment!
+
+**Try the live demo: [leap-it.be/demoiniqdash](https://leap-it.be/demoiniqdash)**
+
+I'd love to hear what you think — [share your feedback](../../issues/new/choose).
 
 ## What is INIQDASH?
 
